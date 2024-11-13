@@ -8,6 +8,7 @@ const envSchema = Joi.object({
   MAILER_USER: Joi.string().required(),
   MAILER_PASS: Joi.string().required(),
   FRONTEND_URL: Joi.string().required(),
+  SCHOOL_MANAGERS_PASSWORD: Joi.string().required(),
 });
 
 export default envSchema;

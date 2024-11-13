@@ -21,5 +21,7 @@ import { Department, DepartmentSchema } from './schemas/department.schema';
       },
     ]),
   ],
+
+  exports: [MongooseModule],
 })
 export class SchoolModule {}

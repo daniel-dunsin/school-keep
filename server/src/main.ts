@@ -7,6 +7,7 @@ import { GlobalExceptionFilter } from './core/filters/global.filter';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import ValidationExceptions from './core/exceptions/validation.exception';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { SeedService } from './shared/modules/seed/seed.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -52,6 +53,9 @@ async function bootstrap() {
     swaggerDocumentBuild,
   );
   SwaggerModule.setup('/api/v1/docs', app, swaggerDocument);
+
+  const seedService = app.get(SeedService);
+  seedService.runSeeds();
 
   const configService = app.get(ConfigService);
   const port = configService.get<string>('PORT');

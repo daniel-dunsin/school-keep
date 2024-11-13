@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import envSchema from './shared/schemas/env.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ApiModule } from './api/api.module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ApiModule } from './api/api.module';
       },
     }),
     ApiModule,
+    SharedModule,
   ],
   controllers: [AppController],
   providers: [],

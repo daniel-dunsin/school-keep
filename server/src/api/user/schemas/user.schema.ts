@@ -3,6 +3,7 @@ import { DBSchema, TimestampMixin } from 'src/shared/schemas/db.schema';
 import { Roles } from '../enums';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { School, SchoolDocument } from 'src/api/school/schemas/school.schema';
+import { DEFAULT_IMAGES } from 'src/shared/constants';
 
 @DBSchema()
 export class User extends TimestampMixin {
@@ -18,7 +19,7 @@ export class User extends TimestampMixin {
   @Prop()
   phoneNumber: string;
 
-  @Prop()
+  @Prop({ default: DEFAULT_IMAGES.profilePicture })
   profilePicture: string;
 
   @Prop({
