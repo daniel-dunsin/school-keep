@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import envSchema from './shared/schemas/env.schema';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ApiModule } from './api/api.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         };
       },
     }),
+    ApiModule,
   ],
   controllers: [AppController],
   providers: [],
