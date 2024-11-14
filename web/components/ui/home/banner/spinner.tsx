@@ -6,12 +6,18 @@ import { RiLoader2Line } from 'react-icons/ri';
 
 const Spinner = () => {
   return (
-    <motion.span variants={arrowMotion} initial="hidden" animate="visible">
+    <motion.span
+      variants={arrowMotion}
+      initial="hidden"
+      animate="visible"
+      inherit={false}
+    >
       <motion.span
         variants={switchingIconsVariants}
         initial="hidden"
         animate={'visible'}
         exit="hidden"
+        inherit={false}
       >
         <RiLoader2Line size={65} strokeWidth={0.01} className="animate-spin" />
       </motion.span>

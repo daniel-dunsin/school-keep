@@ -6,16 +6,12 @@ export const arrowMotion: VariantsType = {
   hidden: {
     opacity: 0,
     x: -100,
-    transition: {
-      type: 'spring',
-      delay: 0,
-    },
   },
   visible: {
     opacity: 1,
     x: 0,
     transition: {
-      type: 'spring',
+      type: 'bounce',
       delay: 0,
     },
   },

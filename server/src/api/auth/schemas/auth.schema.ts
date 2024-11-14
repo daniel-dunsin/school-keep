@@ -19,6 +19,9 @@ export class Auth extends TimestampMixin {
 
   @Prop()
   passwordResetCodeExpiresAt: Date;
+
+  @Prop()
+  accessToken: string;
 }
 
 export type AuthDocument = HydratedDocument<Auth>;

@@ -2,6 +2,7 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 import { ConfigService } from '@nestjs/config';
 import { GlobalExceptionFilter } from './core/filters/global.filter';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
@@ -17,6 +18,7 @@ async function bootstrap() {
   app.enableCors({
     credentials: true,
   });
+  app.use(cookieParser());
 
   app.useGlobalPipes(
     new ValidationPipe({

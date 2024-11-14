@@ -15,6 +15,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
 
+    console.log(exception);
+
     let errorMessage = 'Oops! an error occured';
     let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
 

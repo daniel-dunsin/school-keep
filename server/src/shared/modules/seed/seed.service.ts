@@ -101,15 +101,19 @@ export class SeedService {
               .then(async (user) => {
                 school.manager = user._id;
 
+                const admin = await this.adminModel.create({
+                  user: user._id,
+                  permission: AdminRoles.SuperAdmin,
+                });
+
+                user.admin = admin._id;
+
                 await Promise.all([
                   this.authModel.create({
                     user: user._id,
                     password: hashedPassword,
                   }),
-                  this.adminModel.create({
-                    user: user._id,
-                    permission: AdminRoles.SuperAdmin,
-                  }),
+                  user.save(),
                   school.save(),
                 ]);
               });

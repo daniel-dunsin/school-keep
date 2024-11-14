@@ -10,6 +10,6 @@ export class UtilsService {
   }
 
   async comparePassword(password: string, hashedPassword: string) {
-    return await argon.verify(password, hashedPassword);
+    return await argon.verify(hashedPassword, password);
   }
 }

@@ -16,7 +16,7 @@ const AuthModal: FC<Props> = ({ onClose }) => {
       initial="hidden"
       animate="visible"
       exit="hidden"
-      className={cn('bg-white rounded px-4 pt-4 pb-8 w-[500px]')}
+      className={cn('bg-white px-4 pt-4 pb-8 w-[500px]')}
       inherit={false}
     >
       <div className="flex justify-end">
