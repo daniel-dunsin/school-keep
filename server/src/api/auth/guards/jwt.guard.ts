@@ -9,12 +9,14 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { UserDocument } from 'src/api/user/schemas/user.schema';
 import { IsPublic } from 'src/core/decorators/auth.decoractor';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly jwtService: JwtService,
+    private readonly authService: AuthService,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -45,7 +47,13 @@ export class AuthGuard implements CanActivate {
       if (!accessToken)
         throw new UnauthorizedException('Access token not found');
 
-      const user = await this.jwtService.verifyAsync<UserDocument>(accessToken);
+      const jwtUser =
+        await this.jwtService.verifyAsync<UserDocument>(accessToken);
+
+      const user = await this.authService.validateJwtPayload(
+        accessToken,
+        jwtUser._id,
+      );
 
       req.user = user;
       return true;

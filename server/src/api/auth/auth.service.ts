@@ -3,6 +3,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Auth, AuthDocument } from './schemas/auth.schema';
@@ -44,6 +45,21 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly emailService: EmailService,
   ) {}
+
+  async validateJwtPayload(accessToken: string, userId: string) {
+    const auth = await this.authModel.findOne({
+      accessToken,
+      user: new Types.ObjectId(userId),
+    });
+
+    if (!auth) throw new UnauthorizedException('Unauthorized!');
+
+    const user = await this.userModel
+      .findById(userId)
+      .populate('admin student school');
+
+    return user!;
+  }
 
   private async validateStudentSignUpPayload(signUpDto: StudentSignUpDto) {
     const { department, school: schoolId, email } = signUpDto;
@@ -228,7 +244,7 @@ export class AuthService {
     await auth.save();
 
     await this.emailService.sendMail({
-      to: user.email,
+      to: 'adejaredaniel12@gmail.com',
       subject: 'Password reset code',
       template: 'forgot-password',
       context: {

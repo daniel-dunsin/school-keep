@@ -8,6 +8,7 @@ export class EmailService {
 
   async sendMail(dto: SendMail) {
     const { to, template, context, subject } = dto;
+
     try {
       await this.mailerService.sendMail({
         from: 'noreply@SchoolKeep.com',

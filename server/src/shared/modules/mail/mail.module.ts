@@ -25,10 +25,10 @@ import { join } from 'path';
           },
 
           template: {
-            dir: join(process.cwd(), 'src/shared/mail/templates'),
+            dir: join(process.cwd(), 'src/shared/modules/mail/templates'),
             adapter: new EjsAdapter(),
             options: {
-              strict: true,
+              strict: false,
             },
           },
         };

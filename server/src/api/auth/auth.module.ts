@@ -10,6 +10,7 @@ import { AuthService } from './auth.service';
 import { AuthGuard } from './guards/jwt.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { SchoolModule } from '../school/school.module';
+import { StudentModule } from '../student/student.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { SchoolModule } from '../school/school.module';
       },
     }),
     UserModule,
+    StudentModule,
     SharedModule,
     SchoolModule,
   ],

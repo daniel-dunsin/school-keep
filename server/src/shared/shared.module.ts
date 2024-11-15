@@ -8,6 +8,6 @@ import { EmailModule } from './modules/mail/mail.module';
 @Module({
   imports: [SeedModule, EmailModule],
   providers: [UtilsService, FileService, CloudinaryProvider],
-  exports: [SeedModule, UtilsService, FileService],
+  exports: [SeedModule, UtilsService, FileService, EmailModule],
 })
 export class SharedModule {}
