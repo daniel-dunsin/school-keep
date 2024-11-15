@@ -20,16 +20,13 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     try {
       const ctx = context.switchToHttp();
-
-      const req = ctx.getRequest<Request>();
-
-      const isWebHeader = req.headers['is_web'];
-
       const isPublic = this.reflector.get(IsPublic, context.getHandler());
 
       if (isPublic) {
         return true;
       }
+      const req = ctx.getRequest<Request>();
+      const isWebHeader = req.headers['is_web'];
 
       let accessToken: string;
 

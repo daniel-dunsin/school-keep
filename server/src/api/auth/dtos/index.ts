@@ -47,3 +47,24 @@ export class StudentSignUpDto {
   @IsString(true)
   password: string;
 }
+
+export class ForgotPasswordOtp {
+  @IsEmail(false)
+  email: string;
+}
+
+export class ConfirmForgotPasswordOtpDto {
+  @IsString(false)
+  code: string;
+
+  @IsEmail(false)
+  email: string;
+}
+
+export class ResetPasswordDto {
+  @IsString(false)
+  tempToken: string;
+
+  @IsString(false)
+  password: string;
+}

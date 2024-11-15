@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as argon from 'argon2';
+import { generate } from 'otp-generator';
 
 @Injectable()
 export class UtilsService {
@@ -11,5 +12,24 @@ export class UtilsService {
 
   async comparePassword(password: string, hashedPassword: string) {
     return await argon.verify(hashedPassword, password);
+  }
+
+  generateRandomValues(length: number, isOtp: boolean) {
+    return generate(
+      length,
+      isOtp
+        ? {
+            digits: true,
+            lowerCaseAlphabets: false,
+            upperCaseAlphabets: false,
+            specialChars: false,
+          }
+        : {
+            digits: true,
+            lowerCaseAlphabets: true,
+            upperCaseAlphabets: true,
+            specialChars: true,
+          },
+    );
   }
 }

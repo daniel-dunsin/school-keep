@@ -46,7 +46,7 @@ export class User extends TimestampMixin {
     type: mongoose.Schema.Types.ObjectId,
     ref: Student.name,
   })
-  student: StudentDocument | Types.ObjectId;
+  student: StudentDocument;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

@@ -9,6 +9,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './guards/jwt.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { SchoolModule } from '../school/school.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { APP_GUARD } from '@nestjs/core';
     }),
     UserModule,
     SharedModule,
+    SchoolModule,
   ],
 
   controllers: [AuthController],

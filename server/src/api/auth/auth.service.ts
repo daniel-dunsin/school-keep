@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -7,7 +8,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Auth, AuthDocument } from './schemas/auth.schema';
 import { Model, Types } from 'mongoose';
 import { User, UserDocument } from '../user/schemas/user.schema';
-import { LoginDto, StudentSignUpDto } from './dtos';
+import {
+  ConfirmForgotPasswordOtpDto,
+  LoginDto,
+  ResetPasswordDto,
+  StudentSignUpDto,
+} from './dtos';
 import { UtilsService } from 'src/shared/services/util.service';
 import { JwtService } from '@nestjs/jwt';
 import { School, SchoolDocument } from '../school/schemas/school.schema';
@@ -17,6 +23,10 @@ import {
 } from '../school/schemas/department.schema';
 import { Student, StudentDocument } from '../student/schemas/student.schema';
 import { FileService } from 'src/shared/services/file.service';
+import { EmailService } from 'src/shared/modules/mail/mail.service';
+import { Roles } from '../user/enums';
+import { StudentStatus } from '../student/enums';
+import { add, isAfter } from 'date-fns';
 
 @Injectable()
 export class AuthService {
@@ -32,6 +42,7 @@ export class AuthService {
     private readonly fileService: FileService,
     private readonly utilService: UtilsService,
     private readonly jwtService: JwtService,
+    private readonly emailService: EmailService,
   ) {}
 
   private async validateStudentSignUpPayload(signUpDto: StudentSignUpDto) {
@@ -152,7 +163,7 @@ export class AuthService {
     }
 
     const user = await this.userModel.create({
-      email,
+      email: email.toLowerCase(),
       firstName,
       lastName,
       school: new Types.ObjectId(school),
@@ -168,10 +179,15 @@ export class AuthService {
       accessToken,
     });
 
-    await this.studentModel.create({
-      user: user._id,
-      matricNumber,
-      department: new Types.ObjectId(department),
+    process.nextTick(async () => {
+      const student = await this.studentModel.create({
+        user: user._id,
+        matricNumber,
+        department: new Types.ObjectId(department),
+      });
+
+      user.student = student._id as any;
+      await user.save();
     });
 
     return {
@@ -181,6 +197,113 @@ export class AuthService {
       meta: {
         accessToken,
       },
+    };
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.userModel
+      .findOne({ email })
+      .populate('student', 'status');
+    const auth = await this.authModel.findOne({ user: user?._id });
+
+    if (!user || !auth) {
+      throw new NotFoundException(
+        'Oops! a user with this email does not exist',
+      );
+    }
+
+    if (
+      user.role === Roles.Student &&
+      (user.student.status === StudentStatus.Expelled ||
+        user.student.status === StudentStatus.Suspended)
+    ) {
+      throw new BadRequestException(
+        "Oops! you're not allowed to access your account, reach out to your admin",
+      );
+    }
+
+    const code = this.utilService.generateRandomValues(4, true);
+    auth.passwordResetCode = code;
+    auth.passwordResetCodeExpiresAt = add(new Date(), { minutes: 15 });
+    await auth.save();
+
+    await this.emailService.sendMail({
+      to: user.email,
+      subject: 'Password reset code',
+      template: 'forgot-password',
+      context: {
+        firstName: user.firstName,
+        code,
+      },
+    });
+
+    return {
+      message: 'Password otp request successfully',
+      success: true,
+    };
+  }
+
+  async confirmForgotPassowrdOtp(confirmOtpDto: ConfirmForgotPasswordOtpDto) {
+    const { code, email } = confirmOtpDto;
+
+    const user = await this.userModel.findOne({ email: email.toLowerCase() });
+    const auth = await this.authModel.findOne({ user: user?._id });
+
+    if (!user || !auth) {
+      throw new NotFoundException(
+        'Oops! a user with this email does not exist',
+      );
+    }
+
+    if (
+      !auth.passwordResetCode ||
+      !auth.passwordResetCodeExpiresAt ||
+      auth.passwordResetCode != code
+    ) {
+      throw new ConflictException('Oops! password reset code is invalid');
+    }
+
+    if (isAfter(new Date(), auth.passwordResetCodeExpiresAt)) {
+      throw new BadRequestException('Oops! password reset code has expired');
+    }
+
+    const tempToken = await this.jwtService.signAsync(auth.toObject());
+
+    auth.passwordResetTempToken = tempToken;
+    await auth.save();
+
+    return {
+      message: 'Password Otp Confirmed',
+      data: {
+        tempToken,
+      },
+    };
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    const { tempToken, password } = resetPasswordDto;
+
+    const auth = await this.authModel.findOne({
+      passwordResetTempToken: tempToken,
+    });
+
+    if (!auth)
+      throw new BadRequestException('password reset session is invalid');
+
+    const hashedPassword = await this.utilService.hashPassword(password);
+
+    await this.authModel.findByIdAndUpdate(auth._id, {
+      $set: { password: hashedPassword },
+      $unset: {
+        passwordResetCode: null,
+        passwordResetTempToken: null,
+        passwordResetCodeExpiresAt: null,
+        accessToken: null,
+      },
+    });
+
+    return {
+      message: 'password reset successful',
     };
   }
 }

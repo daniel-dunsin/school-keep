@@ -21,6 +21,9 @@ export class Auth extends TimestampMixin {
   passwordResetCodeExpiresAt: Date;
 
   @Prop()
+  passwordResetTempToken: string;
+
+  @Prop()
   accessToken: string;
 }
 
