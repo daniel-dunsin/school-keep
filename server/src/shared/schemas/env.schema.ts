@@ -9,6 +9,9 @@ const envSchema = Joi.object({
   MAILER_PASS: Joi.string().required(),
   FRONTEND_URL: Joi.string().required(),
   SCHOOL_MANAGERS_PASSWORD: Joi.string().required(),
+  CLOUDINARY_CLOUD_NAME: Joi.string().required(),
+  CLOUDINARY_API_SECRET: Joi.string().required(),
+  CLOUDINARY_API_KEY: Joi.string().required(),
 });
 
 export default envSchema;

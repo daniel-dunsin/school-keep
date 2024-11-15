@@ -27,6 +27,9 @@ export class User extends TimestampMixin {
   @Prop({ default: DEFAULT_IMAGES.profilePicture })
   profilePicture: string;
 
+  @Prop()
+  profilePictureId: string;
+
   @Prop({
     type: String,
     enum: Object.values(Roles),

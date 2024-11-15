@@ -5,6 +5,7 @@ import {
   IsBoolean as _IsBoolean,
   IsEnum as _IsEnum,
   IsUrl as _IsUrl,
+  IsMongoId as _IsMongoId,
   IsOptional,
   IsDateString,
   IsNumberString,
@@ -13,6 +14,19 @@ import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
 
 export const IsString = (isOptional: boolean) => {
   const decorators = [_IsString()];
+
+  if (isOptional) {
+    decorators.push(ApiPropertyOptional());
+    decorators.push(IsOptional());
+  } else {
+    decorators.push(ApiProperty());
+  }
+
+  return applyDecorators(...decorators);
+};
+
+export const IsMongoId = (isOptional: boolean) => {
+  const decorators = [_IsMongoId()];
 
   if (isOptional) {
     decorators.push(ApiPropertyOptional());
