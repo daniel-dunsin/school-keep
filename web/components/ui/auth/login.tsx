@@ -2,13 +2,52 @@
 import Button from '@/components/common/button';
 import { Checkbox } from '@/components/common/input/checkbox';
 import TextField from '@/components/common/input/text-field';
+import { DEFAULT_MATCHERS } from '@/lib/constants';
+import { useMutation } from '@tanstack/react-query';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+
+type Input = {
+  email: string;
+  password: string;
+  remember_me: boolean;
+};
 
 const Login = () => {
   const [rememberMe, setRememberMe] = useState<boolean>(false);
+  const {
+    setValue,
+    handleSubmit,
+    formState: { errors },
+    register,
+  } = useForm<Input>({});
 
   const toggleRemember = () => setRememberMe(!rememberMe);
+
+  const { mutateAsync: _login, isPending: _loggingIn } = useMutation({
+    mutationKey: ['useLogin'],
+    mutationFn: async (e: Input) =>
+      await signIn('credentials', {
+        email: e.email,
+        remember_me: e.remember_me,
+        password: e.password,
+        redirect: false,
+      }),
+    onSuccess() {
+      toast.success('Login Successful');
+    },
+  });
+
+  const submit = async (e: Input) => {
+    await _login(e);
+  };
+
+  useEffect(() => {
+    setValue('remember_me', rememberMe);
+  }, [rememberMe, setValue]);
 
   return (
     <section className="mt-5">
@@ -17,13 +56,24 @@ const Login = () => {
         Access your school document management dashboard 📜
       </p>
 
-      <form className="mt-7 space-y-4" onSubmit={(e) => {}}>
+      <form className="mt-7 space-y-4" onSubmit={handleSubmit(submit)}>
         <TextField
           label="Email Address"
           InputProps={{
             placeholder: 'Enter your school registered email address',
             type: 'email',
+            ...register('email', {
+              required: {
+                value: true,
+                message: 'email is required',
+              },
+              pattern: {
+                value: DEFAULT_MATCHERS.schoolEmail,
+                message: 'enter a valid school email',
+              },
+            }),
           }}
+          helperText={errors.email && errors.email.message}
         />
 
         <TextField
@@ -31,7 +81,12 @@ const Login = () => {
           InputProps={{
             placeholder: 'Enter your password',
             type: 'password',
+            disabled: _loggingIn,
+            ...register('password', {
+              required: true,
+            }),
           }}
+          helperText={errors?.password?.message && 'password is required'}
         />
 
         <div className="flex items-center space-x-2">
@@ -48,7 +103,12 @@ const Login = () => {
           </label>
         </div>
 
-        <Button variant="filled" fullWidth={true} size="medium">
+        <Button
+          variant="filled"
+          fullWidth={true}
+          size="medium"
+          loading={_loggingIn}
+        >
           Sign In
         </Button>
       </form>

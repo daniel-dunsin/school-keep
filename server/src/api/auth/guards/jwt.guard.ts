@@ -21,8 +21,6 @@ export class AuthGuard implements CanActivate {
     try {
       const ctx = context.switchToHttp();
 
-      console.log('check');
-
       const req = ctx.getRequest<Request>();
 
       const isWebHeader = req.headers['is_web'];

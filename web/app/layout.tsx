@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { poppins } from '@/lib/utils/font';
+import AppProvider from '@/lib/providers';
 
 export const metadata: Metadata = {
   title: 'School Keep',
@@ -15,7 +16,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={poppins.className}>{children}</body>
+      <body className={poppins.className}>
+        <AppProvider>{children}</AppProvider>
+      </body>
     </html>
   );
 }

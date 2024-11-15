@@ -33,13 +33,6 @@ const HomeNavigator = () => {
 
   const { View: Arrow } = useLottie(options);
 
-  useEffect(() => {
-    //time to check auth state
-    if (cta == '1') {
-      setTimeout(cycleCta, 2000);
-    }
-  }, [cta]);
-
   return (
     <BannerOverlay showOverlay={cta != '0'}>
       <motion.div
@@ -83,7 +76,7 @@ const HomeNavigator = () => {
             {cta == '0' ? (
               <NavArrow />
             ) : cta == '1' ? (
-              <Spinner />
+              <Spinner nextStep={() => cycleCta(2)} />
             ) : (
               <AuthModal onClose={() => cycleCta(0)} />
             )}

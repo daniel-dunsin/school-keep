@@ -1,10 +1,28 @@
-import React from 'react';
+'use client';
+import React, { FC, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { arrowMotion, switchingIconsVariants } from '../variants';
 import { BsArrowRight } from 'react-icons/bs';
 import { RiLoader2Line } from 'react-icons/ri';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
-const Spinner = () => {
+interface Props {
+  nextStep(): void;
+}
+
+const Spinner: FC<Props> = ({ nextStep }) => {
+  const { data, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status == 'authenticated') {
+      router.push('/dashboard');
+    } else if (status == 'unauthenticated') {
+      setTimeout(nextStep, 1000);
+    }
+  }, [status, nextStep, router]);
+
   return (
     <motion.span
       variants={arrowMotion}
