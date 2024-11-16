@@ -1,7 +1,7 @@
 flutter_native_splash:
   color: '#8a05ff'
 
-  image: assets/images/logo-white.png
+  image: assets/images/launcher-icon.png
 
   android_12:
     image: assets/images/launcher-icon.png
@@ -9,5 +9,5 @@ flutter_native_splash:
 
   image_android: assets/images/launcher-icon.png
   image_dark_android: assets/images/launcher-icon.png
-  image_ios: assets/images/logo-white.png
-  image_dark_ios: assets/images/logo-white.png
+  image_ios: assets/images/launcher-icon.png
+  image_dark_ios: assets/images/launcher-icon.png

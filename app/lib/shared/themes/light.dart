@@ -31,7 +31,7 @@ final lightTheme = defaultTheme.copyWith(
     onPrimary: AppColors.black,
     secondary: Colors.grey[300]!,
     onSecondary: Colors.black54,
-    surface: AppColors.white,
+    surface: AppColors.mainLight,
     onSurface: AppColors.black,
     error: AppColors.error,
     onError: AppColors.white,

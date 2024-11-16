@@ -13,3 +13,11 @@ class AppColors {
 class AppFonts {
   static const String circularstd = "CircularStd";
 }
+
+const imagesRoute = "assets/images";
+
+class AppImages {
+  static const String logoWhite = '$imagesRoute/logo-white.png';
+  static const String logoBlack = '$imagesRoute/logo-black.png';
+  static const String logoPurple = '$imagesRoute/logo-purple.png';
+}
