@@ -40,5 +40,57 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)',
+
+        # Calendar Permissions
+        'PERMISSION_EVENTS=0', # dart: PermissionGroup.calendar
+        'PERMISSION_EVENTS_FULL_ACCESS=0', # dart: PermissionGroup.calendarFullAccess
+
+        # Reminders Permissions
+        'PERMISSION_REMINDERS=0', # dart: PermissionGroup.reminders
+
+        # Contacts Permissions
+        'PERMISSION_CONTACTS=0', # dart: PermissionGroup.contacts
+
+        # Camera Permissions
+        'PERMISSION_CAMERA=1', # dart: PermissionGroup.camera
+
+        # Microphone Permissions
+        'PERMISSION_MICROPHONE=1', # dart: PermissionGroup.microphone
+
+        # Speech Recognition Permissions
+        'PERMISSION_SPEECH_RECOGNIZER=0', # dart: PermissionGroup.speech
+
+        # Photos Permissions
+        'PERMISSION_PHOTOS=1', # dart: PermissionGroup.photos
+
+        # Location Permissions
+        'PERMISSION_LOCATION=1', # dart: PermissionGroup.location
+        'PERMISSION_LOCATION_WHENINUSE=1', # dart: PermissionGroup.locationWhenInUse
+
+        # Notifications Permissions
+        'PERMISSION_NOTIFICATIONS=1', # dart: PermissionGroup.notification
+
+        # Media Library Permissions
+        'PERMISSION_MEDIA_LIBRARY=1', # dart: PermissionGroup.mediaLibrary
+
+        # Sensors Permissions
+        'PERMISSION_SENSORS=1', # dart: PermissionGroup.sensors
+
+        # Bluetooth Permissions
+        'PERMISSION_BLUETOOTH=0', # dart: PermissionGroup.bluetooth
+
+        # App Tracking Transparency
+        'PERMISSION_APP_TRACKING_TRANSPARENCY=1', # dart: PermissionGroup.appTrackingTransparency
+
+        # Critical Alerts Permissions
+        'PERMISSION_CRITICAL_ALERTS=1', # dart: PermissionGroup.criticalAlerts
+
+        # Assistant Permissions
+        'PERMISSION_ASSISTANT=1' # dart: PermissionGroup.assistant
+      ]
+    end
   end
 end
