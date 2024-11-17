@@ -1,15 +1,16 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
 import 'package:app/data/onboarding/placeholders/onboarding_placeholders.dart';
+import 'package:app/shared/utils/misc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OnboardingSlider extends StatelessWidget {
   final PageController pageController;
+  final Function(int page) onPageChanged;
 
   const OnboardingSlider({
     Key? key,
     required this.pageController,
+    required this.onPageChanged,
   }) : super(key: key);
 
   @override
@@ -22,15 +23,25 @@ class OnboardingSlider extends StatelessWidget {
           duration: Duration(milliseconds: 300),
           curve: Curves.easeOutCubic,
         );
+        onPageChanged(page);
       },
       controller: pageController,
       itemBuilder: (context, index) {
         final pageDetails = onboardingPages[index];
         return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [],
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _buildImage(pageDetails.image),
+                SizedBox(height: 20),
+                _buildTitle(context: context, title: pageDetails.title),
+                SizedBox(height: 10),
+                _buildDescription(context: context, description: pageDetails.desciption),
+              ],
+            ),
           ),
         );
       },
@@ -38,10 +49,27 @@ class OnboardingSlider extends StatelessWidget {
   }
 
   _buildImage(String imagePath) {
-    return SizedBox();
+    return Image.asset(
+      imagePath,
+      fit: BoxFit.contain,
+      width: 100.sw,
+      height: 260,
+    );
   }
 
-  _buildTitle(String title) {}
+  _buildTitle({required BuildContext context, required String title}) {
+    return Text(
+      title,
+      textAlign: TextAlign.center,
+      style: getTextTheme(context).headlineLarge,
+    );
+  }
 
-  _buildDescription(String description) {}
+  _buildDescription({required BuildContext context, required String description}) {
+    return Text(
+      description,
+      textAlign: TextAlign.center,
+      style: getTextTheme(context).bodySmall,
+    );
+  }
 }

@@ -23,6 +23,8 @@ dependencies:
   flutter_screenutil: ^5.9.3
   flutter_launcher_icons: ^0.14.1
   open_document: ^1.0.7
+  shared_preferences: ^2.3.3
+  get_it: ^8.0.2
 
 dev_dependencies:
   flutter_test:

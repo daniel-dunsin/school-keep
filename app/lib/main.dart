@@ -1,5 +1,4 @@
 import 'package:app/configs/route/route_config.dart';
-import 'package:app/shared/themes/dark.dart';
 import 'package:app/shared/themes/light.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,7 +38,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           routeInformationParser: goRouter.routeInformationParser,
           routeInformationProvider: goRouter.routeInformationProvider,
           theme: lightTheme,
-          darkTheme: darkTheme,
+          darkTheme: lightTheme,
         );
       },
     );

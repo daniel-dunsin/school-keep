@@ -1,10 +1,10 @@
 class OnboardingModel {
-  final String lottieJson;
+  final String image;
   final String title;
   final String desciption;
 
   OnboardingModel({
-    required this.lottieJson,
+    required this.image,
     required this.title,
     required this.desciption,
   });

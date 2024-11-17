@@ -4,6 +4,6 @@ ColorScheme getColorSchema(BuildContext context) {
   return Theme.of(context).colorScheme;
 }
 
-TextTheme getTextSchema(BuildContext context) {
+TextTheme getTextTheme(BuildContext context) {
   return Theme.of(context).textTheme;
 }

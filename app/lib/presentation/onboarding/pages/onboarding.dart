@@ -1,9 +1,12 @@
 import 'package:app/data/onboarding/placeholders/onboarding_placeholders.dart';
+import 'package:app/presentation/auth/routes/routes.dart';
 import 'package:app/presentation/onboarding/widgets/onboarding_slider.dart';
 import 'package:app/shared/constants/constants.dart';
+import 'package:app/shared/utils/storage.dart';
 import 'package:app/shared/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -23,6 +26,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    pageController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -31,12 +40,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Expanded(
               child: OnboardingSlider(
                 pageController: pageController,
+                onPageChanged: (page) {
+                  setState(() {
+                    currentPage = page;
+                  });
+                },
               ),
             ),
             const SizedBox(height: 30),
             _buildPagesIndicator(),
             const SizedBox(height: 30),
-            _buildNavigators(),
+            _buildNavigators(context),
           ],
         ),
       ),
@@ -65,15 +79,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  _buildNavigators() {
+  _buildNavigators(BuildContext context) {
     final lastPage = currentPage == onboardingPages.length - 1;
+
+    void endOnboarding() async {
+      await AppStorage.saveBool(
+        key: AppStorageKeys.onboarded,
+        value: true,
+      );
+      context.goNamed(AuthRoutes.signUp);
+    }
+
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 30),
       child: Row(
         children: [
           Expanded(
-            child: Text(
-              "skip",
+            child: GestureDetector(
+              onTap: endOnboarding,
+              child: Text(
+                "skip",
+              ),
             ),
             flex: 1,
           ),
@@ -82,8 +108,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               width: double.maxFinite,
               height: 55,
               iconAlignment: IconAlignment.end,
+              onPressed: () {
+                if (currentPage != onboardingPages.length - 1) {
+                  pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                } else {
+                  endOnboarding();
+                }
+              },
               child: Visibility(
-                visible: !lastPage,
+                visible: lastPage,
                 replacement: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
