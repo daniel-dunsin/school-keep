@@ -110,6 +110,16 @@ export class AuthService {
       throw new NotFoundException('Invalid login credentials');
     }
 
+    if (
+      user.role === Roles.Student &&
+      (user.student.status === StudentStatus.Expelled ||
+        user.student.status === StudentStatus.Suspended)
+    ) {
+      throw new BadRequestException(
+        "Oops! you're not allowed to access your account, reach out to your admin",
+      );
+    }
+
     const auth = await this.authModel.findOne({ user: user._id });
 
     if (!auth)
@@ -244,7 +254,7 @@ export class AuthService {
     await auth.save();
 
     await this.emailService.sendMail({
-      to: 'adejaredaniel12@gmail.com',
+      to: email,
       subject: 'Password reset code',
       template: 'forgot-password',
       context: {
@@ -252,6 +262,7 @@ export class AuthService {
         code,
       },
     });
+    console.log(code);
 
     return {
       message: 'Password otp request successfully',

@@ -12,22 +12,26 @@ const handler = NextAuth({
         remember_me: { label: 'remember_me', value: 'remember_me' },
       },
       async authorize(credentials) {
-        if (!credentials) {
+        try {
+          if (!credentials) {
+            return null;
+          }
+
+          const { email, password, remember_me } = credentials;
+
+          const { data: user } = await authService.login({
+            email,
+            password,
+            remember_me: remember_me == 'true' ? true : false,
+          });
+
+          return {
+            id: user._id,
+            ...user,
+          };
+        } catch (error) {
           return null;
         }
-
-        const { email, password, remember_me } = credentials;
-
-        const { data: user } = await authService.login({
-          email,
-          password,
-          remember_me: remember_me == 'true' ? true : false,
-        });
-
-        return {
-          id: user._id,
-          ...user,
-        };
       },
     }),
   ],

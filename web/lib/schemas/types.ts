@@ -1,4 +1,4 @@
-export type ApiResponse<data, meta = undefined> = {
+export type ApiResponse<data = any, meta = undefined> = {
   success: boolean;
   data: data;
   meta: meta;
@@ -23,3 +23,9 @@ export type School = {};
 export type Student = {};
 
 export type Admin = {};
+
+export type AuthPages =
+  | 'login'
+  | 'forgot-password'
+  | 'confirm-password-otp'
+  | 'reset-password';
