@@ -25,7 +25,11 @@ class ForgotPasswordFailed extends AuthState {}
 
 class ConfirmPasswordResetOtpLoading extends AuthState {}
 
-class ConfirmPasswordResetOtpSuccess extends AuthState {}
+class ConfirmPasswordResetOtpSuccess extends AuthState {
+  final String tempToken;
+
+  ConfirmPasswordResetOtpSuccess({required this.tempToken});
+}
 
 class ConfirmPasswordResetOtpFailed extends AuthState {}
 

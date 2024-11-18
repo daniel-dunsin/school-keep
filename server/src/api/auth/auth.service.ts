@@ -56,7 +56,9 @@ export class AuthService {
 
     const user = await this.userModel
       .findById(userId)
-      .populate('admin student school');
+      .populate(
+        'admin student school student.department admin.department school.manager admin.department.college student.department.college',
+      );
 
     return user!;
   }
@@ -104,7 +106,9 @@ export class AuthService {
 
     const user = await this.userModel
       .findOne({ email: loginDto.email })
-      .populate('admin student school');
+      .populate(
+        'admin student school student.department admin.department school.manager',
+      );
 
     if (!user) {
       throw new NotFoundException('Invalid login credentials');

@@ -1,3 +1,4 @@
+import 'package:app/configs/app_config.dart';
 import 'package:app/configs/route/route_config.dart';
 import 'package:app/shared/themes/dark.dart';
 import 'package:app/shared/themes/light.dart';
@@ -9,6 +10,7 @@ import 'package:toastification/toastification.dart';
 void main() {
   final WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  setupApp();
 
   runApp(const MyApp());
 }

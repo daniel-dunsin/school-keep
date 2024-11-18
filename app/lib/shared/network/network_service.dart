@@ -27,14 +27,14 @@ class NetworkService {
       );
   }
 
-  get(String url, {Map<String, dynamic>? queryParameters}) {
+  Future<Response>? get(String url, {Map<String, dynamic>? queryParameters}) {
     return _dio?.get(
       url,
       queryParameters: queryParameters,
     );
   }
 
-  post(String url, {data, Map<String, dynamic>? queryParameters}) {
+  Future<Response>? post(String url, {data, Map<String, dynamic>? queryParameters}) {
     return _dio?.post(
       url,
       data: data,
@@ -42,7 +42,7 @@ class NetworkService {
     );
   }
 
-  put(String url, {data, Map<String, dynamic>? queryParameters}) {
+  Future<Response>? put(String url, {data, Map<String, dynamic>? queryParameters}) {
     return _dio?.put(
       url,
       data: data,
@@ -50,7 +50,7 @@ class NetworkService {
     );
   }
 
-  patch(String url, {data, Map<String, dynamic>? queryParameters}) {
+  Future<Response>? patch(String url, {data, Map<String, dynamic>? queryParameters}) {
     return _dio?.patch(
       url,
       data: data,
@@ -58,7 +58,7 @@ class NetworkService {
     );
   }
 
-  delete(String url, {data, Map<String, dynamic>? queryParameters}) {
+  Future<Response>? delete(String url, {data, Map<String, dynamic>? queryParameters}) {
     return _dio?.delete(
       url,
       data: data,

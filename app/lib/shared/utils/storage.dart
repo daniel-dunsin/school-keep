@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppStorage {
@@ -17,6 +19,10 @@ class AppStorage {
     await SharedPreferencesAsync().setStringList(key, value);
   }
 
+  static saveObject<T extends Map>({required String key, required T value}) async {
+    await SharedPreferencesAsync().setString(key, jsonEncode(value));
+  }
+
   static Future<String?> getString(String key) async {
     return await SharedPreferencesAsync().getString(key);
   }
@@ -33,6 +39,15 @@ class AppStorage {
     return await SharedPreferencesAsync().getStringList(key);
   }
 
+  static Future<T?> getObject<T extends Map>(String key) async {
+    final String? objectString = await SharedPreferencesAsync().getString(key);
+
+    if (objectString != null) {
+      return jsonDecode(objectString);
+    }
+    return null;
+  }
+
   static removeKey(String key) async {
     await SharedPreferencesAsync().remove(key);
   }
@@ -41,4 +56,5 @@ class AppStorage {
 class AppStorageKeys {
   static String onboarded = "onboarded";
   static String accessToken = "accessToken";
+  static String user = "user";
 }

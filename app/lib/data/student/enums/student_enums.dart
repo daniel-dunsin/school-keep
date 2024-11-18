@@ -1,0 +1,4 @@
+enum StudentStatus {
+  active,
+  inactive;
+}
