@@ -366,4 +366,36 @@ export class AuthService {
       message: 'password reset successful',
     };
   }
+
+  async webLogOut(accessToken: string) {
+    if (accessToken) {
+      await this.authModel.findOneAndUpdate(
+        { accessToken },
+        {
+          $unset: {
+            accessToken: null,
+          },
+        },
+      );
+    }
+
+    return {
+      message: 'log out successful',
+    };
+  }
+
+  async logOut(userId: string) {
+    await this.authModel.findOneAndUpdate(
+      { user: new Types.ObjectId(userId) },
+      {
+        $unset: {
+          accessToken: null,
+        },
+      },
+    );
+
+    return {
+      message: 'log out successful',
+    };
+  }
 }

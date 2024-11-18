@@ -57,7 +57,9 @@ export class AuthGuard implements CanActivate {
       );
 
       if (!user) {
-        throw new ForbiddenException('Access token is invalid');
+        throw new ForbiddenException('Access token is invalid', {
+          cause: 'InvalidAccessToken',
+        });
       }
 
       req.user = user;

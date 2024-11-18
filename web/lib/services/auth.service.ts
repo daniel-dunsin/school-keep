@@ -61,9 +61,20 @@ const resetPassword = async (resetPasswordDto: ResetPasswordDto) => {
   }
 };
 
+const logOut = async () => {
+  try {
+    const response = await https.post<ApiResponse>('/auth/log-out/web');
+
+    return response.data;
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
 export const authService = {
   login,
   forgotPassword,
   confirmForgotPasswordOtp,
   resetPassword,
+  logOut,
 };

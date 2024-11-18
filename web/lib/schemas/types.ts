@@ -1,3 +1,5 @@
+import { AdminPermissions } from './enums';
+
 export type ApiResponse<data = any, meta = undefined> = {
   success: boolean;
   data: data;
@@ -18,11 +20,39 @@ export type User = {
   createdAt: string;
 };
 
-export type School = {};
+export type School = {
+  _id: string;
+  name: string;
+  logo: string;
+  webUrl: string;
+  motto: string;
+  acronym: string;
+  manager?: User;
+};
 
 export type Student = {};
 
-export type Admin = {};
+export type Admin = {
+  _id: string;
+  department?: Department;
+  permission: AdminPermissions;
+};
+
+export type Department = {
+  _id: string;
+  name: string;
+  unionName: string;
+  logo: string;
+  college: College;
+  levelsCount: number;
+};
+
+export type College = {
+  _id: string;
+  name: string;
+  unionName: string;
+  logo: string;
+};
 
 export type AuthPages =
   | 'login'

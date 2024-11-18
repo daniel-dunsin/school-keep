@@ -1,11 +1,16 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { FC, ReactNode, useEffect, useState } from 'react';
 import DashboardSidebar from './sidebar';
 import { useAuthContext } from '@/lib/providers/contexts/auth-context';
 import { AuthSession } from '@/lib/schemas/types';
 import { useRouter } from 'next/navigation';
+import DashboardNavbar from './navbar';
 
-const DashboardLayout = () => {
+interface Props {
+  children: ReactNode;
+}
+
+const DashboardLayout: FC<Props> = ({ children }) => {
   const router = useRouter();
   const [session, setSession] = useState<AuthSession>('loading');
   const { getLoggedInUser, user } = useAuthContext();
@@ -40,8 +45,9 @@ const DashboardLayout = () => {
   return (
     <main className="flex bg-gray-100 min-h-screen">
       <DashboardSidebar />
-      <div className="w-full flex-1">
-        <p>Layout content</p>
+      <div className="w-full flex-1 max-h-screen h-screen flex flex-col">
+        <DashboardNavbar />
+        <div className="flex-1 overflow-y-scroll px-6">{children}</div>
       </div>
     </main>
   );

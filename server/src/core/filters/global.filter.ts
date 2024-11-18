@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { JsonWebTokenError } from '@nestjs/jwt';
+import { Response } from 'express';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -14,8 +15,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-
-    console.log(exception);
+    const response = ctx.getResponse<Response>();
 
     let errorMessage = 'Oops! an error occured';
     let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -31,7 +31,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     }
 
     this.httpAdapterHost.httpAdapter.reply(
-      ctx.getResponse(),
+      response,
       {
         error: errorMessage,
         statusCode: statusCode,

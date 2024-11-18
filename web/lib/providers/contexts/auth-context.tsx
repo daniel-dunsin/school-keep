@@ -1,5 +1,6 @@
 import { User } from '@/lib/schemas/types';
 import userService from '@/lib/services/user.service';
+import { errorHandler } from '@/lib/utils';
 import { useMutation } from '@tanstack/react-query';
 import { usePathname } from 'next/navigation';
 import {
@@ -12,6 +13,7 @@ import {
   useEffect,
   useState,
 } from 'react';
+import { queryClient } from '..';
 
 interface AuthContextType {
   user?: User;
@@ -33,19 +35,20 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   const { mutateAsync: getLoggedInUser, isPending: gettingLoggedInUser } =
     useMutation({
       mutationKey: ['useGetLoggedInUser'],
-      mutationFn: userService.getUser,
+      mutationFn: async () => {
+        const query = queryClient.getQueryState(['useGetLoggedInUser']);
+
+        if ((query?.status && query?.status != 'pending') || !query?.status) {
+          return userService.getUser();
+        }
+        return false;
+      },
       onSuccess(data) {
         if (data) {
           setUser(data);
         }
       },
     });
-
-  useEffect(() => {
-    if (!user && pathname != '/') {
-      getLoggedInUser();
-    }
-  }, [user, getLoggedInUser, pathname]);
 
   return (
     <AuthContext.Provider

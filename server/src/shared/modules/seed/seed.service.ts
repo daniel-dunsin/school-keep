@@ -71,7 +71,7 @@ export class SeedService {
     const count = await this.adminModel.countDocuments();
     const schools = await this.schoolModel
       .find({})
-      .select('manager webUrl name');
+      .select('manager webUrl acronym name');
 
     if (!count) {
       const managersPassword = this.configService.get<string>(
@@ -93,7 +93,7 @@ export class SeedService {
             return this.userModel
               .create({
                 email: 'admin@' + domainName,
-                firstName: school.name,
+                firstName: school.acronym ?? school.name,
                 lastName: 'admin',
                 role: Roles.Admin,
                 school: school._id,

@@ -32,6 +32,8 @@ const Spinner: FC<Props> = ({ nextStep }) => {
         if (data) {
           setSession('authenticated');
           router.push('/dashboard');
+        } else {
+          setTimeout(nextStep, 1000);
         }
       })
       .catch((e) => {

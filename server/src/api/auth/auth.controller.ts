@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import {
@@ -8,8 +8,8 @@ import {
   ResetPasswordDto,
   StudentSignUpDto,
 } from './dtos';
-import { Response } from 'express';
-import { IsPublic } from 'src/core/decorators/auth.decoractor';
+import { Request, Response } from 'express';
+import { Auth, IsPublic } from 'src/core/decorators/auth.decoractor';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -70,5 +70,28 @@ export class AuthController {
     const data = await this.authService.resetPassword(resetPasswordDto);
 
     return data;
+  }
+
+  @Post('log-out/web')
+  @IsPublic()
+  async webLogOut(@Req() req: Request, @Res() res: Response) {
+    const accessToken = req.cookies['x-school-keep-bearer'];
+
+    const data = await this.authService.webLogOut(accessToken);
+
+    res.cookie('x-school-keep-bearer', '', {
+      secure: true,
+      sameSite: 'none',
+      httpOnly: true,
+      partitioned: true,
+      maxAge: 0,
+    });
+
+    return res.json(data);
+  }
+
+  @Post('log-out')
+  async logOut(@Auth('_id') userId: string) {
+    return await this.authService.logOut(userId);
   }
 }
