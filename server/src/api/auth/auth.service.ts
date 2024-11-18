@@ -284,7 +284,7 @@ export class AuthService {
     await auth.save();
 
     await this.emailService.sendMail({
-      to: 'adejaredaniel12@gmail.com',
+      to: email,
       subject: 'Password reset code',
       template: 'forgot-password',
       context: {
@@ -292,7 +292,6 @@ export class AuthService {
         code,
       },
     });
-    console.log(code);
 
     return {
       message: 'Password otp request successfully',

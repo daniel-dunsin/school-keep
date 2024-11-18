@@ -64,7 +64,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(ConfirmPasswordResetOtpSuccess(tempToken: tempToken));
       } catch (e) {
         NetworkToast.handleError(e);
-        emit(ConfirmPasswordResetOtpLoading());
+        emit(ConfirmPasswordResetOtpFailed());
       }
     });
 
