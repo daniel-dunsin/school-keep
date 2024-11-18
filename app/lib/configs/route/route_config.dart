@@ -10,7 +10,10 @@ import 'package:app/presentation/onboarding/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+final GlobalKey<NavigatorState> appNavKey = GlobalKey<NavigatorState>();
+
 final goRouter = GoRouter(
+  navigatorKey: appNavKey,
   initialLocation: SplashRoutes.splashScreen,
   routes: [
     GoRoute(

@@ -1,0 +1,4 @@
+enum contentType {
+  formType,
+  jsonType
+}

@@ -1,8 +1,10 @@
 import 'package:app/configs/route/route_config.dart';
+import 'package:app/shared/themes/dark.dart';
 import 'package:app/shared/themes/light.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:toastification/toastification.dart';
 
 void main() {
   final WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -32,13 +34,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, _) {
-        return MaterialApp.router(
-          title: "School Keep",
-          routerDelegate: goRouter.routerDelegate,
-          routeInformationParser: goRouter.routeInformationParser,
-          routeInformationProvider: goRouter.routeInformationProvider,
-          theme: lightTheme,
-          darkTheme: lightTheme,
+        return ToastificationWrapper(
+          child: MaterialApp.router(
+            title: "School Keep",
+            routerDelegate: goRouter.routerDelegate,
+            routeInformationParser: goRouter.routeInformationParser,
+            routeInformationProvider: goRouter.routeInformationProvider,
+            theme: lightTheme,
+            darkTheme: darkTheme,
+          ),
         );
       },
     );

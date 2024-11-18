@@ -37,3 +37,7 @@ class AppMatchers {
 
   static RegExp password = RegExp(r'^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>])(?=.{8,}).*$');
 }
+
+class AppUrls {
+  static String serverBaseUrl = "http://localhost:3001/api/v1";
+}
