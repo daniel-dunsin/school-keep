@@ -49,14 +49,14 @@ class DepartmentModel {
     };
   }
 
-  factory DepartmentModel.fromMap(Map<String, dynamic> map) {
+  factory DepartmentModel.fromMap(Map map) {
     return DepartmentModel(
       id: map['id'] as String,
       name: map['name'] as String,
       unionName: map['unionName'] != null ? map['unionName'] as String : null,
       logo: map['logo'] != null ? map['logo'] as String : null,
       levelsCount: map['levelsCount'] as int,
-      college: map['college'] != null ? CollegeModel.fromMap(map['college'] as Map<String, dynamic>) : null,
+      college: map['college'] != null ? CollegeModel.fromMap(map['college']) : null,
     );
   }
 

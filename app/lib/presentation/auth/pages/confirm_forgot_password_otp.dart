@@ -67,7 +67,7 @@ class _ConfirmForgotPasswordOtpScreenState extends State<ConfirmForgotPasswordOt
   _buildOtpField() {
     return AppInputField(
       keyboardType: TextInputType.numberWithOptions(decimal: false),
-      hintText: "Enter your 6 digits One Time Password",
+      hintText: "Enter your 4 digits One Time Password",
       validator: (value) => AppValidators.defaultValidator(value),
     );
   }

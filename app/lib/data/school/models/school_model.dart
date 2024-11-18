@@ -10,7 +10,6 @@ class SchoolModel {
   final String logo;
   final String motto;
   final String webUrl;
-  final User? manager;
 
   SchoolModel({
     required this.id,
@@ -19,7 +18,6 @@ class SchoolModel {
     required this.logo,
     required this.motto,
     required this.webUrl,
-    this.manager,
   });
 
   SchoolModel copyWith({
@@ -38,7 +36,6 @@ class SchoolModel {
       logo: logo ?? this.logo,
       motto: motto ?? this.motto,
       webUrl: webUrl ?? this.webUrl,
-      manager: manager ?? this.manager,
     );
   }
 
@@ -50,11 +47,10 @@ class SchoolModel {
       'logo': logo,
       'motto': motto,
       'webUrl': webUrl,
-      'manager': manager?.toMap(),
     };
   }
 
-  factory SchoolModel.fromMap(Map<String, dynamic> map) {
+  factory SchoolModel.fromMap(Map map) {
     return SchoolModel(
       id: map['_id'] as String,
       acronym: map['acronym'] as String,
@@ -62,7 +58,6 @@ class SchoolModel {
       logo: map['logo'] as String,
       motto: map['motto'] as String,
       webUrl: map['webUrl'] as String,
-      manager: map['manager'] != null ? User.fromMap(map['manager'] as Map<String, dynamic>) : null,
     );
   }
 
@@ -72,6 +67,6 @@ class SchoolModel {
 
   @override
   String toString() {
-    return 'SchoolModel(id: $id, acronym: $acronym, name: $name, logo: $logo, motto: $motto, webUrl: $webUrl, manager: $manager)';
+    return 'SchoolModel(id: $id, acronym: $acronym, name: $name, logo: $logo, motto: $motto, webUrl: $webUrl)';
   }
 }

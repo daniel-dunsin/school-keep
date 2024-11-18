@@ -15,6 +15,7 @@ class LoginModel {
       'email': email,
       'password': password,
       'remember_me': rememberMe,
+      "is_mobile": true,
     };
   }
 }

@@ -14,12 +14,13 @@ class AuthRepository {
           data: loginDto.toMap(),
         );
 
+    print(response?.data);
     return response?.data;
   }
 
   forgotPassword(String email) async {
     final response = await this.networkService.post(
-      "/forgot-password",
+      "/auth/forgot-password",
       data: {
         "email": email
       },
@@ -30,7 +31,7 @@ class AuthRepository {
 
   confirmPasswordResetOtp(ConfirmOtpModel confirmOtpDto) async {
     final response = await this.networkService.post(
-          "/forgot-password/confirm",
+          "/auth/forgot-password/confirm",
           data: confirmOtpDto.toMap(),
         );
 
@@ -39,7 +40,7 @@ class AuthRepository {
 
   resetPassword(ResetPasswordModel resetPasswordDto) async {
     final response = await this.networkService.post(
-          "/forgot-password/reset",
+          "/auth/forgot-password/reset",
           data: resetPasswordDto.toMap(),
         );
 

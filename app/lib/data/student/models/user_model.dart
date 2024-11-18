@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:app/data/school/models/school_model.dart';
+import 'package:app/data/student/models/student_model.dart';
 
 class User {
   final String id;
@@ -10,6 +11,7 @@ class User {
   final String email;
   final String profilePicture;
   final SchoolModel? school;
+  final StudentModel? student;
 
   User({
     required this.id,
@@ -18,6 +20,7 @@ class User {
     required this.email,
     required this.profilePicture,
     this.school,
+    this.student,
   });
 
   User copyWith({
@@ -27,6 +30,7 @@ class User {
     String? email,
     String? profilePicture,
     SchoolModel? school,
+    StudentModel? student,
   }) {
     return User(
       id: id ?? this.id,
@@ -35,6 +39,7 @@ class User {
       email: email ?? this.email,
       profilePicture: profilePicture ?? this.profilePicture,
       school: school ?? this.school,
+      student: student ?? this.student,
     );
   }
 
@@ -46,17 +51,19 @@ class User {
       'email': email,
       'profilePicture': profilePicture,
       'school': school?.toMap(),
+      'student': student?.toMap(),
     };
   }
 
-  factory User.fromMap(Map<String, dynamic> map) {
+  factory User.fromMap(Map map) {
     return User(
       id: map['id'] as String,
       firstName: map['firstName'] as String,
       lastName: map['lastName'] as String,
       email: map['email'] as String,
       profilePicture: map['profilePicture'] as String,
-      school: map['school'] != null ? SchoolModel.fromMap(map['school'] as Map<String, dynamic>) : null,
+      school: map['school'] != null ? SchoolModel.fromMap(map['school'] as Map) : null,
+      student: map['student'] != null ? StudentModel.fromMap(map['student'] as Map) : null,
     );
   }
 
@@ -66,18 +73,18 @@ class User {
 
   @override
   String toString() {
-    return 'User(id: $id, firstName: $firstName, lastName: $lastName, email: $email, profilePicture: $profilePicture, school: $school)';
+    return 'User(id: $id, firstName: $firstName, lastName: $lastName, email: $email, profilePicture: $profilePicture, school: $school, student: $student)';
   }
 
   @override
   bool operator ==(covariant User other) {
     if (identical(this, other)) return true;
 
-    return other.id == id && other.firstName == firstName && other.lastName == lastName && other.email == email && other.profilePicture == profilePicture && other.school == school;
+    return other.id == id && other.firstName == firstName && other.lastName == lastName && other.email == email && other.profilePicture == profilePicture && other.school == school && other.student == student;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^ firstName.hashCode ^ lastName.hashCode ^ email.hashCode ^ profilePicture.hashCode ^ school.hashCode;
+    return id.hashCode ^ firstName.hashCode ^ lastName.hashCode ^ email.hashCode ^ profilePicture.hashCode ^ school.hashCode ^ student.hashCode;
   }
 }

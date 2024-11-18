@@ -37,7 +37,7 @@ class CollegeModel {
     };
   }
 
-  factory CollegeModel.fromMap(Map<String, dynamic> map) {
+  factory CollegeModel.fromMap(Map map) {
     return CollegeModel(
       id: map['id'] != null ? map['id'] as String : null,
       name: map['name'] as String,

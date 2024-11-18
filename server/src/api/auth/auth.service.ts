@@ -54,11 +54,23 @@ export class AuthService {
 
     if (!auth) throw new UnauthorizedException('Unauthorized!');
 
-    const user = await this.userModel
-      .findById(userId)
-      .populate(
-        'admin student school student.department admin.department school.manager admin.department.college student.department.college',
-      );
+    const user = await this.userModel.findById(userId).populate([
+      {
+        path: 'admin',
+        populate: {
+          path: 'department',
+          populate: 'college',
+        },
+      },
+      { path: 'school', populate: 'manager' },
+      {
+        path: 'student',
+        populate: {
+          path: 'department',
+          populate: 'college',
+        },
+      },
+    ]);
 
     return user!;
   }
@@ -106,9 +118,23 @@ export class AuthService {
 
     const user = await this.userModel
       .findOne({ email: loginDto.email })
-      .populate(
-        'admin student school student.department admin.department school.manager',
-      );
+      .populate([
+        {
+          path: 'admin',
+          populate: {
+            path: 'department',
+            populate: 'college',
+          },
+        },
+        { path: 'school', populate: 'manager' },
+        {
+          path: 'student',
+          populate: {
+            path: 'department',
+            populate: 'college',
+          },
+        },
+      ]);
 
     if (!user) {
       throw new NotFoundException('Invalid login credentials');
@@ -258,7 +284,7 @@ export class AuthService {
     await auth.save();
 
     await this.emailService.sendMail({
-      to: email,
+      to: 'adejaredaniel12@gmail.com',
       subject: 'Password reset code',
       template: 'forgot-password',
       context: {

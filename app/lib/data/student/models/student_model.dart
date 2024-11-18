@@ -40,7 +40,7 @@ class StudentModel {
     };
   }
 
-  factory StudentModel.fromMap(Map<String, dynamic> map) {
+  factory StudentModel.fromMap(Map map) {
     return StudentModel(
       id: map['id'] as String,
       matricNumber: map['matricNumber'] as String,
