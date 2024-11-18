@@ -56,7 +56,7 @@ class DepartmentModel {
       unionName: map['unionName'] != null ? map['unionName'] as String : null,
       logo: map['logo'] != null ? map['logo'] as String : null,
       levelsCount: map['levelsCount'] as int,
-      college: map['college'] != null ? CollegeModel.fromMap(map['college']) : null,
+      college: map['college'] != null && map["college"].runtimeType != "String" ? CollegeModel.fromMap(map['college']) : null,
     );
   }
 

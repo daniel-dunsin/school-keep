@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:app/configs/app_config.dart';
 import 'package:app/data/auth/models/confirm_otp_model.dart';
-import 'package:app/presentation/auth/bloc/auth_bloc.dart';
+import 'package:app/presentation/auth/bloc/auth_bloc/auth_bloc.dart';
 import 'package:app/presentation/auth/routes/routes.dart';
 import 'package:app/shared/constants/constants.dart';
 import 'package:app/shared/utils/misc.dart';

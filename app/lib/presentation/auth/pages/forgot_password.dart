@@ -1,5 +1,5 @@
 import 'package:app/configs/app_config.dart';
-import 'package:app/presentation/auth/bloc/auth_bloc.dart';
+import 'package:app/presentation/auth/bloc/auth_bloc/auth_bloc.dart';
 import 'package:app/presentation/auth/routes/routes.dart';
 import 'package:app/shared/constants/constants.dart';
 import 'package:app/shared/network/network_toast.dart';
