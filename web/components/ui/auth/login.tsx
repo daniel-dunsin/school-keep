@@ -3,8 +3,11 @@ import Button from '@/components/common/button';
 import { Checkbox } from '@/components/common/input/checkbox';
 import TextField from '@/components/common/input/text-field';
 import { DEFAULT_MATCHERS } from '@/lib/constants';
+import { useAuthContext } from '@/lib/providers/contexts/auth-context';
 import { AuthPages } from '@/lib/schemas/types';
+import { authService } from '@/lib/services/auth.service';
 import { useMutation } from '@tanstack/react-query';
+import { data } from 'framer-motion/client';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import React, { FC, useEffect, useState } from 'react';
@@ -31,27 +34,25 @@ const Login: FC<Props> = ({ setPage }) => {
   } = useForm<Input>({});
 
   const toggleRemember = () => setRememberMe(!rememberMe);
+  const { setUser } = useAuthContext();
 
   const { mutateAsync: _login, isPending: _loggingIn } = useMutation({
     mutationKey: ['useLogin'],
     mutationFn: async (e: Input) =>
-      await signIn('credentials', {
+      await authService.login({
         email: e.email,
         remember_me: e.remember_me,
         password: e.password,
-        redirect: false,
       }),
+    onSuccess(data) {
+      toast.success('Login successful');
+      window.location.href = '/dashboard';
+      setUser(data?.data);
+    },
   });
 
   const submit = async (e: Input) => {
-    const response = await _login(e);
-    if (!response?.ok) {
-      toast.error('Login Failed');
-      return;
-    } else {
-      toast.success('Login Successful');
-      window.location.href = '/dashboard';
-    }
+    await _login(e);
   };
 
   useEffect(() => {

@@ -29,3 +29,5 @@ export type AuthPages =
   | 'forgot-password'
   | 'confirm-password-otp'
   | 'reset-password';
+
+export type AuthSession = 'loading' | 'authenticated' | 'unauthenticated';

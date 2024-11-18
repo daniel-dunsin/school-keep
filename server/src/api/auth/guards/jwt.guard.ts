@@ -1,6 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -32,7 +33,7 @@ export class AuthGuard implements CanActivate {
 
       let accessToken: string;
 
-      if (isWebHeader) {
+      if (!isWebHeader) {
         const token = req.headers['authorization'];
 
         if (!token || !token.startsWith('Bearer ')) {
@@ -54,6 +55,10 @@ export class AuthGuard implements CanActivate {
         accessToken,
         jwtUser._id,
       );
+
+      if (!user) {
+        throw new ForbiddenException('Access token is invalid');
+      }
 
       req.user = user;
       return true;

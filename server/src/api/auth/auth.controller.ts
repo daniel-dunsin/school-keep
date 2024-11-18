@@ -26,7 +26,7 @@ export class AuthController {
         secure: true,
         sameSite: 'none',
         httpOnly: true,
-        partitioned: false,
+        partitioned: true,
       });
 
       delete data.meta;

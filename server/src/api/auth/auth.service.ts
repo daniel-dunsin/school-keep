@@ -47,32 +47,36 @@ export class AuthService {
   ) {}
 
   async validateJwtPayload(accessToken: string, userId: string) {
-    const auth = await this.authModel.findOne({
-      accessToken,
-      user: new Types.ObjectId(userId),
-    });
+    try {
+      const auth = await this.authModel.findOne({
+        accessToken,
+        user: new Types.ObjectId(userId),
+      });
 
-    if (!auth) throw new UnauthorizedException('Unauthorized!');
+      if (!auth) throw new UnauthorizedException('Unauthorized!');
 
-    const user = await this.userModel.findById(userId).populate([
-      {
-        path: 'admin',
-        populate: {
-          path: 'department',
-          populate: 'college',
+      const user = await this.userModel.findById(userId).populate([
+        {
+          path: 'admin',
+          populate: {
+            path: 'department',
+            populate: 'college',
+          },
         },
-      },
-      { path: 'school', populate: 'manager' },
-      {
-        path: 'student',
-        populate: {
-          path: 'department',
-          populate: 'college',
+        { path: 'school', populate: 'manager' },
+        {
+          path: 'student',
+          populate: {
+            path: 'department',
+            populate: 'college',
+          },
         },
-      },
-    ]);
+      ]);
 
-    return user!;
+      return user!;
+    } catch (error) {
+      return null;
+    }
   }
 
   private async validateStudentSignUpPayload(signUpDto: StudentSignUpDto) {

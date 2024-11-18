@@ -1,27 +1,44 @@
 'use client';
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { arrowMotion, switchingIconsVariants } from '../variants';
 import { BsArrowRight } from 'react-icons/bs';
 import { RiLoader2Line } from 'react-icons/ri';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { AuthSession } from '@/lib/schemas/types';
+import { useAuthContext } from '@/lib/providers/contexts/auth-context';
 
 interface Props {
   nextStep(): void;
 }
 
 const Spinner: FC<Props> = ({ nextStep }) => {
-  const { data, status } = useSession();
+  const [session, setSession] = useState<AuthSession>('loading');
   const router = useRouter();
 
+  const { getLoggedInUser } = useAuthContext();
+
   useEffect(() => {
-    if (status == 'authenticated') {
+    if (session == 'authenticated') {
       router.push('/dashboard');
-    } else if (status == 'unauthenticated') {
+    } else if (session == 'unauthenticated') {
       setTimeout(nextStep, 1000);
     }
-  }, [status, nextStep, router]);
+  }, [session, nextStep, router]);
+
+  useEffect(() => {
+    getLoggedInUser()
+      .then((data) => {
+        if (data) {
+          setSession('authenticated');
+          router.push('/dashboard');
+        }
+      })
+      .catch((e) => {
+        setSession('unauthenticated');
+        setTimeout(nextStep, 1000);
+      });
+  }, []);
 
   return (
     <motion.span
