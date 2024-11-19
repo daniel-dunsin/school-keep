@@ -43,7 +43,7 @@ export class AuthGuard implements CanActivate {
 
       let accessToken: string;
 
-      if (isWebHeader) {
+      if (!isWebHeader) {
         const token = req.headers['authorization'];
 
         if (!token || !token.startsWith('Bearer ')) {

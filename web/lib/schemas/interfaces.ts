@@ -22,3 +22,9 @@ export interface SidebarLink {
   icon: ReactNode;
   routeName: string;
 }
+
+export interface CreateCollegesDto {
+  name: string;
+  unionName: string;
+  logo?: File;
+}

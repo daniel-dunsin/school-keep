@@ -148,6 +148,7 @@ export class SchoolService {
           logo: url,
           logoPublicId: public_id,
           college: new Types.ObjectId(collegeId),
+          levelsCount: dept.levelsCount,
         };
       }),
     );
