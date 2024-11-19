@@ -1,3 +1,5 @@
+import { sidebarLinks } from '@/lib/data/sidebar.data';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   createContext,
   Dispatch,
@@ -5,6 +7,7 @@ import {
   ReactNode,
   SetStateAction,
   useContext,
+  useEffect,
   useState,
 } from 'react';
 
@@ -23,6 +26,12 @@ const DashboardContext = createContext<DashboardContextType | undefined>(
 
 export const DashboardProvider: FC<Props> = ({ children }) => {
   const [page, setPage] = useState('Dashboard');
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setPage(sidebarLinks.find((link) => link.route == pathname)?.routeName!);
+  }, [router, pathname]);
 
   return (
     <DashboardContext.Provider

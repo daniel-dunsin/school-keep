@@ -2,6 +2,7 @@ import 'package:app/shared/constants/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NetworkToast {
   static void handleError(dynamic error) {
@@ -66,6 +67,7 @@ Widget _buildMessage({required String message, required bool isError}) {
           TextSpan(
             children: [
               WidgetSpan(
+                alignment: PlaceholderAlignment.middle,
                 child: Icon(
                   isError ? Icons.warning_amber : Icons.check_circle_outline,
                 ),
@@ -75,6 +77,10 @@ Widget _buildMessage({required String message, required bool isError}) {
               ),
               TextSpan(
                 text: message,
+                style: TextStyle(
+                  fontSize: 15.h,
+                  color: AppColors.white,
+                ),
               )
             ],
           ),

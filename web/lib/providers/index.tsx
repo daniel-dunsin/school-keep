@@ -4,6 +4,7 @@ import React, { FC, ReactNode } from 'react';
 import { Toaster } from 'sonner';
 import { AuthProvider } from './contexts/auth-context';
 import { DashboardProvider } from './contexts/dashboard-context';
+import { CreateCollegeProvider } from './contexts/create-college-context';
 
 export const queryClient = new QueryClient();
 
@@ -15,8 +16,10 @@ const AppProvider: FC<Props> = ({ children }) => {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <DashboardProvider>
-          <Toaster position="bottom-right" />
-          {children}
+          <CreateCollegeProvider>
+            <Toaster position="bottom-right" />
+            {children}
+          </CreateCollegeProvider>
         </DashboardProvider>
       </AuthProvider>
     </QueryClientProvider>

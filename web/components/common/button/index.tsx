@@ -30,12 +30,12 @@ const Button: FC<Props> = (props) => {
     disabled = false,
     loading = false,
     iconPosition = 'right',
-    rounded = 'lg',
+    rounded = 'none',
     fullWidth = false,
     role,
     ...rest
   } = props;
-  let mainClass = `rounded-${rounded} font-semibold text-center duration-300 ${
+  let mainClass = `rounded-${rounded} font-normal text-center duration-300 ${
     fullWidth
       ? 'w-full flex items-center justify-center gap-3'
       : 'w-auto flex items-center gap-2'

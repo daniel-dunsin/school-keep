@@ -69,7 +69,7 @@ const DashboardSidebar = () => {
           );
 
           return (
-            <li key={index} onClick={() => setPage(link.routeName)}>
+            <li key={index}>
               <Link className={className} href={link.route}>
                 <span className="text-[1.6rem]">{link.icon}</span>
                 {link.routeName}

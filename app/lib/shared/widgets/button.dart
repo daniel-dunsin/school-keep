@@ -31,7 +31,6 @@ class ContainedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height ?? 55,
       width: width ?? 200,
       child: ElevatedButton.icon(
         onPressed: loading || disabled ? null : onPressed ?? () {},
@@ -45,7 +44,7 @@ class ContainedButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(0),
           ),
           padding: EdgeInsets.all(15),
-          minimumSize: Size(double.maxFinite, double.maxFinite),
+          minimumSize: Size(double.maxFinite, 60),
           iconColor: AppColors.white,
           disabledIconColor: Colors.black54,
           disabledBackgroundColor: getColorSchema(context).brightness == Brightness.dark ? Colors.grey[700] : Colors.grey[500],

@@ -36,14 +36,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, _) {
-        return ToastificationWrapper(
-          child: MaterialApp.router(
-            title: "School Keep",
-            routerDelegate: goRouter.routerDelegate,
-            routeInformationParser: goRouter.routeInformationParser,
-            routeInformationProvider: goRouter.routeInformationProvider,
-            theme: lightTheme,
-            darkTheme: darkTheme,
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1)),
+          child: ToastificationWrapper(
+            child: MaterialApp.router(
+              title: "School Keep",
+              routerDelegate: goRouter.routerDelegate,
+              routeInformationParser: goRouter.routeInformationParser,
+              routeInformationProvider: goRouter.routeInformationProvider,
+              theme: lightTheme,
+              darkTheme: darkTheme,
+            ),
           ),
         );
       },
