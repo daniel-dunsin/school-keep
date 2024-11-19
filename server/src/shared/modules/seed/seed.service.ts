@@ -106,7 +106,7 @@ export class SeedService {
                   permission: AdminRoles.SuperAdmin,
                 });
 
-                user.admin = admin._id;
+                user.admin = <any>admin._id;
 
                 await Promise.all([
                   this.authModel.create({

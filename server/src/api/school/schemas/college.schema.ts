@@ -14,6 +14,9 @@ export class College extends TimestampMixin {
   @Prop()
   logo: string;
 
+  @Prop()
+  logoPublicId: string;
+
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: School.name,

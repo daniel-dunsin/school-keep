@@ -20,7 +20,6 @@ import { SharedModule } from './shared/shared.module';
 
         return {
           uri: DATABASE_URL,
-          autoIndex: false,
         };
       },
     }),

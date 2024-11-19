@@ -1,8 +1,11 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { School, SchoolSchema } from './schemas/school.schema';
 import { College, CollegeSchema } from './schemas/college.schema';
 import { Department, DepartmentSchema } from './schemas/department.schema';
+import { SharedModule } from 'src/shared/shared.module';
+import { SchoolService } from './school.service';
+import { SchoolController } from './school.controller';
 
 @Module({
   imports: [
@@ -20,8 +23,10 @@ import { Department, DepartmentSchema } from './schemas/department.schema';
         schema: DepartmentSchema,
       },
     ]),
+    forwardRef(() => SharedModule),
   ],
-
+  controllers: [SchoolController],
+  providers: [SchoolService],
   exports: [MongooseModule],
 })
 export class SchoolModule {}

@@ -1,7 +1,7 @@
 import { Prop, SchemaFactory } from '@nestjs/mongoose';
 import { DBSchema, TimestampMixin } from 'src/shared/schemas/db.schema';
 import { Roles } from '../enums';
-import mongoose, { HydratedDocument, Types } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 import { School, SchoolDocument } from 'src/api/school/schemas/school.schema';
 import { DEFAULT_IMAGES } from 'src/shared/constants';
 import {
@@ -52,7 +52,7 @@ export class User extends TimestampMixin {
     type: mongoose.Schema.Types.ObjectId,
     ref: Admin.name,
   })
-  admin: AdminDocument | Types.ObjectId;
+  admin: AdminDocument;
 }
 
 export type UserDocument = HydratedDocument<User>;
