@@ -1,5 +1,5 @@
 import { https } from '../configs/http.config';
-import { CreateCollegesDto } from '../schemas/interfaces';
+import { CreateCollegesDto, CreateDepartmentDto } from '../schemas/interfaces';
 import { ApiResponse, College, Department } from '../schemas/types';
 import { convertImageToBase64, errorHandler } from '../utils';
 
@@ -80,12 +80,33 @@ const updateCollege = async (
   }
 };
 
+const createDepartment = async (
+  createDepartmentDto: CreateDepartmentDto,
+  collegeId: string
+) => {
+  const data = { ...createDepartmentDto };
+
+  try {
+    data.logo = await convertImageToBase64(data.logo as File);
+
+    const response = await https.post<ApiResponse>(
+      `/school/college/${collegeId}/department`,
+      data
+    );
+
+    return response?.data;
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
 const schoolService = {
   createColleges,
   getColleges,
   getCollege,
   getDepartments,
   updateCollege,
+  createDepartment,
 };
 
 export default schoolService;

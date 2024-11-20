@@ -30,6 +30,22 @@ const columns: ColumnDef<Department>[] = [
     accessorKey: 'unionName',
   },
   {
+    id: 'levelsCount',
+    header: 'Total Levels',
+    accessorKey: '',
+    cell: ({ row }) => <p>{row?.original?.levelsCount}00L</p>,
+  },
+  {
+    id: 'totalAdmins',
+    header: 'Total Admins',
+    accessorKey: 'totalAdmins',
+  },
+  {
+    id: 'totalStudents',
+    header: 'Total Students',
+    accessorKey: 'totalStudents',
+  },
+  {
     id: 'view',
     header: '',
     accessorKey: '',

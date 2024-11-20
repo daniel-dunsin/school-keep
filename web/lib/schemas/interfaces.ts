@@ -28,3 +28,10 @@ export interface CreateCollegesDto {
   unionName: string;
   logo?: File | string;
 }
+
+export interface CreateDepartmentDto {
+  name: string;
+  unionName: string;
+  logo?: File | string;
+  levelsCount: number;
+}

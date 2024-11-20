@@ -45,6 +45,8 @@ export type Department = {
   logo: string;
   college: College;
   levelsCount: number;
+  totalStudents?: number;
+  totalAdmins?: number;
 };
 
 export type College = {
