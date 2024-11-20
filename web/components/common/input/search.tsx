@@ -22,7 +22,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
   initialValue?: string;
 }
 
-const SearchField: FC<Props> = (props) => {
+const SearchField: FC<Props> = ({ onSearch, ...props }) => {
   const [value, setValue] = React.useState(props.initialValue);
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const SearchField: FC<Props> = (props) => {
 
   React.useEffect(() => {
     const timeout = setTimeout(() => {
-      props.onSearch(value);
+      onSearch(value);
     }, 500);
 
     return () => clearTimeout(timeout);

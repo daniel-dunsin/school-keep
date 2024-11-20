@@ -163,17 +163,6 @@ export default function TableComponent<TData, TValue>({
                   </Link>
                 </div>
               )}
-
-              {showSearch && (
-                <div>
-                  <DebouncedInput
-                    value={globalFilter ?? ''}
-                    onChange={(value) => setGlobalFilter(String(value))}
-                    className="p-2 font-lg shadow border border-block"
-                    placeholder="Search all columns..."
-                  />
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -206,41 +195,37 @@ export default function TableComponent<TData, TValue>({
             ))}
           </TableHeader>
           {/* add space here */}
-          {loading ? (
+          {loading && (
             <div className="w-full h-full grid place-content-center">
               <CircleLoader />
             </div>
-          ) : (
-            <TableBody>
-              {table.getRowModel().rows.length === 0 ? (
-                <TableRow className="hover:bg-transparent">
-                  <TableCell colSpan={columns.length}>
-                    <EmptyState />
-                  </TableCell>
-                </TableRow>
-              ) : (
-                table.getRowModel().rows.map((row, idx) => (
-                  <TableRow
-                    key={row.id}
-                    className="hover:bg-gray-200/40 duration-300 group border-gray-200"
-                    data-state={row.getIsSelected() && 'selected'}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        style={{ textAlign: 'left', color: '#4F4F4F' }}
-                        key={cell.id}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
           )}
+          <TableBody>
+            {table.getRowModel().rows.length === 0 ? (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={columns.length}>
+                  <EmptyState />
+                </TableCell>
+              </TableRow>
+            ) : (
+              table.getRowModel().rows.map((row, idx) => (
+                <TableRow
+                  key={row.id}
+                  className="duration-300 group border-gray-200 hover:!bg-black/10"
+                  data-state={row.getIsSelected() && 'selected'}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell style={{ textAlign: 'left' }} key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            )}
+          </TableBody>
         </Table>
         <div className="h-6" />
         {/* pagination */}

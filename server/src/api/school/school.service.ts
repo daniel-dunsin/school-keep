@@ -5,13 +5,13 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { School, SchoolDocument } from './schemas/school.schema';
-import { Model, Types } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { Department, DepartmentDocument } from './schemas/department.schema';
 import { College, CollegeDocument } from './schemas/college.schema';
 import { CreateCollegeDto } from './dtos/college.dto';
 import { isEmpty } from 'lodash';
 import { FileService } from 'src/shared/services/file.service';
-import { CreateDepartmentDto } from './dtos/department.dto';
+import { CreateDepartmentDto, GetCollegesQuery } from './dtos/department.dto';
 
 @Injectable()
 export class SchoolService {
@@ -39,12 +39,12 @@ export class SchoolService {
           $or: [
             {
               name: {
-                $regex: new RegExp(`^${college.name}$`),
+                $regex: new RegExp(`^${college.name}$`, 'i'),
               },
             },
             {
               unionName: {
-                $regex: new RegExp(`^${college.unionName}$`),
+                $regex: new RegExp(`^${college.unionName}$`, 'i'),
               },
             },
           ],
@@ -80,12 +80,12 @@ export class SchoolService {
           $or: [
             {
               name: {
-                $regex: new RegExp(`^${dept.name}$`),
+                $regex: new RegExp(`^${dept.name}$`, 'i'),
               },
             },
             {
               unionName: {
-                $regex: new RegExp(`^${dept.unionName}$`),
+                $regex: new RegExp(`^${dept.unionName}$`, 'i'),
               },
             },
           ],
@@ -159,6 +159,40 @@ export class SchoolService {
       message: 'Departments created successfully',
       succes: true,
       data,
+    };
+  }
+
+  async getColleges(query: GetCollegesQuery, schoolId: string) {
+    const _query: FilterQuery<CollegeDocument> = {
+      school: new Types.ObjectId(schoolId),
+    };
+
+    const totalColleges = await this.collegeModel.countDocuments(_query);
+    const totalDepartments = await this.departmentModel.countDocuments(_query);
+
+    if (query?.search) {
+      _query.$or = [
+        {
+          name: new RegExp(query?.search, 'i'),
+        },
+        {
+          unionName: new RegExp(query?.search, 'i'),
+        },
+      ];
+
+      delete query?.search;
+    }
+
+    const data = await this.collegeModel.find(_query);
+
+    return {
+      success: true,
+      message: 'colleges fetched successfully',
+      data,
+      meta: {
+        totalColleges,
+        totalDepartments,
+      },
     };
   }
 }

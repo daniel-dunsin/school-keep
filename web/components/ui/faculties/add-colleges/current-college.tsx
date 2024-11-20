@@ -123,7 +123,7 @@ const CurrentCollege = () => {
       </div>
 
       <div className="flex justify-end">
-        <Button variant="filled" disabled={true}>
+        <Button variant="filled" disabled={apiCreatingColleges}>
           Save College
         </Button>
       </div>

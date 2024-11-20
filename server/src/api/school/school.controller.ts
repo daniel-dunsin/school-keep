@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateCollegeDto } from './dtos/college.dto';
 import {
@@ -10,7 +10,7 @@ import { SchoolDocument } from './schemas/school.schema';
 import { Roles } from '../user/enums';
 import { AdminRoles } from '../admin/enums';
 import { SchoolService } from './school.service';
-import { CreateDepartmentDto } from './dtos/department.dto';
+import { CreateDepartmentDto, GetCollegesQuery } from './dtos/department.dto';
 import { MongoIdPipe } from 'src/core/pipes/mongo-id.pipe';
 
 @Controller('school')
@@ -45,6 +45,18 @@ export class SchoolController {
     createDepartmentsDto.collegeId = collegeId;
     const data =
       await this.schoolService.createDepartments(createDepartmentsDto);
+
+    return data;
+  }
+
+  @Get('college')
+  @RolesDec([Roles.Admin])
+  @AdminRolesDec([AdminRoles.SuperAdmin])
+  async getColleges(
+    @Query() query: GetCollegesQuery,
+    @Auth('school') school: SchoolDocument,
+  ) {
+    const data = await this.schoolService.getColleges(query, school._id);
 
     return data;
   }

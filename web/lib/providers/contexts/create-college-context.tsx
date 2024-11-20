@@ -86,15 +86,17 @@ export const CreateCollegeProvider: FC<Props> = ({ children }) => {
   });
 
   const apiCreateColleges = async () => {
-    let completedColleges = colleges.slice(0, -1);
+    const completedCollegesWithFile = [
+      ...colleges?.map((c) => ({ ...c })),
+    ].slice(0, -1);
 
-    completedColleges = await Promise.all(
-      colleges.map(async (college) => {
-        college.logo = await convertImageToBase64(college.logo as File);
+    const completedColleges = [];
 
-        return college;
-      })
-    );
+    for (const college of completedCollegesWithFile) {
+      college.logo = await convertImageToBase64(college.logo as File);
+
+      completedColleges.push(college);
+    }
 
     await mutateAsync(completedColleges);
   };
