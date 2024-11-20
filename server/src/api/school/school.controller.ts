@@ -10,7 +10,7 @@ import { SchoolDocument } from './schemas/school.schema';
 import { Roles } from '../user/enums';
 import { AdminRoles } from '../admin/enums';
 import { SchoolService } from './school.service';
-import { CreateDepartmentDto, GetCollegesQuery } from './dtos/department.dto';
+import { DepartmentDto, GetCollegesQuery } from './dtos/department.dto';
 import { MongoIdPipe } from 'src/core/pipes/mongo-id.pipe';
 
 @Controller('school')
@@ -37,14 +37,15 @@ export class SchoolController {
   @RolesDec([Roles.Admin])
   @AdminRolesDec([AdminRoles.SuperAdmin])
   async createDepartments(
-    @Body() createDepartmentsDto: CreateDepartmentDto,
+    @Body() createDepartmentsDto: DepartmentDto,
     @Auth('school') school: SchoolDocument,
     @Param('college_id', MongoIdPipe) collegeId: string,
   ) {
-    createDepartmentsDto.schoolId = school._id;
-    createDepartmentsDto.collegeId = collegeId;
-    const data =
-      await this.schoolService.createDepartments(createDepartmentsDto);
+    const data = await this.schoolService.createDepartments({
+      departments: [createDepartmentsDto],
+      schoolId: school._id,
+      collegeId: collegeId,
+    });
 
     return data;
   }

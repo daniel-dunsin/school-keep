@@ -210,9 +210,41 @@ export class SchoolService {
   }
 
   async getCollegeDepartments(collegeId: string) {
-    const departments = await this.departmentModel.find({
-      college: new Types.ObjectId(collegeId),
-    });
+    const departments = await this.departmentModel.aggregate([
+      {
+        $match: {
+          college: new Types.ObjectId(collegeId),
+        },
+      },
+      {
+        $lookup: {
+          from: 'students',
+          as: 'students',
+          localField: '_id',
+          foreignField: 'department',
+        },
+      },
+      {
+        $lookup: {
+          from: 'admins',
+          as: 'admins',
+          localField: '_id',
+          foreignField: 'department',
+        },
+      },
+      {
+        $addFields: {
+          totalStudents: { $size: '$students' },
+          totalAdmins: { $size: '$admins' },
+        },
+      },
+      {
+        $project: {
+          admins: 0,
+          students: 0,
+        },
+      },
+    ]);
 
     return {
       message: 'Departments fetched successfully',
