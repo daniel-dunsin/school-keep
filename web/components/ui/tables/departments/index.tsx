@@ -1,27 +1,26 @@
 import TableComponent from '@/components/common/table';
-import { College } from '@/lib/schemas/types';
+import { College, Department } from '@/lib/schemas/types';
 import schoolService from '@/lib/services/school.service';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import React, { FC } from 'react';
-import { columns } from './columns';
+import columns from './columns';
 
 interface Props {
-  data?: College[];
-  gettingColleges?: boolean;
+  data?: Department[];
+  loading?: boolean;
 }
 
-const CollegeTable: FC<Props> = ({ data, gettingColleges }) => {
+const DepartmentsTable: FC<Props> = ({ data, loading }) => {
   return (
     <TableComponent
       data={data ?? []}
       columns={columns}
-      loading={gettingColleges}
+      loading={loading}
       heading={{
-        title: 'All Colleges',
-        description: 'List of colleges in your school',
+        title: 'All Departments',
       }}
     />
   );
 };
 
-export default CollegeTable;
+export default DepartmentsTable;

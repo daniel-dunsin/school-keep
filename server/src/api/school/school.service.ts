@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,7 +9,7 @@ import { School, SchoolDocument } from './schemas/school.schema';
 import { FilterQuery, Model, Types } from 'mongoose';
 import { Department, DepartmentDocument } from './schemas/department.schema';
 import { College, CollegeDocument } from './schemas/college.schema';
-import { CreateCollegeDto } from './dtos/college.dto';
+import { CreateCollegeDto, UpdateCollegeDto } from './dtos/college.dto';
 import { isEmpty } from 'lodash';
 import { FileService } from 'src/shared/services/file.service';
 import { CreateDepartmentDto, GetCollegesQuery } from './dtos/department.dto';
@@ -193,6 +194,91 @@ export class SchoolService {
         totalColleges,
         totalDepartments,
       },
+    };
+  }
+
+  async getCollege(collegeId: string) {
+    const data = await this.collegeModel.findById(collegeId);
+
+    if (!data) throw new NotFoundException('College not found');
+
+    return {
+      success: true,
+      message: 'College details fetched',
+      data,
+    };
+  }
+
+  async getCollegeDepartments(collegeId: string) {
+    const departments = await this.departmentModel.find({
+      college: new Types.ObjectId(collegeId),
+    });
+
+    return {
+      message: 'Departments fetched successfully',
+      data: departments,
+      success: true,
+    };
+  }
+
+  async updateCollege(updateCollegeDto: UpdateCollegeDto, collegeId: string) {
+    const college = await this.collegeModel.findById(collegeId);
+
+    if (!college) throw new NotFoundException('College not found');
+
+    const logoPublicId = college.logoPublicId;
+
+    if (updateCollegeDto.name) {
+      if (
+        await this.collegeModel.findOne({
+          name: new RegExp(`^${updateCollegeDto.name}$`, 'i'),
+          school: college.school,
+          _id: { $ne: college._id },
+        })
+      ) {
+        throw new ConflictException(
+          'Oops! another college with this name already exists',
+        );
+      }
+    }
+
+    if (updateCollegeDto.unionName) {
+      if (
+        await this.collegeModel.findOne({
+          unionName: new RegExp(`^${updateCollegeDto.unionName}$`, 'i'),
+          school: college.school,
+          _id: { $ne: college._id },
+        })
+      ) {
+        throw new ConflictException(
+          'Oops! another college with this acronym already exists',
+        );
+      }
+    }
+
+    if (updateCollegeDto.logo) {
+      const { url, public_id } = await this.fileService.uploadResource(
+        updateCollegeDto.logo,
+      );
+
+      updateCollegeDto.logo = url;
+      updateCollegeDto.logoPublicId = public_id;
+
+      if (logoPublicId) {
+        await this.fileService.deleteResource(logoPublicId);
+      }
+    }
+
+    const data = await this.collegeModel.findByIdAndUpdate(
+      collegeId,
+      updateCollegeDto,
+      { runValidators: true, new: true },
+    );
+
+    return {
+      message: 'College updated successfully',
+      data,
+      success: true,
     };
   }
 }

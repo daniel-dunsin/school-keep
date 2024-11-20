@@ -24,3 +24,16 @@ export class CreateCollegeDto {
 
   schoolId: string;
 }
+
+export class UpdateCollegeDto {
+  @IsString(true)
+  name: string;
+
+  @IsString(true)
+  unionName: string;
+
+  @IsString(true)
+  logo: string;
+
+  logoPublicId: string;
+}

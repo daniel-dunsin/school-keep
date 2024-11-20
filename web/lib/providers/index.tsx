@@ -5,6 +5,7 @@ import { Toaster } from 'sonner';
 import { AuthProvider } from './contexts/auth-context';
 import { DashboardProvider } from './contexts/dashboard-context';
 import { CreateCollegeProvider } from './contexts/create-college-context';
+import { ModalProvider } from './contexts/modal-context';
 
 export const queryClient = new QueryClient();
 
@@ -17,8 +18,10 @@ const AppProvider: FC<Props> = ({ children }) => {
       <AuthProvider>
         <DashboardProvider>
           <CreateCollegeProvider>
-            <Toaster position="bottom-right" />
-            {children}
+            <ModalProvider>
+              <Toaster position="bottom-right" />
+              {children}
+            </ModalProvider>
           </CreateCollegeProvider>
         </DashboardProvider>
       </AuthProvider>

@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { CreateCollegeDto } from './dtos/college.dto';
+import { CreateCollegeDto, UpdateCollegeDto } from './dtos/college.dto';
 import {
   AdminRolesDec,
   Auth,
@@ -59,5 +59,33 @@ export class SchoolController {
     const data = await this.schoolService.getColleges(query, school._id);
 
     return data;
+  }
+
+  @Get('college/:college_id')
+  @RolesDec([Roles.Admin])
+  @AdminRolesDec([AdminRoles.SuperAdmin])
+  async getCollege(@Param('college_id', MongoIdPipe) collegeId: string) {
+    const data = await this.schoolService.getCollege(collegeId);
+
+    return data;
+  }
+
+  @Get('college/:college_id/department')
+  @RolesDec([Roles.Admin])
+  @AdminRolesDec([AdminRoles.SuperAdmin])
+  async getCollegeDepartments(
+    @Param('college_id', MongoIdPipe) collegeId: string,
+  ) {
+    return await this.schoolService.getCollegeDepartments(collegeId);
+  }
+
+  @Put('college/:college_id')
+  @RolesDec([Roles.Admin])
+  @AdminRolesDec([AdminRoles.SuperAdmin])
+  async updateCollege(
+    @Param('college_id', MongoIdPipe) collegeId: string,
+    @Body() updateCollegeDto: UpdateCollegeDto,
+  ) {
+    return await this.schoolService.updateCollege(updateCollegeDto, collegeId);
   }
 }

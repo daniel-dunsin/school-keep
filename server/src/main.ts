@@ -9,6 +9,7 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import ValidationExceptions from './core/exceptions/validation.exception';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { SeedService } from './shared/modules/seed/seed.service';
+import * as express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -20,6 +21,8 @@ async function bootstrap() {
     origin: ['http://localhost:3000'],
   });
   app.use(cookieParser());
+  app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 
   app.useGlobalPipes(
     new ValidationPipe({

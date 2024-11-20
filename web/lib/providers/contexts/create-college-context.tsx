@@ -125,7 +125,7 @@ export const useCreateCollegeContext = () => {
 
   if (!ctx) {
     throw new Error(
-      'Auth context not found in component tree, Wrap app with AuthProvider'
+      'Create College context not found in component tree, Wrap app with CreateCollegeProvider'
     );
   }
 

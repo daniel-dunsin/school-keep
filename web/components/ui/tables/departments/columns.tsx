@@ -1,9 +1,9 @@
-import { College } from '@/lib/schemas/types';
+import { Department } from '@/lib/schemas/types';
 import { ColumnDef } from '@tanstack/react-table';
+import { Link } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 
-export const columns: ColumnDef<College>[] = [
+const columns: ColumnDef<Department>[] = [
   {
     id: 'name',
     header: 'Name',
@@ -23,6 +23,7 @@ export const columns: ColumnDef<College>[] = [
       );
     },
   },
+
   {
     id: 'acronym',
     header: 'Acronym',
@@ -32,13 +33,8 @@ export const columns: ColumnDef<College>[] = [
     id: 'view',
     header: '',
     accessorKey: '',
-    cell: ({ row }) => (
-      <Link
-        href={`/dashboard/faculties/${row?.original?._id}`}
-        className="underline text-mainLight"
-      >
-        View
-      </Link>
-    ),
+    cell: ({ row }) => <p className="underline text-mainLight">View</p>,
   },
 ];
+
+export default columns;
