@@ -17,8 +17,14 @@ type Inputs = {
 };
 
 const CurrentCollege = () => {
-  const { college, collegeIndex, createCollege, updateCollege, colleges } =
-    useCreateCollegeContext();
+  const {
+    college,
+    collegeIndex,
+    createCollege,
+    updateCollege,
+    colleges,
+    apiCreatingColleges,
+  } = useCreateCollegeContext();
 
   const {
     setValue,
@@ -30,7 +36,7 @@ const CurrentCollege = () => {
 
   useEffect(() => {
     setValue('name', college?.name);
-    setValue('logo', college?.logo);
+    setValue('logo', college?.logo as File);
     setValue('unionName', college?.unionName);
   }, [collegeIndex]);
 
@@ -117,7 +123,9 @@ const CurrentCollege = () => {
       </div>
 
       <div className="flex justify-end">
-        <Button variant="filled">Save College</Button>
+        <Button variant="filled" disabled={true}>
+          Save College
+        </Button>
       </div>
     </form>
   );

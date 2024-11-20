@@ -1,5 +1,9 @@
 'use client';
 import { CreateCollegesDto } from '@/lib/schemas/interfaces';
+import schoolService from '@/lib/services/school.service';
+import { convertImageToBase64 } from '@/lib/utils';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import {
   createContext,
   FC,
@@ -8,6 +12,7 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { toast } from 'sonner';
 
 interface CreateCollegeContextType {
   college: CreateCollegesDto;
@@ -17,6 +22,8 @@ interface CreateCollegeContextType {
   removeCollege(index: number): void;
   updateCollege(key: keyof CreateCollegesDto, value: any): void;
   createCollege(): void;
+  apiCreateColleges(): void;
+  apiCreatingColleges: boolean;
 }
 
 interface Props {
@@ -28,6 +35,7 @@ const CreateCollegeContext = createContext<
 >(undefined);
 
 export const CreateCollegeProvider: FC<Props> = ({ children }) => {
+  const router = useRouter();
   const [currentCollege, setCurrentCollege] = useState(0);
   const [colleges, setColleges] = useState<CreateCollegesDto[]>([
     {
@@ -68,6 +76,29 @@ export const CreateCollegeProvider: FC<Props> = ({ children }) => {
     setCurrentCollege((prev) => prev + 1);
   };
 
+  const { mutateAsync, isPending: apiCreatingColleges } = useMutation({
+    mutationKey: ['useCreateColleges'],
+    mutationFn: schoolService.createColleges,
+    onSuccess() {
+      toast.success('Colleges Created');
+      router.push('/dashboard/faculties');
+    },
+  });
+
+  const apiCreateColleges = async () => {
+    let completedColleges = colleges.slice(0, -1);
+
+    completedColleges = await Promise.all(
+      colleges.map(async (college) => {
+        college.logo = await convertImageToBase64(college.logo as File);
+
+        return college;
+      })
+    );
+
+    await mutateAsync(completedColleges);
+  };
+
   return (
     <CreateCollegeContext.Provider
       value={{
@@ -78,6 +109,8 @@ export const CreateCollegeProvider: FC<Props> = ({ children }) => {
         updateCollege,
         createCollege,
         collegeIndex: currentCollege,
+        apiCreateColleges,
+        apiCreatingColleges,
       }}
     >
       {children}

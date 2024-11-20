@@ -1,4 +1,5 @@
 'use client';
+import CircleLoader from '@/components/common/loader';
 import { useCreateCollegeContext } from '@/lib/providers/contexts/create-college-context';
 import { cn } from '@/lib/utils';
 import { ArrowRightCircleIcon } from 'lucide-react';
@@ -7,8 +8,14 @@ import React from 'react';
 import { MdClose } from 'react-icons/md';
 
 const CollegeChips = () => {
-  const { colleges, collegeIndex, changeCollege, removeCollege } =
-    useCreateCollegeContext();
+  const {
+    colleges,
+    collegeIndex,
+    changeCollege,
+    removeCollege,
+    apiCreatingColleges,
+    apiCreateColleges,
+  } = useCreateCollegeContext();
 
   return (
     <div className="w-full flex gap-2 items-center max-w-[600px]">
@@ -33,7 +40,7 @@ const CollegeChips = () => {
                 <Image
                   width={500}
                   height={500}
-                  src={URL.createObjectURL(college.logo)}
+                  src={URL.createObjectURL(college.logo as File)}
                   alt={college.name}
                   className="w-[22px] h-[22px] object-cover rounded-full border border-mainLight"
                 />
@@ -49,11 +56,17 @@ const CollegeChips = () => {
         })}
       </div>
 
-      {colleges.length > 1 && (
-        <span title="submit">
-          <ArrowRightCircleIcon className="text-mainLight" cursor={'pointer'} />
-        </span>
-      )}
+      {colleges.length > 1 &&
+        (!apiCreatingColleges ? (
+          <span title="Submit" onClick={apiCreateColleges}>
+            <ArrowRightCircleIcon
+              className="text-mainLight"
+              cursor={'pointer'}
+            />
+          </span>
+        ) : (
+          <CircleLoader className="text-mainLight" />
+        ))}
     </div>
   );
 };

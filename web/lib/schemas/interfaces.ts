@@ -26,5 +26,5 @@ export interface SidebarLink {
 export interface CreateCollegesDto {
   name: string;
   unionName: string;
-  logo?: File;
+  logo?: File | string;
 }
