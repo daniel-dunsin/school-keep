@@ -29,7 +29,7 @@ const forgotPassword = async (email: string) => {
 
     return response.data;
   } catch (error) {
-    throw error;
+    errorHandler(error);
   }
 };
 

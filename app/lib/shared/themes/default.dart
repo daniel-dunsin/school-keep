@@ -14,10 +14,10 @@ final defaultTheme = ThemeData(
       fontSize: 18.sp,
     ),
     iconTheme: IconThemeData(
-      size: 24,
+      size: 20,
     ),
     actionsIconTheme: IconThemeData(
-      size: 24,
+      size: 20,
     ),
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(

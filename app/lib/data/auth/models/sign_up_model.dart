@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:app/data/school/models/college_model.dart';
 import 'package:app/data/school/models/department_model.dart';
 import 'package:app/data/school/models/school_model.dart';
 import 'package:app/shared/utils/file.dart';
@@ -15,6 +16,7 @@ class SignUpModel {
   final SchoolModel? school;
   final String? matricNumber;
   final DepartmentModel? department;
+  final CollegeModel? college;
   final String? password;
 
   SignUpModel({
@@ -26,6 +28,7 @@ class SignUpModel {
     this.school,
     this.matricNumber,
     this.department,
+    this.college,
     this.password,
   });
 
@@ -35,9 +38,11 @@ class SignUpModel {
     String? email,
     String? phoneNumber,
     File? profilePicture,
+    bool forceUpdateProfilePicture = false,
     SchoolModel? school,
     String? matricNumber,
     DepartmentModel? department,
+    CollegeModel? college,
     String? password,
   }) {
     return SignUpModel(
@@ -45,10 +50,11 @@ class SignUpModel {
       lastName: lastName ?? this.lastName,
       email: email ?? this.email,
       phoneNumber: phoneNumber ?? this.phoneNumber,
-      profilePicture: profilePicture ?? this.profilePicture,
+      profilePicture: forceUpdateProfilePicture ? profilePicture : profilePicture ?? this.profilePicture,
       school: school ?? this.school,
       matricNumber: matricNumber ?? this.matricNumber,
       department: department ?? this.department,
+      college: college ?? this.college,
       password: password ?? this.password,
     );
   }

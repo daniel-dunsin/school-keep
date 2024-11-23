@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-ColorScheme getColorSchema(BuildContext context) {
+ColorScheme getColorScheme(BuildContext context) {
   return Theme.of(context).colorScheme;
 }
 

@@ -152,11 +152,11 @@ class _SignInScreenState extends State<SignInScreen> {
           child: Text(
             "Forgot Password",
             style: getTextTheme(context).labelMedium?.copyWith(
-                  color: getColorSchema(context).brightness == Brightness.light
-                      ? getColorSchema(
+                  color: getColorScheme(context).brightness == Brightness.light
+                      ? getColorScheme(
                           context,
                         ).surface
-                      : getColorSchema(
+                      : getColorScheme(
                           context,
                         ).onPrimary,
                 ),
@@ -198,11 +198,11 @@ class _SignInScreenState extends State<SignInScreen> {
         child: Text(
           "Create an account",
           style: getTextTheme(context).bodyLarge?.copyWith(
-                color: getColorSchema(context).brightness == Brightness.light
-                    ? getColorSchema(
+                color: getColorScheme(context).brightness == Brightness.light
+                    ? getColorScheme(
                         context,
                       ).surface
-                    : getColorSchema(
+                    : getColorScheme(
                         context,
                       ).onPrimary,
               ),

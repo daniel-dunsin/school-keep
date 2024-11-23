@@ -24,7 +24,7 @@ class AppCheckbox extends StatelessWidget {
           onChanged: onChanged,
           semanticLabel: label,
           fillColor: WidgetStateProperty.all(
-            value ? getColorSchema(context).surface : Colors.transparent,
+            value ? getColorScheme(context).surface : Colors.transparent,
           ),
           checkColor: AppColors.white,
           shape: RoundedRectangleBorder(),

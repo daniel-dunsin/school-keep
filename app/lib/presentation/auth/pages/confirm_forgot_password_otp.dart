@@ -151,11 +151,11 @@ class _ConfirmForgotPasswordOtpScreenState extends State<ConfirmForgotPasswordOt
         child: Text(
           "Back",
           style: getTextTheme(context).bodyLarge?.copyWith(
-                color: getColorSchema(context).brightness == Brightness.light
-                    ? getColorSchema(
+                color: getColorScheme(context).brightness == Brightness.light
+                    ? getColorScheme(
                         context,
                       ).surface
-                    : getColorSchema(
+                    : getColorScheme(
                         context,
                       ).onPrimary,
               ),

@@ -37,3 +37,11 @@ export class UpdateCollegeDto {
 
   logoPublicId: string;
 }
+
+export class GetCollegesQuery {
+  @IsString(true)
+  school_id?: string;
+
+  @IsString(true)
+  search?: string;
+}

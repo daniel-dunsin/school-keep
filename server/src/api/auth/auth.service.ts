@@ -101,9 +101,10 @@ export class AuthService {
       : domainName;
 
     if (!email.includes(domainName)) {
-      throw new BadRequestException(
-        'Invalid school email address, use your student email address!',
-      );
+      // ignore for now.
+      // throw new BadRequestException(
+      //   'Invalid school email address, use your student email address!',
+      // );
     }
   }
 
@@ -216,39 +217,49 @@ export class AuthService {
 
     if (profilePictureBase64) {
       const { url, public_id } =
-        await this.fileService.uploadResource(profilePicture);
+        await this.fileService.uploadResource(profilePictureBase64);
 
       profilePicture = url;
       profilePictureId = public_id;
     }
 
-    const user = await this.userModel.create({
+    let user = await this.userModel.create({
       email: email.toLowerCase(),
       firstName,
       lastName,
       school: new Types.ObjectId(school),
       profilePicture,
       profilePictureId,
+      role: Roles.Student,
     });
 
-    const accessToken = await this.signJwtToken(user, false);
+    const accessToken = await this.signJwtToken(user.toObject(), false);
 
     await this.authModel.create({
       user: user._id,
-      passowrd: hashedPassword,
+      password: hashedPassword,
       accessToken,
     });
 
-    process.nextTick(async () => {
-      const student = await this.studentModel.create({
-        user: user._id,
-        matricNumber,
-        department: new Types.ObjectId(department),
-      });
-
-      user.student = student._id as any;
-      await user.save();
+    const student = await this.studentModel.create({
+      user: user._id,
+      matricNumber,
+      department: new Types.ObjectId(department),
     });
+
+    user.student = student._id as any;
+    user = await user.save();
+
+    user = await user.populate([
+      { path: 'school', populate: 'manager' },
+      {
+        path: 'student',
+        populate: {
+          path: 'department',
+          populate: 'college',
+        },
+      },
+    ]);
 
     return {
       success: true,

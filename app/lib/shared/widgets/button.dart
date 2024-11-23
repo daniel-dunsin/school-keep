@@ -38,16 +38,16 @@ class ContainedButton extends StatelessWidget {
         icon: icon,
         iconAlignment: iconAlignment ?? IconAlignment.end,
         style: ElevatedButton.styleFrom(
-          backgroundColor: getColorSchema(context).surface,
+          backgroundColor: getColorScheme(context).surface,
           foregroundColor: AppColors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(0),
           ),
           padding: EdgeInsets.all(15),
-          minimumSize: Size(double.maxFinite, 60),
+          minimumSize: Size(double.maxFinite, height ?? 60),
           iconColor: AppColors.white,
           disabledIconColor: Colors.black54,
-          disabledBackgroundColor: getColorSchema(context).brightness == Brightness.dark ? Colors.grey[700] : Colors.grey[500],
+          disabledBackgroundColor: getColorScheme(context).brightness == Brightness.dark ? Colors.grey[700] : Colors.grey[500],
           disabledForegroundColor: Colors.grey[300],
           textStyle: getTextTheme(context).bodyMedium?.copyWith(
                 fontWeight: fontWeight,

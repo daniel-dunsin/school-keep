@@ -26,3 +26,23 @@ class ResetPasswordRequested extends AuthEvent {
 
   ResetPasswordRequested(this.resetPasswordDto);
 }
+
+class GetSchoolsRequested extends AuthEvent {}
+
+class GetCollegesRequested extends AuthEvent {
+  final String schoolId;
+
+  GetCollegesRequested({required this.schoolId});
+}
+
+class GetDepartmentsRequested extends AuthEvent {
+  final String collegeId;
+
+  GetDepartmentsRequested({required this.collegeId});
+}
+
+class SignUpRequested extends AuthEvent {
+  final SignUpModel signUpDto;
+
+  SignUpRequested(this.signUpDto);
+}

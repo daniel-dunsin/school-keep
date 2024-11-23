@@ -22,11 +22,13 @@ export class AuthController {
     const data = await this.authService.login(loginDto);
 
     if (!loginDto.is_mobile) {
+      const ONE_DAY = 24 * 60 * 60 * 1000;
       res.cookie('x-school-keep-bearer', data.meta.accessToken, {
         secure: true,
         sameSite: 'none',
         httpOnly: true,
         partitioned: true,
+        maxAge: loginDto?.remember_me ? 7 * ONE_DAY : ONE_DAY,
       });
 
       delete data.meta;

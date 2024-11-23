@@ -3,8 +3,13 @@ import 'package:app/configs/app_config.dart';
 import 'package:app/data/auth/models/confirm_otp_model.dart';
 import 'package:app/data/auth/models/login_model.dart';
 import 'package:app/data/auth/models/reset_password_model.dart';
+import 'package:app/data/auth/models/sign_up_model.dart';
+import 'package:app/data/school/models/college_model.dart';
+import 'package:app/data/school/models/department_model.dart';
+import 'package:app/data/school/models/school_model.dart';
 import 'package:app/data/student/models/user_model.dart';
 import 'package:app/domain/auth/auth_repository.dart';
+import 'package:app/domain/school/school_repository.dart';
 import 'package:app/shared/network/network_toast.dart';
 import 'package:app/shared/utils/storage.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +20,12 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
+  final SchoolRepository schoolRepository;
 
-  AuthBloc({required this.authRepository}) : super(AuthInitialState()) {
+  AuthBloc({
+    required this.authRepository,
+    required this.schoolRepository,
+  }) : super(AuthInitialState()) {
     on<LoginRequested>(
       (event, emit) async {
         emit(LoginLoading());
@@ -30,8 +39,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           AppStorage.saveString(key: AppStorageKeys.accessToken, value: token);
           AppStorage.saveObject(key: AppStorageKeys.user, value: userMap);
 
-          print(userMap["school"]);
+          if (getIt.isRegistered<User>()) {
+            getIt.unregister<User>();
+          }
           getIt.registerSingleton<User>(User.fromMap(userMap));
+
           emit(LoginSuccess(user: User.fromMap(userMap)));
         } catch (e) {
           NetworkToast.handleError(e);
@@ -79,5 +91,88 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(ResetPasswordFailed());
       }
     });
+
+    on<GetSchoolsRequested>(
+      (event, emit) async {
+        emit(GetSchoolsLoading());
+
+        try {
+          final response = await this.schoolRepository.getSchools();
+
+          final data = response["data"] as List;
+
+          final schools = data.map((d) => SchoolModel.fromMap(d)).toList();
+
+          emit(GetSchoolsSuccess(schools));
+        } catch (e) {
+          NetworkToast.handleError(e);
+          emit(GetSchoolsFailed());
+        }
+      },
+    );
+
+    on<GetCollegesRequested>(
+      (event, emit) async {
+        emit(GetCollegesLoading());
+
+        try {
+          final response = await this.schoolRepository.getColleges(event.schoolId);
+
+          final data = response["data"] as List;
+
+          final colleges = data.map((d) => CollegeModel.fromMap(d)).toList();
+
+          emit(GetCollegesSuccess(colleges));
+        } catch (e) {
+          NetworkToast.handleError(e);
+          emit(GetCollegesFailed());
+        }
+      },
+    );
+
+    on<GetDepartmentsRequested>(
+      (event, emit) async {
+        emit(GetDepartmentsLoading());
+
+        try {
+          final response = await this.schoolRepository.getDepartments(event.collegeId);
+
+          final data = response["data"] as List;
+
+          final departments = data.map((d) => DepartmentModel.fromMap(d)).toList();
+
+          emit(GetDepartmentsSuccess(departments));
+        } catch (e) {
+          NetworkToast.handleError(e);
+          emit(GetDepartmentsFailed());
+        }
+      },
+    );
+
+    on<SignUpRequested>(
+      (event, emit) async {
+        emit(SignUpLoading());
+
+        try {
+          final response = await authRepository.signUp(event.signUpDto);
+
+          final token = response["meta"]["accessToken"];
+          final userMap = response["data"] as Map;
+
+          AppStorage.saveString(key: AppStorageKeys.accessToken, value: token);
+          AppStorage.saveObject(key: AppStorageKeys.user, value: userMap);
+
+          if (getIt.isRegistered<User>()) {
+            getIt.unregister<User>();
+          }
+          getIt.registerSingleton<User>(User.fromMap(userMap));
+
+          emit(SignUpSuccess(user: User.fromMap(userMap)));
+        } catch (e) {
+          NetworkToast.handleError(e);
+          emit(SignUpFailed());
+        }
+      },
+    );
   }
 }

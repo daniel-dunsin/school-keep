@@ -9,10 +9,14 @@ import { School, SchoolDocument } from './schemas/school.schema';
 import { FilterQuery, Model, Types } from 'mongoose';
 import { Department, DepartmentDocument } from './schemas/department.schema';
 import { College, CollegeDocument } from './schemas/college.schema';
-import { CreateCollegeDto, UpdateCollegeDto } from './dtos/college.dto';
+import {
+  CreateCollegeDto,
+  GetCollegesQuery,
+  UpdateCollegeDto,
+} from './dtos/college.dto';
 import { isEmpty } from 'lodash';
 import { FileService } from 'src/shared/services/file.service';
-import { CreateDepartmentDto, GetCollegesQuery } from './dtos/department.dto';
+import { CreateDepartmentDto } from './dtos/department.dto';
 
 @Injectable()
 export class SchoolService {
@@ -163,10 +167,13 @@ export class SchoolService {
     };
   }
 
-  async getColleges(query: GetCollegesQuery, schoolId: string) {
-    const _query: FilterQuery<CollegeDocument> = {
-      school: new Types.ObjectId(schoolId),
-    };
+  async getColleges(query: GetCollegesQuery) {
+    const _query: FilterQuery<CollegeDocument> = {};
+
+    if (query?.school_id) {
+      _query.school = new Types.ObjectId(query?.school_id);
+      delete query?.school_id;
+    }
 
     const totalColleges = await this.collegeModel.countDocuments(_query);
     const totalDepartments = await this.departmentModel.countDocuments(_query);
@@ -309,6 +316,16 @@ export class SchoolService {
 
     return {
       message: 'College updated successfully',
+      data,
+      success: true,
+    };
+  }
+
+  async getSchools() {
+    const data = await this.schoolModel.find({}).sort({ name: 1 });
+
+    return {
+      message: 'Schools fetched successfully',
       data,
       success: true,
     };

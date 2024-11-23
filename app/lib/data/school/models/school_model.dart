@@ -50,7 +50,7 @@ class SchoolModel {
     };
   }
 
-  factory SchoolModel.fromMap(Map map) {
+  factory SchoolModel.fromMap(map) {
     return SchoolModel(
       id: map['_id'] as String,
       acronym: map['acronym'] as String,

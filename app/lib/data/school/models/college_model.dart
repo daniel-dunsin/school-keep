@@ -39,7 +39,7 @@ class CollegeModel {
 
   factory CollegeModel.fromMap(Map map) {
     return CollegeModel(
-      id: map['id'] != null ? map['id'] as String : null,
+      id: map['_id'] != null ? map['_id'] as String : null,
       name: map['name'] as String,
       unionName: map['unionName'] != null ? map['unionName'] as String : null,
       logo: map['logo'] != null ? map['logo'] as String : null,

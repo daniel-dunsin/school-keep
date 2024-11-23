@@ -9,6 +9,16 @@ class SignUpStepsNextRequested extends SignUpStepsEvent {
   SignUpStepsNextRequested(this.signUpModel);
 }
 
-class SignUpStepsPreviousRequested extends SignUpStepsEvent {}
+class SignUpStepsPreviousRequested extends SignUpStepsEvent {
+  final SignUpModel? signUpModel;
+
+  SignUpStepsPreviousRequested({this.signUpModel});
+}
 
 class SignUpStepsClearRequested extends SignUpStepsEvent {}
+
+class SignUpStepsSetSameStepFieldRequested extends SignUpStepsEvent {
+  final SignUpModel? signUpModel;
+
+  SignUpStepsSetSameStepFieldRequested({this.signUpModel});
+}

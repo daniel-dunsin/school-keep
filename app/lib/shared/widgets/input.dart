@@ -60,7 +60,7 @@ class _AppInputFieldState extends State<AppInputField> {
         TextFormField(
           showCursor: true,
           cursorWidth: 1,
-          cursorColor: getColorSchema(context).onPrimary,
+          cursorColor: getColorScheme(context).onPrimary,
           controller: widget.controller,
           validator: widget.validator,
           obscureText: widget.obscureText ?? false,
@@ -71,7 +71,7 @@ class _AppInputFieldState extends State<AppInputField> {
           decoration: InputDecoration(
             hintText: widget.hintText,
             hintStyle: getTextTheme(context).labelSmall?.copyWith(
-                  color: getColorSchema(context).onSecondary,
+                  color: getColorScheme(context).onSecondary,
                 ),
             helper: widget.helper,
             border: defaultBorder,
@@ -87,8 +87,8 @@ class _AppInputFieldState extends State<AppInputField> {
             ),
             prefixIcon: widget.prefixIcon,
             suffixIcon: widget.suffixIcon,
-            prefixIconColor: widget.prefixIconColor ?? getColorSchema(context).onSecondary,
-            suffixIconColor: widget.suffixIconColor ?? getColorSchema(context).onSecondary,
+            prefixIconColor: widget.prefixIconColor ?? getColorScheme(context).onSecondary,
+            suffixIconColor: widget.suffixIconColor ?? getColorScheme(context).onSecondary,
           ),
         ),
       ],
@@ -97,7 +97,7 @@ class _AppInputFieldState extends State<AppInputField> {
 
   InputBorder get defaultBorder => OutlineInputBorder(
         borderSide: BorderSide(
-          color: getColorSchema(context).onSecondary,
+          color: getColorScheme(context).onSecondary,
           width: 1,
         ),
         borderRadius: BorderRadius.circular(0),
@@ -105,7 +105,7 @@ class _AppInputFieldState extends State<AppInputField> {
 
   InputBorder get focusBorder => OutlineInputBorder(
         borderSide: BorderSide(
-          color: getColorSchema(context).surface,
+          color: getColorScheme(context).surface,
           width: 1,
         ),
         borderRadius: BorderRadius.circular(0),
@@ -113,7 +113,7 @@ class _AppInputFieldState extends State<AppInputField> {
 
   InputBorder get errorBorder => OutlineInputBorder(
         borderSide: BorderSide(
-          color: getColorSchema(context).error,
+          color: getColorScheme(context).error,
           width: 1,
         ),
         borderRadius: BorderRadius.circular(0),

@@ -1,6 +1,7 @@
 import 'package:app/data/auth/models/confirm_otp_model.dart';
 import 'package:app/data/auth/models/login_model.dart';
 import 'package:app/data/auth/models/reset_password_model.dart';
+import 'package:app/data/auth/models/sign_up_model.dart';
 import 'package:app/shared/network/network_service.dart';
 
 class AuthRepository {
@@ -13,8 +14,6 @@ class AuthRepository {
           "/auth/login",
           data: loginDto.toMap(),
         );
-
-    print(response?.data);
     return response?.data;
   }
 
@@ -42,6 +41,15 @@ class AuthRepository {
     final response = await this.networkService.post(
           "/auth/forgot-password/reset",
           data: resetPasswordDto.toMap(),
+        );
+
+    return response?.data;
+  }
+
+  signUp(SignUpModel signUpDto) async {
+    final response = await this.networkService.post(
+          "/auth/sign-up/student",
+          data: signUpDto.toMap(),
         );
 
     return response?.data;

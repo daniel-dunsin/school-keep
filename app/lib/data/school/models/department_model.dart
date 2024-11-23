@@ -51,12 +51,12 @@ class DepartmentModel {
 
   factory DepartmentModel.fromMap(Map map) {
     return DepartmentModel(
-      id: map['id'] as String,
+      id: map['_id'] as String,
       name: map['name'] as String,
       unionName: map['unionName'] != null ? map['unionName'] as String : null,
       logo: map['logo'] != null ? map['logo'] as String : null,
       levelsCount: map['levelsCount'] as int,
-      college: map['college'] != null && map["college"].runtimeType != "String" ? CollegeModel.fromMap(map['college']) : null,
+      college: map['college'] != null && map["college"].runtimeType is Map ? CollegeModel.fromMap(map['college']) : null,
     );
   }
 

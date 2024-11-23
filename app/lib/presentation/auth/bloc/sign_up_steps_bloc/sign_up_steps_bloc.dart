@@ -1,4 +1,5 @@
 import 'package:app/data/auth/models/sign_up_model.dart';
+import 'package:app/presentation/auth/pages/sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,23 +10,27 @@ class SignUpStepsBloc extends Bloc<SignUpStepsEvent, SignUpStepsState> {
   SignUpStepsBloc() : super(SignUpStepsState(signUpModel: SignUpModel())) {
     on<SignUpStepsNextRequested>(
       (event, emit) {
-        emit(
-          SignUpStepsState(
-            count: state.count + 1,
-            signUpModel: event.signUpModel,
-          ),
-        );
+        if (state.count != signUpPages.length - 1) {
+          emit(
+            SignUpStepsState(
+              count: state.count + 1,
+              signUpModel: event.signUpModel,
+            ),
+          );
+        }
       },
     );
 
     on<SignUpStepsPreviousRequested>(
       (event, emit) {
-        emit(
-          SignUpStepsState(
-            signUpModel: state.signUpModel,
-            count: state.count - 1,
-          ),
-        );
+        if (state.count != 0) {
+          emit(
+            SignUpStepsState(
+              signUpModel: event.signUpModel ?? state.signUpModel,
+              count: state.count - 1,
+            ),
+          );
+        }
       },
     );
 
@@ -35,6 +40,17 @@ class SignUpStepsBloc extends Bloc<SignUpStepsEvent, SignUpStepsState> {
           SignUpStepsState(
             signUpModel: SignUpModel(),
             count: 0,
+          ),
+        );
+      },
+    );
+
+    on<SignUpStepsSetSameStepFieldRequested>(
+      (event, emit) {
+        emit(
+          SignUpStepsState(
+            signUpModel: event.signUpModel ?? state.signUpModel,
+            count: state.count,
           ),
         );
       },

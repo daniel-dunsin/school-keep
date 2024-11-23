@@ -2,8 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:app/shared/network/network_toast.dart';
+import 'package:image_picker/image_picker.dart';
 
 class FileUtils {
+  static Future<File?> pickImage() async {
+    final XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    return file != null ? File(file.path) : null;
+  }
+
   static String convertImageToBase64(File file) {
     try {
       final bytes = file.readAsBytesSync();

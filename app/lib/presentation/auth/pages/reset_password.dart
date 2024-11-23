@@ -171,11 +171,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         child: Text(
           "Back to login",
           style: getTextTheme(context).bodyLarge?.copyWith(
-                color: getColorSchema(context).brightness == Brightness.light
-                    ? getColorSchema(
+                color: getColorScheme(context).brightness == Brightness.light
+                    ? getColorScheme(
                         context,
                       ).surface
-                    : getColorSchema(
+                    : getColorScheme(
                         context,
                       ).onPrimary,
               ),

@@ -28,8 +28,3 @@ export class CreateDepartmentDto {
   schoolId: string;
   collegeId: string;
 }
-
-export class GetCollegesQuery {
-  @IsString(true)
-  search?: string;
-}
