@@ -1,3 +1,4 @@
+import ListTile from '@/components/common/list-tile';
 import { Admin } from '@/lib/schemas/types';
 import { ColumnDef } from '@tanstack/react-table';
 import Image from 'next/image';
@@ -9,18 +10,10 @@ export const columns: ColumnDef<Admin>[] = [
     accessorKey: 'firstName lastName',
     cell({ row }) {
       return (
-        <div className="flex items-center gap-2">
-          <Image
-            src={row?.original?.user?.profilePicture!}
-            alt={row?.original?.user?.lastName!}
-            width={80}
-            height={80}
-            className="w-[30px] h-[30px] rounded-full border-2 border-mainLight"
-          />
-          <p>
-            {row?.original?.user?.firstName} {row?.original?.user?.lastName}
-          </p>
-        </div>
+        <ListTile
+          title={`${row?.original?.user?.firstName} ${row?.original?.user?.lastName}`}
+          leadingImage={row?.original?.user?.profilePicture!}
+        />
       );
     },
   },
@@ -50,7 +43,7 @@ export const fullColumns: ColumnDef<Admin>[] = [
     header: 'Department',
     cell({ row }) {
       if (!row?.original?.department) {
-        return <>---</>;
+        return <></>;
       }
 
       return (

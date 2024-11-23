@@ -1,4 +1,6 @@
 import { ReactNode } from 'react';
+import { Department } from './types';
+import { AdminPermissions } from './enums';
 
 export interface LoginDto {
   email: string;
@@ -39,4 +41,10 @@ export interface CreateDepartmentDto {
 export interface TabsDto {
   header: string;
   widget: ReactNode;
+}
+
+export interface GetAdminsQuery {
+  search?: string;
+  department?: Department;
+  permission?: AdminPermissions;
 }

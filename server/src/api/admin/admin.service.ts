@@ -12,6 +12,7 @@ import { User, UserDocument } from '../user/schemas/user.schema';
 import { Roles } from '../user/enums';
 import { Auth, AuthDocument } from '../auth/schemas/auth.schema';
 import { School, SchoolDocument } from '../school/schemas/school.schema';
+import { EmailService } from 'src/shared/modules/mail/mail.service';
 
 @Injectable()
 export class AdminService {
@@ -22,16 +23,17 @@ export class AdminService {
     @InjectModel(School.name)
     private readonly schoolModel: Model<SchoolDocument>,
     private readonly utilService: UtilsService,
+    private readonly emailService: EmailService,
   ) {}
 
-  async getAllAdmins(query: GetAdminsDto, schoolId: string) {
+  async getAllAdmins(query: GetAdminsDto, schoolId: string, userId: string) {
     let pipelines: PipelineStage[] = [
       {
         $lookup: {
           from: 'users',
           as: 'user',
           localField: 'user',
-          foreignField: 'user',
+          foreignField: '_id',
           pipeline: [
             {
               $project: {
@@ -82,6 +84,7 @@ export class AdminService {
 
     const _query: FilterQuery<AdminDocument> = {
       'user.school': new Types.ObjectId(schoolId),
+      'user._id': { $ne: new Types.ObjectId(userId) },
     };
 
     if (query.college_id) {
@@ -139,6 +142,7 @@ export class AdminService {
       },
       {
         $project: {
+          permission: 1,
           user: {
             firstName: 1,
             lastName: 1,
@@ -172,12 +176,12 @@ export class AdminService {
     const { email, firstName, lastName, phoneNumber, permission, department } =
       createAdminDto;
 
-    if (await this.userModel.exists({ $or: [{ email }, { phoneNumber }] }))
+    if (await this.userModel.exists({ email }))
       throw new BadRequestException(
         "Oops! another user with this email address exists! ensure you are using this user's school registered email address",
       );
 
-    const user = await this.userModel.create({
+    let user = await this.userModel.create({
       firstName,
       lastName,
       phoneNumber,
@@ -185,6 +189,8 @@ export class AdminService {
       role: Roles.Admin,
       school: new Types.ObjectId(schoolId),
     });
+
+    user = await user.populate('school', 'name');
 
     const password = this.utilService.generateRandomValues(8, false);
 
@@ -195,7 +201,7 @@ export class AdminService {
       password: hashedPassword,
     });
 
-    await this.adminModel
+    const admin = await this.adminModel
       .create({
         user: user._id,
         permission,
@@ -204,7 +210,22 @@ export class AdminService {
       .then(async (admin) => {
         user.admin = admin._id as any;
         await user.save();
+        return await admin.populate('department', 'name');
       });
+
+    await this.emailService.sendMail({
+      to: email,
+      subject: 'Admin account created 🏫',
+      template: 'admin-added',
+      context: {
+        department: admin?.department?.name,
+        firstName,
+        permission,
+        school: user?.school?.name,
+        email,
+        password,
+      },
+    });
 
     return {
       message: 'Admin created successfully',

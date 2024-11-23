@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>School Keep - Admin Account Created</title>
+  </head>
+  <body>
+    <h1>Welcome to School Keep🪅</h1>
+    <p>Hey, <%= locals.firstName %> 👋🏽</p>
+    <p>You have been added as <%= locals.permission %> in <%= locals.school  %> <%= locals.department ? `, ${locals.department} department`: '' %></p>
+    <p>Your credentials are as follows:</p>
+    <p>Email: <%= locals.email %></p>
+    <p>Password: <%= locals.password %></p>
+
+    <p>You can reach us at support@schoolkeep.com</p>
+  </body>
+</html>

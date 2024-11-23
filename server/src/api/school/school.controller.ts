@@ -115,4 +115,11 @@ export class SchoolController {
   ) {
     return await this.schoolService.getDepartment(departmentId);
   }
+
+  @Get('department')
+  @RolesDec([Roles.Admin])
+  @AdminRolesDec([AdminRoles.SuperAdmin, AdminRoles.Admin])
+  async getDepartments(@Auth('school') school: SchoolDocument) {
+    return await this.schoolService.getDepartments(school._id);
+  }
 }

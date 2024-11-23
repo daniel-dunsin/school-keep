@@ -24,8 +24,9 @@ export class AdminController {
   async getAdmins(
     @Query() query: GetAdminsDto,
     @Auth('school') school: SchoolDocument,
+    @Auth('_id') userId: string,
   ) {
-    return await this.adminService.getAllAdmins(query, school._id);
+    return await this.adminService.getAllAdmins(query, school._id, userId);
   }
 
   @Post()

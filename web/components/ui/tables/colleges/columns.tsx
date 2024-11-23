@@ -1,6 +1,6 @@
+import ListTile from '@/components/common/list-tile';
 import { College } from '@/lib/schemas/types';
 import { ColumnDef } from '@tanstack/react-table';
-import Image from 'next/image';
 import Link from 'next/link';
 
 export const columns: ColumnDef<College>[] = [
@@ -10,16 +10,10 @@ export const columns: ColumnDef<College>[] = [
     accessorKey: 'name',
     cell({ row }) {
       return (
-        <div className="flex items-center gap-2">
-          <Image
-            src={row?.original?.logo}
-            alt={row?.original?.name}
-            width={80}
-            height={80}
-            className="w-[30px] h-[30px] rounded-full border-2 border-mainLight"
-          />
-          <p>{row?.original?.name}</p>
-        </div>
+        <ListTile
+          title={`${row?.original?.name}`}
+          leadingImage={row?.original?.logo}
+        />
       );
     },
   },

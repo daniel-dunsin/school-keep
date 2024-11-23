@@ -327,6 +327,20 @@ export class SchoolService {
     };
   }
 
+  async getDepartments(schoolId: string) {
+    const data = await this.departmentModel
+      .find({
+        school: new Types.ObjectId(schoolId),
+      })
+      .sort({ name: 1 });
+
+    return {
+      message: 'Departments fetched successfully',
+      data,
+      success: true,
+    };
+  }
+
   async getDepartment(departmentId: string) {
     const data = await this.departmentModel
       .findById(departmentId)

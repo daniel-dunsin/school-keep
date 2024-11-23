@@ -112,6 +112,18 @@ const getDepartment = async (departmentId: string) => {
   }
 };
 
+const getAllDepartments = async () => {
+  try {
+    const response = await https.get<ApiResponse<Department[]>>(
+      `/school/department`
+    );
+
+    return response.data?.data;
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
 const schoolService = {
   createColleges,
   getColleges,
@@ -120,6 +132,7 @@ const schoolService = {
   updateCollege,
   createDepartment,
   getDepartment,
+  getAllDepartments,
 };
 
 export default schoolService;
