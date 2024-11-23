@@ -88,14 +88,12 @@ export class AdminService {
     };
 
     if (query.college_id) {
-      _query['department']['college']['_id'] = new Types.ObjectId(
-        query?.college_id,
-      );
+      _query['department.college._id'] = new Types.ObjectId(query?.college_id);
       delete query?.college_id;
     }
 
     if (query.department_id) {
-      _query['department']['_id'] = new Types.ObjectId(query?.department_id);
+      _query['department._id'] = new Types.ObjectId(query?.department_id);
       delete query?.department_id;
     }
 
