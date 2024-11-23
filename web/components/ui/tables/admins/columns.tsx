@@ -32,7 +32,7 @@ export const columns: ColumnDef<Admin>[] = [
 export const fullColumns: ColumnDef<Admin>[] = [
   ...columns,
   {
-    id: 'department',
+    id: 'role',
     header: 'Role',
     cell({ row }) {
       return <p className="capitalize">{row?.original?.permission}</p>;

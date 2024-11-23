@@ -14,6 +14,9 @@ import { permission } from 'process';
 import React, { useEffect, useState } from 'react';
 import AdminsTable from '../tables/admins';
 import adminService from '@/lib/services/admins.service';
+import SelectDepartment from '@/components/common/select-fields/select-department';
+import SelectPermission from '@/components/common/select-fields/select-permission';
+import AddAdminModal from './modals/add-admin';
 
 const AdminManagement = () => {
   const { showModal } = useModal();
@@ -61,6 +64,7 @@ const AdminManagement = () => {
           size="small"
           variant="filled"
           className="w-[150px] flex items-center justify-center"
+          onClick={() => showModal(<AddAdminModal />)}
         >
           Add Admin
         </Button>
@@ -68,78 +72,24 @@ const AdminManagement = () => {
 
       {/* Filters */}
       <div className="flex items-center space-x-4">
-        <SelectField
-          loading={gettingDepartments}
-          className="w-[250px]"
-          data={departments?.map((dept) => ({
-            label: <ListTile title={dept?.name} leadingImage={dept?.logo} />,
-            value: dept,
-            id: dept._id,
-          }))}
-          value={query?.department?.name}
-          onSelect={(option) => {
-            changeQuery('department', option.value);
-          }}
-          onClear={() => {
-            changeQuery('department', undefined);
-          }}
-          onSearch={(search) => {
-            if (!search) {
-              return departments?.map((dept) => ({
-                label: (
-                  <ListTile title={dept?.name} leadingImage={dept?.logo} />
-                ),
-                value: dept,
-                id: dept._id,
-              }));
-            }
-
-            if (departments) {
-              return departments
-                .filter(
-                  (dept) =>
-                    dept.name.toLowerCase().includes(search?.toLowerCase()!) ||
-                    dept.unionName
-                      .toLowerCase()
-                      .includes(search?.toLowerCase()!)
-                )
-                .map((dept) => {
-                  return {
-                    label: (
-                      <ListTile title={dept?.name} leadingImage={dept?.logo} />
-                    ),
-                    value: dept,
-                    id: dept._id,
-                  };
-                });
-            }
-            return [];
-          }}
-        />
-
-        <SelectField
-          value={query?.permission}
-          onClear={() => changeQuery('permission', undefined)}
-          onSelect={({ value }) => {
-            changeQuery('permission', value);
-          }}
-          data={Object.values(AdminPermissions).map((v) => ({
-            value: v,
-            label: v,
-            id: v,
-          }))}
-          onSearch={(search) => {
-            return Object.values(AdminPermissions)
-              .filter((permission) =>
-                permission.toLowerCase().includes(search?.toLowerCase() ?? '')
-              )
-              .map((v) => ({
-                value: v,
-                label: v,
-                id: v,
-              }));
-          }}
-        />
+        <div className="max-w-[250px]">
+          <SelectDepartment
+            loading={gettingDepartments}
+            departments={departments}
+            selected={query?.department}
+            onSelect={(dept) => {
+              changeQuery('department', dept);
+            }}
+          />
+        </div>
+        <div className="max-w-[250px]">
+          <SelectPermission
+            selected={query?.permission}
+            onSelect={(value) => {
+              changeQuery('permission', value);
+            }}
+          />
+        </div>
       </div>
 
       <div className="mt-6">

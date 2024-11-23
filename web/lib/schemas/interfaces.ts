@@ -48,3 +48,12 @@ export interface GetAdminsQuery {
   department?: Department;
   permission?: AdminPermissions;
 }
+
+export interface AddAdminDto {
+  department: string;
+  permission: AdminPermissions;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+}

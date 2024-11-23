@@ -1,5 +1,5 @@
 import { https } from '../configs/http.config';
-import { GetAdminsQuery } from '../schemas/interfaces';
+import { AddAdminDto, GetAdminsQuery } from '../schemas/interfaces';
 import { Admin, ApiResponse } from '../schemas/types';
 import { errorHandler } from '../utils';
 
@@ -27,8 +27,19 @@ const getAllAdmins = async (query: GetAdminsQuery) => {
   }
 };
 
+const createAdmin = async (addAdminDto: AddAdminDto) => {
+  try {
+    const response = await https.post('/admin', addAdminDto);
+
+    return response?.data;
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
 const adminService = {
   getAllAdmins,
+  createAdmin,
 };
 
 export default adminService;
