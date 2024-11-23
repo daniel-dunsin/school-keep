@@ -17,6 +17,8 @@ import {
 import { isEmpty } from 'lodash';
 import { FileService } from 'src/shared/services/file.service';
 import { CreateDepartmentDto } from './dtos/department.dto';
+import { Student, StudentDocument } from '../student/schemas/student.schema';
+import { Admin, AdminDocument } from '../admin/schemas/admin.schema';
 
 @Injectable()
 export class SchoolService {
@@ -27,6 +29,10 @@ export class SchoolService {
     private readonly departmentModel: Model<DepartmentDocument>,
     @InjectModel(College.name)
     private readonly collegeModel: Model<CollegeDocument>,
+    @InjectModel(Student.name)
+    private readonly studentModel: Model<StudentDocument>,
+    @InjectModel(Admin.name)
+    private readonly adminModel: Model<AdminDocument>,
     private readonly fileService: FileService,
   ) {}
 
@@ -318,6 +324,34 @@ export class SchoolService {
       message: 'College updated successfully',
       data,
       success: true,
+    };
+  }
+
+  async getDepartment(departmentId: string) {
+    const data = await this.departmentModel
+      .findById(departmentId)
+      .populate('college', 'name logo unionName')
+      .select('name logo unionName college');
+
+    if (!data) throw new NotFoundException('Department not found');
+
+    const admins = await this.adminModel
+      .find({ department: data._id })
+      .populate('user', '-admin -role')
+      .sort({ createdAt: -1 });
+
+    const students = await this.studentModel
+      .find({ department: data._id })
+      .populate('user', '-student -role')
+      .sort({ createdAt: -1 });
+
+    return {
+      message: 'department fetched successfully',
+      data: {
+        ...data?.toObject(),
+        admins,
+        students,
+      },
     };
   }
 

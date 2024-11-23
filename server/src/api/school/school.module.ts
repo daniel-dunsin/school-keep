@@ -6,6 +6,8 @@ import { Department, DepartmentSchema } from './schemas/department.schema';
 import { SharedModule } from 'src/shared/shared.module';
 import { SchoolService } from './school.service';
 import { SchoolController } from './school.controller';
+import { StudentModule } from '../student/student.module';
+import { AdminModule } from '../admin/admin.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { SchoolController } from './school.controller';
       },
     ]),
     forwardRef(() => SharedModule),
+    StudentModule,
+    forwardRef(() => AdminModule),
   ],
   controllers: [SchoolController],
   providers: [SchoolService],

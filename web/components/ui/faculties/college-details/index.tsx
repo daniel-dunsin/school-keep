@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import React from 'react';
-import CollegeDetailsHeader from './college-details';
+import CollegeDetailsHeader from './header';
 import DepartmentsTable from '../../tables/departments';
 
 const CollegeDetails = () => {

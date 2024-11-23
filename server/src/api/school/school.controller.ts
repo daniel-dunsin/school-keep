@@ -106,4 +106,13 @@ export class SchoolController {
   async getSchoolColleges(@Param('school_id', MongoIdPipe) schoolId: string) {
     return await this.schoolService.getColleges({ school_id: schoolId });
   }
+
+  @Get('department/:department_id')
+  @RolesDec([Roles.Admin])
+  @AdminRolesDec([AdminRoles.SuperAdmin])
+  async getDepartment(
+    @Param('department_id', MongoIdPipe) departmentId: string,
+  ) {
+    return await this.schoolService.getDepartment(departmentId);
+  }
 }

@@ -35,3 +35,8 @@ export interface CreateDepartmentDto {
   logo?: File | string;
   levelsCount: number;
 }
+
+export interface TabsDto {
+  header: string;
+  widget: ReactNode;
+}

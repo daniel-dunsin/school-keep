@@ -155,6 +155,13 @@ export class AuthService {
       );
     }
 
+    if (
+      (loginDto.is_mobile && user.role != Roles.Student) ||
+      (!loginDto.is_mobile && user.role != Roles.Admin)
+    ) {
+      throw new BadRequestException('You do not have access to this platform!');
+    }
+
     const auth = await this.authModel.findOne({ user: user._id });
 
     if (!auth)
@@ -204,7 +211,7 @@ export class AuthService {
       password,
     } = signUpDto;
 
-    if (await this.userModel.findOne({ $or: [{ email }, { phoneNumber }] })) {
+    if (await this.userModel.exists({ $or: [{ email }, { phoneNumber }] })) {
       throw new BadRequestException(
         'Oops! a student with this email address already exists',
       );
@@ -227,6 +234,7 @@ export class AuthService {
       email: email.toLowerCase(),
       firstName,
       lastName,
+      phoneNumber,
       school: new Types.ObjectId(school),
       profilePicture,
       profilePictureId,

@@ -1,6 +1,6 @@
 'use client';
 
-import { sidebarLinks } from '@/lib/data/sidebar.data';
+import { defaultLinks, superAdminLinks } from '@/lib/data/sidebar.data';
 import { useAuthContext } from '@/lib/providers/contexts/auth-context';
 import { useDashboardContext } from '@/lib/providers/contexts/dashboard-context';
 import { authService } from '@/lib/services/auth.service';
@@ -9,22 +9,26 @@ import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import React from 'react';
-import {
-  BiArrowToRight,
-  BiChevronRight,
-  BiChevronRightCircle,
-  BiLogOut,
-} from 'react-icons/bi';
+import React, { useMemo } from 'react';
+import { BiArrowToRight, BiLogOut } from 'react-icons/bi';
 import { FcLink } from 'react-icons/fc';
 import { toast } from 'sonner';
 import CircleLoader from '../common/loader';
+import { AdminPermissions } from '@/lib/schemas/enums';
 
 const DashboardSidebar = () => {
   const { user } = useAuthContext();
   const { setPage } = useDashboardContext();
   const pathname = usePathname();
   const router = useRouter();
+
+  const links = useMemo(
+    () =>
+      user?.admin?.permission === AdminPermissions.SuperAdmin
+        ? superAdminLinks
+        : defaultLinks,
+    [user]
+  );
 
   const { isPending: loggingOut, mutateAsync: logOut } = useMutation({
     mutationKey: ['useLogOut'],
@@ -59,7 +63,7 @@ const DashboardSidebar = () => {
       </header>
 
       <ul className="mt-12 mb-8 space-y-5 overflow-y-scroll">
-        {sidebarLinks.map((link, index) => {
+        {links.map((link, index) => {
           const isSelected = pathname == link.route;
 
           const className = cn(

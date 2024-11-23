@@ -1,4 +1,4 @@
-import { sidebarLinks } from '@/lib/data/sidebar.data';
+import { defaultLinks, superAdminLinks } from '@/lib/data/sidebar.data';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   createContext,
@@ -30,7 +30,10 @@ export const DashboardProvider: FC<Props> = ({ children }) => {
   const pathname = usePathname();
 
   useEffect(() => {
-    setPage(sidebarLinks.find((link) => link.route == pathname)?.routeName!);
+    setPage(
+      defaultLinks.find((link) => link.route == pathname)?.routeName ||
+        superAdminLinks.find((link) => link.route == pathname)?.routeName!
+    );
   }, [router, pathname]);
 
   return (

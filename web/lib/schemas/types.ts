@@ -30,12 +30,18 @@ export type School = {
   manager?: User;
 };
 
-export type Student = {};
+export type Student = {
+  _id: string;
+  department?: Department;
+  matricNumber: string;
+  user?: User;
+};
 
 export type Admin = {
   _id: string;
   department?: Department;
   permission: AdminPermissions;
+  user?: User;
 };
 
 export type Department = {
@@ -47,6 +53,8 @@ export type Department = {
   levelsCount: number;
   totalStudents?: number;
   totalAdmins?: number;
+  students?: Student[];
+  admins?: Admin[];
 };
 
 export type College = {

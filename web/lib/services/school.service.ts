@@ -7,7 +7,7 @@ const createColleges = async (colleges: CreateCollegesDto[]) => {
   try {
     const response = await https.post('/school/college', { colleges });
 
-    return response?.data;
+    return response.data;
   } catch (error) {
     errorHandler(error);
   }
@@ -28,7 +28,7 @@ const getColleges = async (search?: string) => {
       >
     >(url);
 
-    return response?.data;
+    return response.data;
   } catch (error) {
     errorHandler(error);
   }
@@ -74,7 +74,7 @@ const updateCollege = async (
       update
     );
 
-    return response?.data;
+    return response.data;
   } catch (error) {
     errorHandler(error);
   }
@@ -94,7 +94,19 @@ const createDepartment = async (
       data
     );
 
-    return response?.data;
+    return response.data;
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
+const getDepartment = async (departmentId: string) => {
+  try {
+    const response = await https.get<ApiResponse<Department>>(
+      `/school/department/${departmentId}`
+    );
+
+    return response.data?.data;
   } catch (error) {
     errorHandler(error);
   }
@@ -107,6 +119,7 @@ const schoolService = {
   getDepartments,
   updateCollege,
   createDepartment,
+  getDepartment,
 };
 
 export default schoolService;

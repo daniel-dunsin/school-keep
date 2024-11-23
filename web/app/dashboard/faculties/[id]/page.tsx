@@ -1,4 +1,4 @@
-import CollegeDetails from '@/components/ui/faculties/departments';
+import CollegeDetails from '@/components/ui/faculties/college-details';
 import React from 'react';
 
 const page = () => <CollegeDetails />;

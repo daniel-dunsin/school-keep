@@ -6,7 +6,7 @@ import { PiStudentThin, PiUsers } from 'react-icons/pi';
 import { IoDocumentOutline, IoSchoolOutline } from 'react-icons/io5';
 import { TfiAnnouncement } from 'react-icons/tfi';
 
-export const sidebarLinks: SidebarLink[] = [
+export const defaultLinks: SidebarLink[] = [
   {
     route: '/dashboard',
     routeName: 'Dashboard',
@@ -27,6 +27,10 @@ export const sidebarLinks: SidebarLink[] = [
     routeName: 'Students',
     icon: <PiStudentThin />,
   },
+];
+
+export const superAdminLinks: SidebarLink[] = [
+  ...defaultLinks,
   {
     route: '/dashboard/faculties',
     routeName: 'Faculties',

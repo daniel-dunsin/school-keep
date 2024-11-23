@@ -172,7 +172,7 @@ export default function TableComponent<TData, TValue>({
         <Table className="pb-10">
           <TableHeader className="w-full">
             {table.getHeaderGroups()?.map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="hover:!bg-transparent">
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
@@ -183,7 +183,7 @@ export default function TableComponent<TData, TValue>({
                       color: '#08382C',
                       fontWeight: 'bold',
                     }}
-                    className=""
+                    className="hover:!bg-transparent"
                   >
                     {flexRender(
                       header.column.columnDef.header,
@@ -202,7 +202,7 @@ export default function TableComponent<TData, TValue>({
           )}
           <TableBody>
             {table.getRowModel().rows.length === 0 ? (
-              <TableRow className="hover:bg-transparent">
+              <TableRow className="hover:!bg-transparent">
                 <TableCell colSpan={columns.length}>
                   <EmptyState />
                 </TableCell>

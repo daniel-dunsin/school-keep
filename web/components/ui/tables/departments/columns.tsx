@@ -1,7 +1,7 @@
 import { Department } from '@/lib/schemas/types';
 import { ColumnDef } from '@tanstack/react-table';
-import { Link } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const columns: ColumnDef<Department>[] = [
   {
@@ -49,7 +49,14 @@ const columns: ColumnDef<Department>[] = [
     id: 'view',
     header: '',
     accessorKey: '',
-    cell: ({ row }) => <p className="underline text-mainLight">View</p>,
+    cell: ({ row }) => (
+      <Link
+        href={`/dashboard/faculties/department/${row?.original?._id}`}
+        className="underline text-mainLight"
+      >
+        View
+      </Link>
+    ),
   },
 ];
 
