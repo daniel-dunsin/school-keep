@@ -49,9 +49,23 @@ export interface GetAdminsQuery {
   permission?: AdminPermissions;
 }
 
+export interface GetStudentsQuery {
+  search?: string;
+  department?: Department;
+}
+
 export interface AddAdminDto {
   department: string;
   permission: AdminPermissions;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+}
+
+export interface CreateStudentDto {
+  department: string;
+  matricNumber: string;
   firstName: string;
   lastName: string;
   email: string;

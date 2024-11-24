@@ -15,7 +15,6 @@ interface Props {
 
 const Actions: FC<Props> = ({ admin }) => {
   const { hideModal, showModal } = useModal();
-  const router = useRouter();
 
   const { mutateAsync: deleteAdmin, isPending: deletingAdmin } = useMutation({
     mutationKey: ['useDeleteAdmin'],
@@ -28,7 +27,7 @@ const Actions: FC<Props> = ({ admin }) => {
       });
 
       hideModal();
-      router.refresh();
+      window.location.reload();
     },
   });
 

@@ -43,7 +43,6 @@ const deleteAdmin = async (adminId: string) => {
 
     return response?.data;
   } catch (error) {
-    return true;
     errorHandler(error);
   }
 };

@@ -1,7 +1,6 @@
+import StudentsManagement from '@/components/ui/students';
 import React from 'react';
 
-const Page = () => {
-  return <div>Page</div>;
-};
+const Page = () => <StudentsManagement />;
 
 export default Page;

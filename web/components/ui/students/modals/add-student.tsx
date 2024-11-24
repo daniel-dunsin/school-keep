@@ -4,24 +4,20 @@ import TextField from '@/components/common/input/text-field';
 import Modal from '@/components/common/modal';
 import SelectCollege from '@/components/common/select-fields/select-college';
 import SelectDepartment from '@/components/common/select-fields/select-department';
-import SelectPermission from '@/components/common/select-fields/select-permission';
 import { DEFAULT_MATCHERS } from '@/lib/constants';
-import { queryClient } from '@/lib/providers';
 import { useModal } from '@/lib/providers/contexts/modal-context';
-import { AdminPermissions } from '@/lib/schemas/enums';
 import { College, Department } from '@/lib/schemas/types';
-import adminService from '@/lib/services/admins.service';
 import schoolService from '@/lib/services/school.service';
+import studentService from '@/lib/services/student.service';
 import { errorHandler } from '@/lib/utils';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 import React, { FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { MdClose } from 'react-icons/md';
 
 type Inputs = {
   department?: Department;
-  permission?: AdminPermissions;
+  matricNumber: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -33,24 +29,16 @@ interface Props {
   onSuccess(): void;
 }
 
-const AddAdminModal: FC<Props> = ({ onSuccess }) => {
+const AddStudentModal: FC<Props> = ({ onSuccess }) => {
   const {
     watch,
     register,
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<Inputs>({
-    defaultValues: {
-      permission: AdminPermissions.SuperAdmin,
-    },
-  });
+  } = useForm<Inputs>();
 
-  const [permission, college, department] = watch([
-    'permission',
-    'college',
-    'department',
-  ]);
+  const [college, department] = watch(['college', 'department']);
 
   const { hideModal } = useModal();
 
@@ -74,36 +62,27 @@ const AddAdminModal: FC<Props> = ({ onSuccess }) => {
     enabled: !!college,
   });
 
-  const { mutateAsync: createAdmin, isPending: creatingAdmin } = useMutation({
-    mutationKey: ['useCreateAdmin'],
-    mutationFn: adminService.createAdmin,
-    onSuccess() {
-      onSuccess();
-      hideModal();
-    },
-  });
+  const { mutateAsync: createStudent, isPending: creatingStudent } =
+    useMutation({
+      mutationKey: ['useCreateStudent'],
+      mutationFn: studentService.createStudent,
+      onSuccess() {
+        hideModal();
+        onSuccess();
+      },
+    });
 
   const submit = async (e: Inputs) => {
-    if (!e.permission) {
-      return errorHandler('Select Role Type');
+    if (!e.college) {
+      return errorHandler('Select the college this student belongs to');
     }
 
-    if (e.permission == AdminPermissions.Admin) {
-      if (!e.college) {
-        return errorHandler('Select the college this sub-admin belongs to');
-      }
-
-      if (!e.department) {
-        return errorHandler('Select the department this sub-admin belongs to');
-      }
+    if (!e.department) {
+      return errorHandler('Select the department this student belongs to');
     }
 
     delete e.college;
-    await createAdmin({
-      ...e,
-      department: e.department?._id!,
-      permission: e.permission!,
-    });
+    await createStudent({ ...e, department: e.department?._id! });
   };
 
   useEffect(() => {
@@ -119,9 +98,9 @@ const AddAdminModal: FC<Props> = ({ onSuccess }) => {
       <section className="w-[95vw] max-w-[700px] bg-white p-6 space-y-4">
         <div className="flex justify-between gap-4">
           <div>
-            <h1 className="text-[1.1rem]">Add Admin</h1>
+            <h1 className="text-[1.1rem]">Add Student</h1>
             <p className="text-[#444] text-[0.8rem]">
-              Add admin details, they will receive an email with their
+              Add student details, they will receive an email with their
               credentials
             </p>
           </div>
@@ -193,47 +172,44 @@ const AddAdminModal: FC<Props> = ({ onSuccess }) => {
               helperText={errors?.phoneNumber?.message}
             />
 
+            <TextField
+              label="Matric Number"
+              InputProps={{
+                placeholder: 'enter matric number',
+                ...register('matricNumber', {
+                  required: {
+                    value: true,
+                    message: 'this field is required',
+                  },
+                }),
+              }}
+              helperText={errors?.matricNumber?.message}
+            />
+
             <div>
-              <p className="text-[.9rem]">Role Type</p>
-              <SelectPermission
-                selected={permission}
+              <p className="text-[.9rem]">College</p>
+              <SelectCollege
                 // @ts-ignore
-                onSelect={(permission) => {
-                  setValue('permission', permission);
-                  setValue('college', undefined);
-                  setValue('department', undefined);
-                }}
+                onSelect={(college) => setValue('college', college)}
+                colleges={colleges?.data ?? []}
+                selected={college}
+                loading={gettingColleges}
               />
             </div>
 
-            {permission == AdminPermissions.Admin && (
-              <div>
-                <p className="text-[.9rem]">College</p>
-                <SelectCollege
-                  // @ts-ignore
-                  onSelect={(college) => setValue('college', college)}
-                  colleges={colleges?.data ?? []}
-                  selected={college}
-                  loading={gettingColleges}
-                />
-              </div>
-            )}
-
-            {permission == AdminPermissions.Admin && (
-              <div>
-                <p className="text-[.9rem]">Department</p>
-                <SelectDepartment
-                  onSelect={(department) => setValue('department', department)}
-                  departments={departments ?? []}
-                  selected={department}
-                  loading={gettingDepartments || refetchingDepartments}
-                />
-              </div>
-            )}
+            <div>
+              <p className="text-[.9rem]">Department</p>
+              <SelectDepartment
+                onSelect={(department) => setValue('department', department)}
+                departments={departments ?? []}
+                selected={department}
+                loading={gettingDepartments || refetchingDepartments}
+              />
+            </div>
           </div>
 
           <Button
-            loading={creatingAdmin}
+            loading={creatingStudent}
             fullWidth
             variant="filled"
             size="medium"
@@ -246,4 +222,4 @@ const AddAdminModal: FC<Props> = ({ onSuccess }) => {
   );
 };
 
-export default AddAdminModal;
+export default AddStudentModal;

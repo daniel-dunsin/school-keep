@@ -64,7 +64,9 @@ const AdminManagement = () => {
           size="small"
           variant="filled"
           className="w-[150px] flex items-center justify-center"
-          onClick={() => showModal(<AddAdminModal />)}
+          onClick={() =>
+            showModal(<AddAdminModal onSuccess={() => getAllAdmins(query)} />)
+          }
         >
           Add Admin
         </Button>
