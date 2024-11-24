@@ -87,4 +87,21 @@ final darkTheme = defaultTheme.copyWith(
       color: AppColors.white,
     ),
   ),
+  bottomNavigationBarTheme: defaultTheme.bottomNavigationBarTheme.copyWith(
+    selectedLabelStyle: defaultTheme.bottomNavigationBarTheme.selectedLabelStyle?.copyWith(
+      color: AppColors.mainLight,
+    ),
+    unselectedLabelStyle: defaultTheme.bottomNavigationBarTheme.unselectedLabelStyle?.copyWith(
+      color: AppColors.white,
+    ),
+    selectedIconTheme: IconThemeData(
+      color: AppColors.mainLight,
+    ),
+    unselectedIconTheme: IconThemeData(
+      color: AppColors.white,
+    ),
+    backgroundColor: AppColors.black,
+    selectedItemColor: AppColors.mainLight,
+    unselectedItemColor: AppColors.white,
+  ),
 );

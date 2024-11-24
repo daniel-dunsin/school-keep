@@ -1,4 +1,5 @@
 enum StudentStatus {
   active,
-  inactive;
+  suspended,
+  cleared
 }

@@ -3,18 +3,21 @@ import 'dart:convert';
 
 import 'package:app/data/school/models/department_model.dart';
 import 'package:app/data/student/enums/student_enums.dart';
+import 'package:app/data/student/models/user_model.dart';
 
 class StudentModel {
   final String id;
   final String matricNumber;
   final StudentStatus status;
-
   final DepartmentModel? department;
+  final User? user;
+
   StudentModel({
     required this.id,
     required this.matricNumber,
     required this.status,
     this.department,
+    this.user,
   });
 
   StudentModel copyWith({
@@ -22,12 +25,14 @@ class StudentModel {
     String? matricNumber,
     StudentStatus? status,
     DepartmentModel? department,
+    User? user,
   }) {
     return StudentModel(
       id: id ?? this.id,
       matricNumber: matricNumber ?? this.matricNumber,
       status: status ?? this.status,
       department: department ?? this.department,
+      user: user ?? this.user,
     );
   }
 
@@ -37,15 +42,17 @@ class StudentModel {
       'matricNumber': matricNumber,
       'status': status.name,
       'department': department?.toMap(),
+      "user": user?.toMap(),
     };
   }
 
-  factory StudentModel.fromMap(Map map) {
+  factory StudentModel.fromMap(map) {
     return StudentModel(
       id: map['id'] as String,
       matricNumber: map['matricNumber'] as String,
       status: StudentStatus.values.firstWhere((v) => v.name == map["status"]),
-      department: map['department'] != null ? DepartmentModel.fromMap(map['department'] as Map<String, dynamic>) : null,
+      department: map['department'] != null && map["department"] is Map ? DepartmentModel.fromMap(map['department'] as Map) : null,
+      user: map["user"] != null && map["user"] is Map ? User.fromMap(map["user"] as Map) : null,
     );
   }
 

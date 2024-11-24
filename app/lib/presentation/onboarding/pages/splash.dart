@@ -1,4 +1,8 @@
+import 'package:app/configs/app_config.dart';
+import 'package:app/data/student/models/user_model.dart';
+import 'package:app/domain/student/student_repository.dart';
 import 'package:app/presentation/auth/routes/routes.dart';
+import 'package:app/presentation/home/routes/routes.dart';
 import 'package:app/presentation/onboarding/routes/routes.dart';
 import 'package:app/shared/constants/constants.dart';
 import 'package:app/shared/utils/storage.dart';
@@ -19,6 +23,35 @@ class _SplashScreenState extends State<SplashScreen> {
     checkAuthState();
   }
 
+  Future<bool> getUser() async {
+    final accessToken = await AppStorage.getString(AppStorageKeys.accessToken);
+
+    if (accessToken == null) {
+      return false;
+    }
+
+    try {
+      final response = await getIt.get<StudentRepository>().getUser();
+      final userMap = response["data"] as Map?;
+
+      if (response == null || userMap == null) {
+        return false;
+      }
+
+      if (getIt.isRegistered<User>()) {
+        getIt.unregister<User>();
+      }
+
+      getIt.registerSingleton<User>(User.fromMap(userMap));
+
+      print(userMap["school"].runtimeType);
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   checkAuthState() async {
     final onboarded = await AppStorage.getBool(
       AppStorageKeys.onboarded,
@@ -27,7 +60,12 @@ class _SplashScreenState extends State<SplashScreen> {
     if (onboarded != true) {
       context.goNamed(SplashRoutes.onboarding);
     } else {
-      context.goNamed(AuthRoutes.signIn);
+      final isAuth = await getUser();
+      if (isAuth) {
+        context.goNamed(HomeRoutes.home);
+      } else {
+        context.goNamed(AuthRoutes.signIn);
+      }
     }
   }
 

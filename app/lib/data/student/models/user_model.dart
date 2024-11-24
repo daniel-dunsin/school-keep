@@ -62,8 +62,8 @@ class User {
       lastName: map['lastName'] as String,
       email: map['email'] as String,
       profilePicture: map['profilePicture'] as String,
-      school: map['school'] != null ? SchoolModel.fromMap(map['school'] as Map) : null,
-      student: map['student'] != null ? StudentModel.fromMap(map['student'] as Map) : null,
+      school: map['school'] != null && (map["school"].runtimeType is Map || map["school"] is Map<String, dynamic>) ? SchoolModel.fromMap(map['school']) : null,
+      student: map['student'] != null && ((map["student"].runtimeType is Map || map["student"] is Map<String, dynamic>)) ? StudentModel.fromMap(map['student']) : null,
     );
   }
 

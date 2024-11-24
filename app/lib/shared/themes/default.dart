@@ -129,4 +129,14 @@ final defaultTheme = ThemeData(
     minVerticalPadding: 0,
     contentPadding: EdgeInsets.symmetric(vertical: 2, horizontal: 15),
   ),
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    selectedLabelStyle: TextStyle(
+      fontSize: 13.h,
+    ),
+    unselectedLabelStyle: TextStyle(
+      fontSize: 13.h,
+    ),
+    showUnselectedLabels: true,
+    showSelectedLabels: true,
+  ),
 );

@@ -1,12 +1,21 @@
+import 'package:app/presentation/account/pages/account.dart';
+import 'package:app/presentation/account/routes/routes.dart';
+import 'package:app/presentation/activity/pages/activities.dart';
+import 'package:app/presentation/activity/routes/routes.dart';
 import 'package:app/presentation/auth/pages/confirm_forgot_password_otp.dart';
 import 'package:app/presentation/auth/pages/forgot_password.dart';
 import 'package:app/presentation/auth/pages/reset_password.dart';
 import 'package:app/presentation/auth/pages/sign_in.dart';
 import 'package:app/presentation/auth/pages/sign_up.dart';
 import 'package:app/presentation/auth/routes/routes.dart';
+import 'package:app/presentation/documents/pages/documents.dart';
+import 'package:app/presentation/documents/routes/routes.dart';
+import 'package:app/presentation/home/pages/home.dart';
+import 'package:app/presentation/home/routes/routes.dart';
 import 'package:app/presentation/onboarding/pages/onboarding.dart';
 import 'package:app/presentation/onboarding/pages/splash.dart';
 import 'package:app/presentation/onboarding/routes/routes.dart';
+import 'package:app/shared/widgets/dashboard_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -74,6 +83,63 @@ final goRouter = GoRouter(
           ),
         );
       },
+    ),
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) => DashboardLayout(shell: navigationShell),
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: HomeRoutes.home,
+              name: HomeRoutes.home,
+              pageBuilder: (context, state) {
+                return MaterialPage(
+                  child: HomeScreen(),
+                );
+              },
+            )
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: ActivityRoutes.index,
+              name: ActivityRoutes.index,
+              pageBuilder: (context, state) {
+                return MaterialPage(
+                  child: ActivitiesScreen(),
+                );
+              },
+            )
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: DocumentRoutes.index,
+              name: DocumentRoutes.index,
+              pageBuilder: (context, state) {
+                return MaterialPage(
+                  child: DocumentsScreen(),
+                );
+              },
+            )
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AccountRoutes.index,
+              name: AccountRoutes.index,
+              pageBuilder: (context, state) {
+                return MaterialPage(
+                  child: AccountScreen(),
+                );
+              },
+            )
+          ],
+        ),
+      ],
     ),
   ],
 );

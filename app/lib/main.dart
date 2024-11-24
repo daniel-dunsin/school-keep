@@ -41,11 +41,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           child: ToastificationWrapper(
             child: MaterialApp.router(
               title: "School Keep",
-              routerDelegate: goRouter.routerDelegate,
-              routeInformationParser: goRouter.routeInformationParser,
-              routeInformationProvider: goRouter.routeInformationProvider,
+              routerConfig: goRouter,
               theme: lightTheme,
-              darkTheme: darkTheme,
+              darkTheme: lightTheme,
             ),
           ),
         );

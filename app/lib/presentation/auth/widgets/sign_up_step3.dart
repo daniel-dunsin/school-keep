@@ -1,6 +1,7 @@
 import 'package:app/configs/app_config.dart';
 import 'package:app/presentation/auth/bloc/auth_bloc/auth_bloc.dart';
 import 'package:app/presentation/auth/bloc/sign_up_steps_bloc/sign_up_steps_bloc.dart';
+import 'package:app/presentation/home/routes/routes.dart';
 import 'package:app/shared/constants/constants.dart';
 import 'package:app/shared/network/network_toast.dart';
 import 'package:app/shared/utils/file.dart';
@@ -9,6 +10,7 @@ import 'package:app/shared/widgets/button.dart';
 import 'package:app/shared/widgets/dp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class SignUpStep3 extends StatefulWidget {
   const SignUpStep3({super.key});
@@ -120,6 +122,7 @@ class _SignUpStep3State extends State<SignUpStep3> {
           listener: (context, state) {
             if (state is SignUpSuccess) {
               NetworkToast.handleSuccess("Welcome ${state.user.firstName}");
+              context.goNamed(HomeRoutes.home);
             }
           },
           builder: (context, state) {
