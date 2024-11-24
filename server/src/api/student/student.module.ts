@@ -6,6 +6,10 @@ import { StudentController } from './student.controller';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 import { SharedModule } from 'src/shared/shared.module';
+import {
+  StudentActivity,
+  StudentActivitySchema,
+} from './schemas/student-activity.schema';
 
 @Module({
   imports: [
@@ -13,6 +17,10 @@ import { SharedModule } from 'src/shared/shared.module';
       {
         name: Student.name,
         schema: StudentSchema,
+      },
+      {
+        name: StudentActivity.name,
+        schema: StudentActivitySchema,
       },
     ]),
     forwardRef(() => AuthModule),

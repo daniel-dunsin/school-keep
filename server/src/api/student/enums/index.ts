@@ -1,6 +1,12 @@
 export enum StudentStatus {
   Active = 'active',
   Expelled = 'expelled',
-  Suspended = 'Suspended',
+  Suspended = 'suspended',
   Cleared = 'cleared',
+}
+
+export enum StudentActivityType {
+  Normal = 'normal',
+  Warning = 'warning',
+  Destructive = 'destructive',
 }
