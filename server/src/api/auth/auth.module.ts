@@ -49,6 +49,6 @@ import { StudentModule } from '../student/student.module';
       useClass: AuthGuard,
     },
   ],
-  exports: [MongooseModule],
+  exports: [MongooseModule, AuthService],
 })
 export class AuthModule {}

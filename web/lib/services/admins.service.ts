@@ -37,9 +37,21 @@ const createAdmin = async (addAdminDto: AddAdminDto) => {
   }
 };
 
+const deleteAdmin = async (adminId: string) => {
+  try {
+    const response = await https.delete(`/admin/${adminId}`);
+
+    return response?.data;
+  } catch (error) {
+    return true;
+    errorHandler(error);
+  }
+};
+
 const adminService = {
   getAllAdmins,
   createAdmin,
+  deleteAdmin,
 };
 
 export default adminService;

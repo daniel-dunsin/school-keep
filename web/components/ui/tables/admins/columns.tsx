@@ -2,6 +2,7 @@ import ListTile from '@/components/common/list-tile';
 import { Admin } from '@/lib/schemas/types';
 import { ColumnDef } from '@tanstack/react-table';
 import Image from 'next/image';
+import Actions from './actions';
 
 export const columns: ColumnDef<Admin>[] = [
   {
@@ -61,6 +62,13 @@ export const fullColumns: ColumnDef<Admin>[] = [
           </p>
         </div>
       );
+    },
+  },
+  {
+    id: 'actions',
+    header: '',
+    cell({ row }) {
+      return <Actions admin={row?.original} />;
     },
   },
 ];

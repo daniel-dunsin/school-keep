@@ -79,8 +79,8 @@ export class AuthService {
     }
   }
 
-  private async validateStudentSignUpPayload(signUpDto: StudentSignUpDto) {
-    const { department, school: schoolId, email } = signUpDto;
+  async validateStudentSignUpPayload(signUpDto: StudentSignUpDto) {
+    const { department, school: schoolId, email, matricNumber } = signUpDto;
 
     if (!(await this.departmentModel.findById(department))) {
       throw new NotFoundException(
@@ -106,6 +106,40 @@ export class AuthService {
       //   'Invalid school email address, use your student email address!',
       // );
     }
+
+    if (await this.userModel.exists({ email })) {
+      throw new BadRequestException(
+        'Oops! a student with this email address already exists',
+      );
+    }
+
+    const student = await this.studentModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          as: 'user',
+          localField: 'user',
+          foreignField: '_id',
+        },
+      },
+      {
+        $unwind: {
+          path: '$user',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $match: {
+          'user.school': school._id,
+          matricNumber,
+        },
+      },
+    ]);
+
+    if (student.length > 0)
+      throw new BadRequestException(
+        'Oops! a student with this matric number exists',
+      );
   }
 
   async signJwtToken(user: UserDocument, remember_me: boolean = false) {
@@ -210,12 +244,6 @@ export class AuthService {
       matricNumber,
       password,
     } = signUpDto;
-
-    if (await this.userModel.exists({ $or: [{ email }, { phoneNumber }] })) {
-      throw new BadRequestException(
-        'Oops! a student with this email address already exists',
-      );
-    }
 
     const hashedPassword = await this.utilService.hashPassword(password);
 

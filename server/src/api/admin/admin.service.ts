@@ -3,9 +3,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Admin, AdminDocument } from './schemas/admin.schema';
-import { FilterQuery, Model, PipelineStage, Types } from 'mongoose';
+import { Connection, FilterQuery, Model, PipelineStage, Types } from 'mongoose';
 import { UtilsService } from 'src/shared/services/util.service';
 import { CreateAdminDto, GetAdminsDto } from './dtos';
 import { User, UserDocument } from '../user/schemas/user.schema';
@@ -22,6 +22,8 @@ export class AdminService {
     @InjectModel(Auth.name) private readonly authModel: Model<AuthDocument>,
     @InjectModel(School.name)
     private readonly schoolModel: Model<SchoolDocument>,
+    @InjectConnection()
+    private readonly connection: Connection,
     private readonly utilService: UtilsService,
     private readonly emailService: EmailService,
   ) {}
@@ -232,23 +234,43 @@ export class AdminService {
   }
 
   async deleteAdmin(admin_id: string, schoolId: string) {
-    const school = await this.schoolModel.findById(schoolId);
+    const session = await this.connection.startSession();
 
-    if (!school) throw new NotFoundException('School not found');
+    session.startTransaction();
+    try {
+      const school = await this.schoolModel.findById(schoolId);
 
-    if (String(school.manager) === admin_id) {
-      throw new BadRequestException(
-        'The account of the school manager cannot be deleted!',
-      );
+      if (!school) throw new NotFoundException('School not found');
+
+      if (String(school.manager) === admin_id) {
+        throw new BadRequestException(
+          'The account of the school manager cannot be deleted!',
+        );
+      }
+
+      const data = await this.adminModel.findByIdAndDelete(admin_id, {
+        session,
+      });
+
+      if (!data) throw new NotFoundException('Admin not found!');
+
+      const user = await this.userModel.findByIdAndDelete(data.user, {
+        session,
+      });
+
+      await this.authModel.deleteOne({ user: user._id }, { session });
+
+      await session.commitTransaction();
+
+      return {
+        message: 'Admin deleted',
+        success: true,
+      };
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      await session.endSession();
     }
-
-    const data = await this.adminModel.findByIdAndDelete(admin_id);
-
-    if (!data) throw new NotFoundException('Admin not found!');
-
-    return {
-      message: 'Admin deleted',
-      success: true,
-    };
   }
 }

@@ -33,7 +33,7 @@ export class StudentSignUpDto {
   phoneNumber: string;
 
   @IsString(true)
-  profilePicture: string;
+  profilePicture?: string;
 
   @IsMongoId(true)
   school: string;
@@ -45,7 +45,7 @@ export class StudentSignUpDto {
   department: string;
 
   @IsString(true)
-  password: string;
+  password?: string;
 }
 
 export class ForgotPasswordOtp {
