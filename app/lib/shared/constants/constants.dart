@@ -25,6 +25,8 @@ class AppImages {
 
 class AppStyles {
   static EdgeInsets defaultPagePadding = EdgeInsets.fromLTRB(25, 20, 25, 20);
+  static Color shimmerBaseColor = Color.fromRGBO(129, 129, 129, 0.498);
+  static Color shipmmerHighlightColor = Color.fromRGBO(164, 164, 164, 1);
 }
 
 class AppMatchers {

@@ -14,6 +14,9 @@ class ContainedButton extends StatelessWidget {
   final FontWeight? fontWeight;
   final bool loading;
   final bool disabled;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
+  final EdgeInsets? padding;
 
   const ContainedButton({
     Key? key,
@@ -24,6 +27,9 @@ class ContainedButton extends StatelessWidget {
     this.iconAlignment,
     this.onPressed,
     this.fontWeight,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.padding,
     this.loading = false,
     this.disabled = false,
   }) : super(key: key);
@@ -38,12 +44,12 @@ class ContainedButton extends StatelessWidget {
         icon: icon,
         iconAlignment: iconAlignment ?? IconAlignment.end,
         style: ElevatedButton.styleFrom(
-          backgroundColor: getColorScheme(context).surface,
-          foregroundColor: AppColors.white,
+          backgroundColor: backgroundColor ?? getColorScheme(context).surface,
+          foregroundColor: foregroundColor ?? AppColors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(0),
           ),
-          padding: EdgeInsets.all(15),
+          padding: padding ?? EdgeInsets.all(15),
           minimumSize: Size(double.maxFinite, height ?? 60),
           iconColor: AppColors.white,
           disabledIconColor: Colors.black54,

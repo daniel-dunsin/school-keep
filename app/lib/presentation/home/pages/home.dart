@@ -1,5 +1,6 @@
 import 'package:app/configs/app_config.dart';
 import 'package:app/data/student/models/user_model.dart';
+import 'package:app/presentation/home/widgets/announcements_banner.dart';
 import 'package:app/shared/constants/constants.dart';
 import 'package:app/shared/utils/misc.dart';
 import 'package:app/shared/widgets/image.dart';
@@ -20,11 +21,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: AppStyles.defaultPagePadding,
           child: Column(
             children: [
               _buildHeader(),
+              SizedBox(height: 30),
+              AnnouncementsBanner(),
             ],
           ),
         ),
