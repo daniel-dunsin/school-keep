@@ -4,6 +4,8 @@ import {
   Announcement,
   AnnouncementSchema,
 } from './schemas/announcement.schema';
+import { SharedModule } from 'src/shared/shared.module';
+import { StudentModule } from '../student/student.module';
 
 @Module({
   imports: [
@@ -13,6 +15,8 @@ import {
         schema: AnnouncementSchema,
       },
     ]),
+    SharedModule,
+    StudentModule,
   ],
   exports: [MongooseModule],
 })

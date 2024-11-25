@@ -1,6 +1,6 @@
 import { Prop, SchemaFactory } from '@nestjs/mongoose';
-import { DBSchema } from 'src/shared/schemas/db.schema';
-import { AnnouncementDestination } from '../enums';
+import { DBSchema, TimestampMixin } from 'src/shared/schemas/db.schema';
+import { AnnouncementDestination, AnnouncementStatus } from '../enums';
 import {
   College,
   CollegeDocument,
@@ -13,14 +13,14 @@ import {
 import { School, SchoolDocument } from 'src/api/school/schemas/school.schema';
 
 @DBSchema()
-export class Announcement {
+export class Announcement extends TimestampMixin {
   @Prop()
   image?: string;
 
   @Prop()
   image_public_id: string;
 
-  @Prop()
+  @Prop({ default: Date.now() })
   start_date?: Date;
 
   @Prop()
@@ -60,6 +60,19 @@ export class Announcement {
     ref: School.name,
   })
   school: SchoolDocument;
+
+  @Prop({
+    type: String,
+    enum: Object.values(AnnouncementStatus),
+    default: AnnouncementStatus.Active,
+  })
+  status: AnnouncementStatus;
+
+  @Prop()
+  title: string;
+
+  @Prop()
+  content?: string;
 }
 
 export type AnnouncementDocument = HydratedDocument<Announcement>;
