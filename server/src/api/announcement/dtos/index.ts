@@ -51,3 +51,38 @@ export class GetAnnouncementsQuery {
 
   student_id?: string;
 }
+
+export class UpdateAnnouncementDto {
+  @IsString(true)
+  image?: string;
+
+  @IsDate(true)
+  start_date?: Date;
+
+  @IsDate(true)
+  end_date?: Date;
+
+  @IsEnum(AnnouncementDestination, true)
+  destination_type: AnnouncementDestination;
+
+  @IsArray()
+  @IsOptional()
+  @IsMongoId({ each: true })
+  departments: string[];
+
+  @IsArray()
+  @IsOptional()
+  @IsMongoId({ each: true })
+  colleges: string[];
+
+  @IsString(true)
+  title?: string;
+
+  @IsString(true)
+  description?: string;
+
+  @IsEnum(AnnouncementStatus, true)
+  status?: AnnouncementStatus;
+
+  image_public_id?: string;
+}

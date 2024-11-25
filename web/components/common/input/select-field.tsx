@@ -22,6 +22,7 @@ interface Props {
   onSearch?(search?: string): Option[];
   loading?: boolean;
   className?: string;
+  disabled?: boolean;
 }
 
 const SelectField: FC<Props> = ({
@@ -32,6 +33,7 @@ const SelectField: FC<Props> = ({
   loading,
   onSearch,
   className,
+  disabled,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [options, setOptions] = useState<Option[]>(data ?? []);
@@ -86,7 +88,9 @@ const SelectField: FC<Props> = ({
           animate={isOpen ? 'arrowOpen' : 'arrowClosed'}
           className="min-w-fit cursor-pointer"
           onClick={() => {
-            setIsOpen((prev) => !prev);
+            if (!disabled) {
+              setIsOpen((prev) => !prev);
+            }
           }}
         >
           <BiChevronDown size={20} className="text-[#444]" />

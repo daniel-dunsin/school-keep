@@ -1,5 +1,6 @@
 'use client';
 import Button from '@/components/common/button';
+import ImagePreview from '@/components/common/image/image-preview';
 import FileUploader from '@/components/common/input/file-uploader';
 import TextField from '@/components/common/input/text-field';
 import Modal from '@/components/common/modal';
@@ -109,25 +110,11 @@ const EditCollegeModal: FC<Props> = ({ college }) => {
 
             <div className="w-full h-[200px] bg-white mt-2">
               {formLogo ? (
-                <div className="relative w-full h-full">
-                  <Image
-                    width={1000}
-                    height={250}
-                    src={URL.createObjectURL(formLogo)}
-                    alt={college?.name}
-                    className="h-full w-full object-contain"
-                  />
-                  <div className="absolute bg-black/50 w-full h-full top-0 left-0">
-                    <span className="absolute top-[30px] right-[30px]">
-                      <IoMdCloseCircleOutline
-                        color="white"
-                        size={30}
-                        cursor={'pointer'}
-                        onClick={() => setValue('logo', undefined)}
-                      />
-                    </span>
-                  </div>
-                </div>
+                <ImagePreview
+                  image={formLogo}
+                  onRemove={() => setValue('logo', undefined)}
+                  alt={college?.name}
+                />
               ) : (
                 <FileUploader
                   onUpload={(file: File) => {

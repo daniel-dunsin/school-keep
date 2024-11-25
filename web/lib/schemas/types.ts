@@ -1,4 +1,4 @@
-import { AdminPermissions } from './enums';
+import { AdminPermissions, AnnouncementDestination } from './enums';
 
 export type ApiResponse<data = any, meta = undefined> = {
   success: boolean;
@@ -62,6 +62,18 @@ export type College = {
   name: string;
   unionName: string;
   logo: string;
+};
+
+export type Announcement = {
+  title: string;
+  content: string;
+  colleges: College[];
+  departments: Department[];
+  destination_type: AnnouncementDestination;
+  image: string;
+  _id: string;
+  start_date?: Date;
+  end_date?: Date;
 };
 
 export type AuthPages =

@@ -6,7 +6,11 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Announcement } from './schemas/announcement.schema';
 import { FilterQuery, Model, Types } from 'mongoose';
-import { CreateAnnouncementDto, GetAnnouncementsQuery } from './dtos';
+import {
+  CreateAnnouncementDto,
+  GetAnnouncementsQuery,
+  UpdateAnnouncementDto,
+} from './dtos';
 import { AnnouncementDestination, AnnouncementStatus } from './enums';
 import { isBefore } from 'date-fns';
 import { FileService } from 'src/shared/services/file.service';
@@ -58,6 +62,24 @@ export class AnnouncementService {
         );
       }
     }
+  }
+
+  private async refineAnnouncementUpdate(data: UpdateAnnouncementDto) {
+    if (data.destination_type) {
+      switch (data.destination_type) {
+        case AnnouncementDestination.Colleges:
+          data.departments = [];
+          break;
+        case AnnouncementDestination.Departments:
+          data.colleges = [];
+          break;
+        case AnnouncementDestination.General:
+          data.colleges = [];
+          data.departments = [];
+      }
+    }
+
+    return data;
   }
 
   async createAnnouncment(
@@ -232,6 +254,62 @@ export class AnnouncementService {
       message: 'Announcements fetched',
       success: true,
       data,
+    };
+  }
+
+  async deleteAnnouncement(announcement_id: string) {
+    const data = await this.announcmentModel.findByIdAndDelete(announcement_id);
+
+    if (!data) throw new NotFoundException('Announcement not found');
+
+    if (data.image_public_id) {
+      await this.fileService.deleteResource(data.image_public_id);
+    }
+
+    return {
+      message: 'Announcement deleted',
+      success: true,
+    };
+  }
+
+  async updateAnnouncement(
+    announcement_id: string,
+    updateAnnouncementDto: UpdateAnnouncementDto,
+  ) {
+    updateAnnouncementDto = await this.refineAnnouncementUpdate(
+      updateAnnouncementDto,
+    );
+
+    const announcement = await this.announcmentModel.findById(announcement_id);
+
+    if (!announcement) {
+      throw new NotFoundException('Announcement not found');
+    }
+
+    const image_public_id = announcement.image_public_id;
+
+    if (updateAnnouncementDto.image) {
+      const { url, public_id } = await this.fileService.uploadResource(
+        updateAnnouncementDto.image,
+      );
+
+      updateAnnouncementDto.image = url;
+      updateAnnouncementDto.image_public_id = public_id;
+
+      if (image_public_id) {
+        await this.fileService.deleteResource(image_public_id);
+      }
+    }
+
+    await this.announcmentModel.findByIdAndUpdate(
+      announcement_id,
+      updateAnnouncementDto,
+      { unValidators: true },
+    );
+
+    return {
+      message: 'Announcement updated',
+      success: true,
     };
   }
 }

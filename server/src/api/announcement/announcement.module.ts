@@ -6,6 +6,8 @@ import {
 } from './schemas/announcement.schema';
 import { SharedModule } from 'src/shared/shared.module';
 import { StudentModule } from '../student/student.module';
+import { AnnouncementController } from './announcement.controller';
+import { AnnouncementService } from './announcement.service';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { StudentModule } from '../student/student.module';
     SharedModule,
     StudentModule,
   ],
+  controllers: [AnnouncementController],
+  providers: [AnnouncementService],
   exports: [MongooseModule],
 })
 export class AnnouncementModule {}
