@@ -236,6 +236,7 @@ const EditAnnouncement: FC<Props> = ({ announcement }) => {
               type: 'date',
               // @ts-ignore
               ...register('start_date', {
+                valueAsDate: true,
                 validate(value) {
                   if (!value) {
                     return 'start date is required';
@@ -260,6 +261,7 @@ const EditAnnouncement: FC<Props> = ({ announcement }) => {
             InputProps={{
               type: 'date',
               ...register('end_date', {
+                valueAsDate: true,
                 validate(value) {
                   if (!value) {
                     return 'end date is required';

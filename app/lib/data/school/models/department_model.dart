@@ -8,7 +8,7 @@ class DepartmentModel {
   final String name;
   final String? unionName;
   final String? logo;
-  final int levelsCount;
+  final int? levelsCount;
   final CollegeModel? college;
 
   DepartmentModel({
@@ -55,7 +55,7 @@ class DepartmentModel {
       name: map['name'] as String,
       unionName: map['unionName'] != null ? map['unionName'] as String : null,
       logo: map['logo'] != null ? map['logo'] as String : null,
-      levelsCount: map['levelsCount'] as int,
+      levelsCount: map['levelsCount'] != null ? map["levelsCount"] : null,
       college: map['college'] != null && (map["college"].runtimeType is Map || map["college"] is Map<String, dynamic>) ? CollegeModel.fromMap(map['college']) : null,
     );
   }

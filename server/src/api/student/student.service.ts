@@ -201,6 +201,7 @@ export class StudentService {
       },
       {
         $project: {
+          _id: 1,
           matricNumber: 1,
           user: {
             firstName: 1,
@@ -214,10 +215,12 @@ export class StudentService {
             name: 1,
             logo: 1,
             unionName: 1,
+            _id: 1,
             college: {
               name: 1,
               logo: 1,
               unionName: 1,
+              _id: 1,
             },
           },
         },

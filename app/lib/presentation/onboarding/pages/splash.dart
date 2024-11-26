@@ -44,8 +44,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
       getIt.registerSingleton<User>(User.fromMap(userMap));
 
-      print(userMap["school"].runtimeType);
-
       return true;
     } catch (e) {
       return false;

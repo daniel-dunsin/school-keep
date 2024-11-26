@@ -212,14 +212,20 @@ export class AnnouncementService {
           status: {
             $cond: {
               if: {
-                $and: [
-                  { $eq: ['$end_date', null] },
-                  { $gt: ['$end_date', new Date()] },
-                  { $ne: ['$status', AnnouncementStatus.Inactive] },
+                $or: [
+                  {
+                    $and: [
+                      { $ne: ['$end_date', null] },
+                      { $lt: ['$end_date', new Date()] },
+                    ],
+                  },
+                  {
+                    $eq: ['$status', AnnouncementStatus.Inactive],
+                  },
                 ],
               },
-              then: AnnouncementStatus.Active,
-              else: AnnouncementStatus.Inactive,
+              then: AnnouncementStatus.Inactive,
+              else: AnnouncementStatus.Active,
             },
           },
         },
@@ -232,17 +238,18 @@ export class AnnouncementService {
           title: 1,
           content: 1,
           image: 1,
-          image_public_id: 1,
           status: 1,
           start_date: 1,
           end_date: 1,
           destination_type: 1,
           departments: {
+            _id: 1,
             name: 1,
             logo: 1,
             unionName: 1,
           },
           colleges: {
+            _id: 1,
             name: 1,
             logo: 1,
             unionName: 1,

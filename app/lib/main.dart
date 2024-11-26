@@ -26,7 +26,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 5), FlutterNativeSplash.remove);
+    Future.delayed(Duration(seconds: 1), FlutterNativeSplash.remove);
   }
 
   @override
@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               title: "School Keep",
               routerConfig: goRouter,
               theme: lightTheme,
-              darkTheme: darkTheme,
+              darkTheme: lightTheme,
             ),
           ),
         );
