@@ -85,6 +85,7 @@ export interface CreateAnnouncementDto {
   destination_type: AnnouncementDestination;
   departments?: string[];
   colleges?: string[];
+  status?: AnnouncementStatus;
 }
 
 export interface GetAnnouncementsQuery {

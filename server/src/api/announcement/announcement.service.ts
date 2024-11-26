@@ -213,12 +213,13 @@ export class AnnouncementService {
             $cond: {
               if: {
                 $and: [
-                  { $ne: ['$end_date', null] },
-                  { $lt: ['$end_date', new Date()] },
+                  { $eq: ['$end_date', null] },
+                  { $gt: ['$end_date', new Date()] },
+                  { $ne: ['$status', AnnouncementStatus.Inactive] },
                 ],
               },
-              then: AnnouncementStatus.Inactive,
-              else: AnnouncementStatus.Active,
+              then: AnnouncementStatus.Active,
+              else: AnnouncementStatus.Inactive,
             },
           },
         },
@@ -304,7 +305,7 @@ export class AnnouncementService {
     await this.announcmentModel.findByIdAndUpdate(
       announcement_id,
       updateAnnouncementDto,
-      { unValidators: true },
+      { runValidators: true },
     );
 
     return {

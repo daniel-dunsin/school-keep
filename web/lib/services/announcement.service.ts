@@ -40,9 +40,40 @@ const getAnnouncements = async (query?: GetAnnouncementsQuery) => {
   }
 };
 
+const deleteAnnouncement = async (announcement_id: string) => {
+  try {
+    const response = await https.delete(`/announcement/${announcement_id}`);
+
+    return response?.data;
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
+const updateAnnouncement = async (
+  announcement_id: string,
+  updateAnnouncementDto: CreateAnnouncementDto
+) => {
+  const data = { ...updateAnnouncementDto };
+
+  if (data.image) {
+    data.image = <string>await convertImageToBase64(data.image as File);
+  }
+
+  try {
+    const response = await https.put(`/announcement/${announcement_id}`, data);
+
+    return response.data;
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
 const announcementService = {
   createAnnouncement,
   getAnnouncements,
+  deleteAnnouncement,
+  updateAnnouncement,
 };
 
 export default announcementService;

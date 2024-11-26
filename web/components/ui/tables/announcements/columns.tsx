@@ -6,6 +6,7 @@ import {
 import { Announcement } from '@/lib/schemas/types';
 import { cn, formatDate } from '@/lib/utils';
 import { ColumnDef } from '@tanstack/react-table';
+import Actions from './actions';
 
 export const columns: ColumnDef<Announcement>[] = [
   {
@@ -60,6 +61,13 @@ export const columns: ColumnDef<Announcement>[] = [
           {formatDate(data.start_date!)} - {formatDate(data.end_date!)}
         </p>
       );
+    },
+  },
+  {
+    header: '',
+    accessorKey: 'actions',
+    cell({ row: { original } }) {
+      return <Actions announcement={original} />;
     },
   },
 ];
