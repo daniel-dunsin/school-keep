@@ -1,4 +1,8 @@
-import { AdminPermissions, AnnouncementDestination } from './enums';
+import {
+  AdminPermissions,
+  AnnouncementDestination,
+  AnnouncementStatus,
+} from './enums';
 
 export type ApiResponse<data = any, meta = undefined> = {
   success: boolean;
@@ -74,6 +78,7 @@ export type Announcement = {
   _id: string;
   start_date?: Date;
   end_date?: Date;
+  status: AnnouncementStatus;
 };
 
 export type AuthPages =

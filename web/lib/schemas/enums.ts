@@ -8,3 +8,8 @@ export enum AnnouncementDestination {
   Departments = 'Departments',
   General = 'General',
 }
+
+export enum AnnouncementStatus {
+  Active = 'active',
+  Inactive = 'inactive',
+}

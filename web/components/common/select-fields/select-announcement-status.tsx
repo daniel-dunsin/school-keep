@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
 import SelectField from '../input/select-field';
-import { AnnouncementDestination } from '@/lib/schemas/enums';
+import { AnnouncementStatus } from '@/lib/schemas/enums';
 
 interface Props {
-  selected?: AnnouncementDestination;
-  onSelect(permission?: AnnouncementDestination): void;
+  selected?: AnnouncementStatus;
+  onSelect(permission?: AnnouncementStatus): void;
   disabled?: boolean;
   placeholder?: string;
 }
 
-const SelectAnnouncementDestionation: FC<Props> = ({
+const SelectAnnouncementStatus: FC<Props> = ({
   selected,
   onSelect,
   disabled = false,
@@ -25,15 +25,15 @@ const SelectAnnouncementDestionation: FC<Props> = ({
       onSelect={({ value }) => {
         onSelect(value);
       }}
-      data={Object.values(AnnouncementDestination).map((v) => ({
+      data={Object.values(AnnouncementStatus).map((v) => ({
         value: v,
         label: v,
         id: v,
       }))}
       onSearch={(search) => {
-        return Object.values(AnnouncementDestination)
-          .filter((destination_type) =>
-            destination_type.toLowerCase().includes(search?.toLowerCase() ?? '')
+        return Object.values(AnnouncementStatus)
+          .filter((status) =>
+            status.toLowerCase().includes(search?.toLowerCase() ?? '')
           )
           .map((v) => ({
             value: v,
@@ -45,4 +45,4 @@ const SelectAnnouncementDestionation: FC<Props> = ({
   );
 };
 
-export default SelectAnnouncementDestionation;
+export default SelectAnnouncementStatus;

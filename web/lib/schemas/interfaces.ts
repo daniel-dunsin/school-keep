@@ -1,6 +1,10 @@
 import { ReactNode } from 'react';
-import { Department } from './types';
-import { AdminPermissions } from './enums';
+import { College, Department } from './types';
+import {
+  AdminPermissions,
+  AnnouncementDestination,
+  AnnouncementStatus,
+} from './enums';
 
 export interface LoginDto {
   email: string;
@@ -70,4 +74,21 @@ export interface CreateStudentDto {
   lastName: string;
   email: string;
   phoneNumber: string;
+}
+
+export interface CreateAnnouncementDto {
+  title?: string;
+  content?: string;
+  image?: File | string;
+  start_date?: Date;
+  end_date?: Date;
+  destination_type: AnnouncementDestination;
+  departments?: string[];
+  colleges?: string[];
+}
+
+export interface GetAnnouncementsQuery {
+  search?: string;
+  destination_type?: AnnouncementDestination;
+  status?: AnnouncementStatus;
 }

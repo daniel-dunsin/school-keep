@@ -27,8 +27,8 @@ import { AdminDocument } from '../admin/schemas/admin.schema';
 import { StudentDocument } from '../student/schemas/student.schema';
 import { MongoIdPipe } from 'src/core/pipes/mongo-id.pipe';
 
-@Controller('announcment')
-@ApiTags('announcment')
+@Controller('announcement')
+@ApiTags('announcement')
 export class AnnouncementController {
   constructor(private readonly announcementService: AnnouncementService) {}
 

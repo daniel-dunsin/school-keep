@@ -8,12 +8,17 @@ import SelectCollege from '@/components/common/select-fields/select-college';
 import SelectDepartment from '@/components/common/select-fields/select-department';
 import { useAuthContext } from '@/lib/providers/contexts/auth-context';
 import { AdminPermissions, AnnouncementDestination } from '@/lib/schemas/enums';
+import { CreateAnnouncementDto } from '@/lib/schemas/interfaces';
 import { College, Department } from '@/lib/schemas/types';
+import announcementService from '@/lib/services/announcement.service';
 import schoolService from '@/lib/services/school.service';
-import { useQuery } from '@tanstack/react-query';
+import { errorHandler } from '@/lib/utils';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { add, isAfter, isBefore, startOfToday } from 'date-fns';
+import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 type Input = {
   image?: File;
@@ -28,6 +33,7 @@ type Input = {
 
 const CreateAnnouncement = () => {
   const { user } = useAuthContext();
+  const router = useRouter();
 
   const {
     handleSubmit,
@@ -39,9 +45,9 @@ const CreateAnnouncement = () => {
     defaultValues: {
       start_date: new Date(),
       end_date: add(new Date(), { days: 1 }),
-      ...(user?.admin?.department && {
-        destination_type: AnnouncementDestination.Departments,
-      }),
+      destination_type: user?.admin?.department
+        ? AnnouncementDestination.Departments
+        : AnnouncementDestination.General,
     },
   });
 
@@ -50,7 +56,6 @@ const CreateAnnouncement = () => {
     [user]
   );
 
-  // @ts-ignore
   const [
     formImage,
     college,
@@ -77,12 +82,52 @@ const CreateAnnouncement = () => {
     queryFn: async () => await schoolService.getColleges(),
   });
 
+  const { mutateAsync: createAnnouncement, isPending: creatingAnnouncement } =
+    useMutation({
+      mutationKey: ['useCreateAnnouncement'],
+      mutationFn: announcementService.createAnnouncement,
+      onSuccess(data) {
+        toast.success('Announcement created');
+        router.replace('/dashboard/announcements');
+      },
+    });
+
+  const submit = async (e: Input) => {
+    if (e.destination_type === AnnouncementDestination.Colleges && !e.college) {
+      return errorHandler('Select college');
+    }
+
+    if (
+      e.destination_type === AnnouncementDestination.Departments &&
+      !e.department
+    ) {
+      return errorHandler('Select department');
+    }
+
+    const data: CreateAnnouncementDto = {
+      image: e.image,
+      start_date: e.start_date,
+      end_date: e.end_date,
+      title: e.title,
+      content: e.content,
+      destination_type: e.destination_type,
+      ...(e.destination_type === AnnouncementDestination.Colleges && {
+        colleges: [e.college?._id!],
+      }),
+      ...(e.destination_type === AnnouncementDestination.Departments && {
+        departments: [e.department?._id!],
+      }),
+    };
+
+    await createAnnouncement(data);
+  };
+
   return (
     <section className="pb-10">
       <h1 className="font-semibold">Add Announcement</h1>
 
       <form
-        onSubmit={handleSubmit(() => {})}
+        onSubmit={handleSubmit(submit)}
         className="max-w-[600px] grid grid-cols-2 mt-5 gap-x-5 gap-y-4"
       >
         <div className="h-[250px] col-span-2 cursor-pointer">
@@ -214,7 +259,13 @@ const CreateAnnouncement = () => {
           }}
         />
 
-        <Button fullWidth className="col-span-2" variant="filled" size="large">
+        <Button
+          loading={creatingAnnouncement}
+          fullWidth
+          className="col-span-2"
+          variant="filled"
+          size="large"
+        >
           Submit
         </Button>
       </form>

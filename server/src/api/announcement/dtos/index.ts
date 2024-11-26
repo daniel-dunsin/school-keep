@@ -32,8 +32,8 @@ export class CreateAnnouncementDto {
   @IsString(false)
   title: string;
 
-  @IsString(false)
-  description: string;
+  @IsString(true)
+  content: string;
 
   image_public_id?: string;
   school?: string;
@@ -79,7 +79,7 @@ export class UpdateAnnouncementDto {
   title?: string;
 
   @IsString(true)
-  description?: string;
+  content?: string;
 
   @IsEnum(AnnouncementStatus, true)
   status?: AnnouncementStatus;

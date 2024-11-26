@@ -23,6 +23,7 @@ interface Props {
   loading?: boolean;
   className?: string;
   disabled?: boolean;
+  placeholder?: string;
 }
 
 const SelectField: FC<Props> = ({
@@ -34,6 +35,7 @@ const SelectField: FC<Props> = ({
   onSearch,
   className,
   disabled,
+  placeholder,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [options, setOptions] = useState<Option[]>(data ?? []);
@@ -60,7 +62,7 @@ const SelectField: FC<Props> = ({
       <header className="bg-white border-2 border-gray-600 focus:border-mainLight p-2 flex items-center">
         <input
           className="bg-white outline-none border-none placeholder:text-[.8rem] text-[.8rem] text-[#444] flex-1 w-full"
-          placeholder={value || 'Select...'}
+          placeholder={value || placeholder || 'Select...'}
           value={search}
           onChange={(e) => {
             setIsOpen(true);
