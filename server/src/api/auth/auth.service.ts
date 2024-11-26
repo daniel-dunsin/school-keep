@@ -181,8 +181,7 @@ export class AuthService {
 
     if (
       user.role === Roles.Student &&
-      (user.student.status === StudentStatus.Expelled ||
-        user.student.status === StudentStatus.Suspended)
+      user.student.status === StudentStatus.Expelled
     ) {
       throw new BadRequestException(
         "Oops! you're not allowed to access your account, reach out to your admin",

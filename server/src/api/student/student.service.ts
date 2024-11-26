@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Student, StudentDocument } from './schemas/student.schema';
 import { FilterQuery, Model, PipelineStage, Types } from 'mongoose';
@@ -9,6 +9,7 @@ import { Auth, AuthDocument } from '../auth/schemas/auth.schema';
 import { Roles } from '../user/enums';
 import { UtilsService } from 'src/shared/services/util.service';
 import { EmailService } from 'src/shared/modules/mail/mail.service';
+import { StudentStatus } from './enums';
 
 @Injectable()
 export class StudentService {
@@ -227,6 +228,67 @@ export class StudentService {
       message: 'Students fetched successfully',
       data,
       success: true,
+    };
+  }
+
+  async getStudent(student_id: string) {
+    const student = await this.studentModel
+      .findById(student_id)
+      .populate('user')
+      .populate({
+        path: 'department',
+        select: 'name logo unionName college',
+        populate: {
+          path: 'college',
+          select: 'name logo unionName',
+        },
+      });
+
+    if (!student)
+      throw new NotFoundException('Oops! this student does not exist');
+  }
+
+  async updateStudentStatus(student_id: string, status: StudentStatus) {
+    const student = await this.studentModel
+      .findById(student_id)
+      .populate('user', 'firstName email');
+
+    if (!student)
+      throw new NotFoundException('Oops! this student does not exist');
+
+    student.status = status;
+    await student.save();
+
+    let emailStatus;
+
+    switch (status) {
+      case StudentStatus.Active:
+        emailStatus = 'Reactivated';
+        break;
+      case StudentStatus.Expelled:
+        emailStatus = 'Expelled';
+        break;
+      case StudentStatus.Suspended:
+        emailStatus = 'Suspended';
+        break;
+      case StudentStatus.Cleared:
+        break;
+    }
+
+    if (emailStatus) {
+      await this.emailService.sendMail({
+        to: student.user.email,
+        subject: 'School Keep: Account Update',
+        template: 'student-status-update',
+        context: {
+          status: emailStatus,
+          firstName: student.user.firstName,
+        },
+      });
+    }
+
+    return {
+      message: 'Student updated',
     };
   }
 }
