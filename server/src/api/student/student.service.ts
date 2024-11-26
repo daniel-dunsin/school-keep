@@ -232,7 +232,7 @@ export class StudentService {
   }
 
   async getStudent(student_id: string) {
-    const student = await this.studentModel
+    const data = await this.studentModel
       .findById(student_id)
       .populate('user')
       .populate({
@@ -244,8 +244,13 @@ export class StudentService {
         },
       });
 
-    if (!student)
-      throw new NotFoundException('Oops! this student does not exist');
+    if (!data) throw new NotFoundException('Oops! this student does not exist');
+
+    return {
+      success: true,
+      message: 'Student retrieved successfully',
+      data,
+    };
   }
 
   async updateStudentStatus(student_id: string, status: StudentStatus) {

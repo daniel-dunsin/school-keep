@@ -2,6 +2,7 @@ import {
   AdminPermissions,
   AnnouncementDestination,
   AnnouncementStatus,
+  StudentStatus,
 } from './enums';
 
 export type ApiResponse<data = any, meta = undefined> = {
@@ -16,6 +17,7 @@ export type User = {
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber: string;
   profilePicture: string;
   role: any;
   school: School;
@@ -38,6 +40,7 @@ export type Student = {
   _id: string;
   department?: Department;
   matricNumber: string;
+  status: StudentStatus;
   user?: User;
 };
 

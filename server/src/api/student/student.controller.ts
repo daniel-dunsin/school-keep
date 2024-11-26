@@ -1,5 +1,13 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { StudentService } from './student.service';
 import {
   AdminRolesDec,
@@ -10,6 +18,7 @@ import { Roles } from '../user/enums';
 import { AdminRoles } from '../admin/enums';
 import { CreateStudentDto, GetStudentsDto } from './dto';
 import { SchoolDocument } from '../school/schemas/school.schema';
+import { StudentStatus } from './enums';
 
 @Controller('student')
 @ApiTags('student')
@@ -38,5 +47,33 @@ export class StudentController {
     @Auth('school') school: SchoolDocument,
   ) {
     return await this.studentService.getAllStudents(query, school._id);
+  }
+
+  @Get(':student_id')
+  @RolesDec([Roles.Admin])
+  @AdminRolesDec([AdminRoles.Admin, AdminRoles.SuperAdmin])
+  async getStudent(@Param('student_id') studentId: string) {
+    return await this.studentService.getStudent(studentId);
+  }
+
+  @Patch(':student_id/status')
+  @RolesDec([Roles.Admin])
+  @AdminRolesDec([AdminRoles.Admin, AdminRoles.SuperAdmin])
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        status: {
+          type: 'string',
+          enum: Object.values(StudentStatus),
+        },
+      },
+    },
+  })
+  async updateStudentStatus(
+    @Param('student_id') studentId: string,
+    @Body('status') status: StudentStatus,
+  ) {
+    return await this.studentService.updateStudentStatus(studentId, status);
   }
 }

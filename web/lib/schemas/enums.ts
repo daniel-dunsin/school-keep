@@ -13,3 +13,9 @@ export enum AnnouncementStatus {
   Active = 'active',
   Inactive = 'inactive',
 }
+
+export enum StudentStatus {
+  Active = 'active',
+  Expelled = 'expelled',
+  Suspended = 'suspended',
+}
