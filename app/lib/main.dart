@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               title: "School Keep",
               routerConfig: goRouter,
               theme: lightTheme,
-              darkTheme: lightTheme,
+              darkTheme: darkTheme,
             ),
           ),
         );

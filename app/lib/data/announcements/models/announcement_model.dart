@@ -40,7 +40,6 @@ class AnnouncementModel {
   }
 
   factory AnnouncementModel.fromMap(Map<String, dynamic> map) {
-    print(map);
     return AnnouncementModel(
       title: map['title'] as String,
       content: map['content'] != null ? map['content'] as String : null,
