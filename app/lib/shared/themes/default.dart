@@ -22,7 +22,7 @@ final defaultTheme = ThemeData(
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(0),
+      borderRadius: BorderRadius.circular(40),
     ),
     elevation: 3,
     backgroundColor: AppColors.mainLight,

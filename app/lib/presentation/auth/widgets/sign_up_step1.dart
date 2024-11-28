@@ -4,6 +4,7 @@ import 'package:app/data/school/models/department_model.dart';
 import 'package:app/data/school/models/school_model.dart';
 import 'package:app/presentation/auth/bloc/auth_bloc/auth_bloc.dart';
 import 'package:app/presentation/auth/bloc/sign_up_steps_bloc/sign_up_steps_bloc.dart';
+import 'package:app/presentation/auth/routes/routes.dart';
 import 'package:app/presentation/auth/widgets/search_college_delegate.dart';
 import 'package:app/presentation/auth/widgets/search_department_delegate.dart';
 import 'package:app/presentation/auth/widgets/search_school_delegate.dart';
@@ -14,6 +15,7 @@ import 'package:app/shared/widgets/button.dart';
 import 'package:app/shared/widgets/input_decorator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class SignUpStep1 extends StatefulWidget {
   const SignUpStep1({super.key});
@@ -83,6 +85,8 @@ class _SignUpStep1State extends State<SignUpStep1> {
                         _buildCollegesSelector(context),
                         SizedBox(height: 30),
                         _buildDepartmentsSelector(context),
+                        SizedBox(height: 30),
+                        _buildAlt(),
                       ],
                     ),
                   ),
@@ -225,6 +229,29 @@ class _SignUpStep1State extends State<SignUpStep1> {
     );
   }
 
+  _buildAlt() {
+    return GestureDetector(
+      onTap: () {
+        context.pushNamed(AuthRoutes.signIn);
+      },
+      child: Center(
+        child: Text(
+          "Sign In",
+          style: getTextTheme(context).bodyLarge?.copyWith(
+                color: getColorScheme(context).brightness == Brightness.light
+                    ? getColorScheme(
+                        context,
+                      ).surface
+                    : getColorScheme(
+                        context,
+                      ).onPrimary,
+              ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
   _buildNavigators(BuildContext context) {
     return Row(
       children: [
@@ -238,11 +265,11 @@ class _SignUpStep1State extends State<SignUpStep1> {
             iconAlignment: IconAlignment.end,
             onPressed: () {
               if (school == null) {
-                NetworkToast.handleError("School is required");
+                return NetworkToast.handleError("School is required");
               } else if (college == null) {
-                NetworkToast.handleError("College/Faculty is required");
+                return NetworkToast.handleError("College/Faculty is required");
               } else if (department == null) {
-                NetworkToast.handleError("Department is required");
+                return NetworkToast.handleError("Department is required");
               }
 
               getIt.get<SignUpStepsBloc>().add(

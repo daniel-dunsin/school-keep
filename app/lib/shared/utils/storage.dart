@@ -57,4 +57,5 @@ class AppStorageKeys {
   static String onboarded = "onboarded";
   static String accessToken = "accessToken";
   static String user = "user";
+  static String theme = "theme";
 }
