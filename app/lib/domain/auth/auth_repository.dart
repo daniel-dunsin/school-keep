@@ -54,4 +54,10 @@ class AuthRepository {
 
     return response?.data;
   }
+
+  signOut() async {
+    final response = await this.networkService.post("/auth/log-out");
+
+    return response?.data;
+  }
 }

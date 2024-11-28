@@ -5,7 +5,9 @@ import 'package:get_it/get_it.dart';
 void setupAuthDomain(GetIt ioc) {
   ioc.registerSingleton<AuthRepository>(
     AuthRepository(
-      networkService: NetworkService(),
+      networkService: NetworkService(
+        hasAuth: true,
+      ),
     ),
   );
 }

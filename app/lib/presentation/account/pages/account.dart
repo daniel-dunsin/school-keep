@@ -1,11 +1,17 @@
 import 'package:app/configs/app_config.dart';
 import 'package:app/data/student/models/user_model.dart';
+import 'package:app/presentation/account/blocs/account_bloc.dart';
 import 'package:app/presentation/account/widgets/theme_switcher.dart';
+import 'package:app/presentation/auth/routes/routes.dart';
 import 'package:app/shared/constants/constants.dart';
+import 'package:app/shared/network/network_toast.dart';
 import 'package:app/shared/utils/misc.dart';
 import 'package:app/shared/widgets/image.dart';
+import 'package:app/shared/widgets/loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -148,27 +154,48 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   _buildSignOut() {
-    return RichText(
-      text: TextSpan(
-        style: getTextTheme(context).titleLarge?.copyWith(
-              color: getColorScheme(context).surface,
-            ),
-        children: [
-          WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
-            child: Icon(
-              Icons.logout_outlined,
-              color: getColorScheme(context).surface,
+    void signOut() {
+      print("hiii");
+      getIt.get<AccountBloc>().add(SignOutRequested());
+    }
+
+    return BlocConsumer<AccountBloc, AccountState>(
+      bloc: getIt.get<AccountBloc>(),
+      listener: (context, state) {
+        if (state is SignOutSuccessful) {
+          NetworkToast.handleSuccess("Signed out successfully");
+          context.goNamed(AuthRoutes.signIn);
+        }
+      },
+      builder: (context, state) {
+        return GestureDetector(
+          onTap: state is! SignOutLoading ? signOut : null,
+          child: Text.rich(
+            TextSpan(
+              style: getTextTheme(context).titleLarge?.copyWith(
+                    color: getColorScheme(context).onPrimary,
+                  ),
+              children: [
+                WidgetSpan(
+                  alignment: PlaceholderAlignment.middle,
+                  child: state is SignOutLoading
+                      ? AppLoader()
+                      : Icon(
+                          Icons.logout_outlined,
+                          color: getColorScheme(context).onPrimary,
+                        ),
+                ),
+                WidgetSpan(
+                  child: SizedBox(width: 18),
+                ),
+                TextSpan(
+                  text: state is SignOutLoading ? "Signing Out" : "Sign Out",
+                )
+              ],
             ),
           ),
-          WidgetSpan(
-            child: SizedBox(width: 18),
-          ),
-          TextSpan(
-            text: "Sign Out",
-          )
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -23,19 +23,19 @@ class _ThemeSwitcherState extends State<ThemeSwitcher> {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () {
-        AppBottomSheet.display(
-          context,
-          bottomSheetContents: [
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: BlocBuilder<AppCubit, AppState>(
-                bloc: getIt.get<AppCubit>(),
-                builder: (context, state) {
-                  final theme = state.appTheme;
+    return BlocBuilder<AppCubit, AppState>(
+      bloc: getIt.get<AppCubit>(),
+      builder: (context, state) {
+        final theme = state.appTheme;
 
-                  return Column(
+        return FloatingActionButton(
+          onPressed: () {
+            AppBottomSheet.display(
+              context,
+              bottomSheetContents: [
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -64,16 +64,20 @@ class _ThemeSwitcherState extends State<ThemeSwitcher> {
                       ),
                       SizedBox(height: 15),
                     ],
-                  );
-                },
-              ),
-            ),
-          ],
+                  ),
+                ),
+              ],
+            );
+          },
+          child: Icon(
+            theme == null
+                ? Icons.laptop
+                : theme == AppTheme.dark
+                    ? Icons.dark_mode_outlined
+                    : Icons.light_mode_outlined,
+          ),
         );
       },
-      child: Icon(
-        Icons.dark_mode_outlined,
-      ),
     );
   }
 
