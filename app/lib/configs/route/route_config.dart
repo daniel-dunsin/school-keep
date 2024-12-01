@@ -1,4 +1,5 @@
 import 'package:app/presentation/account/pages/account.dart';
+import 'package:app/presentation/account/pages/profile.dart';
 import 'package:app/presentation/account/routes/routes.dart';
 import 'package:app/presentation/activity/pages/activities.dart';
 import 'package:app/presentation/activity/routes/routes.dart';
@@ -134,6 +135,15 @@ final goRouter = GoRouter(
               pageBuilder: (context, state) {
                 return MaterialPage(
                   child: AccountScreen(),
+                );
+              },
+            ),
+            GoRoute(
+              path: AccountRoutes.profile,
+              name: AccountRoutes.profile,
+              pageBuilder: (context, state) {
+                return MaterialPage(
+                  child: ProfileScreen(),
                 );
               },
             )

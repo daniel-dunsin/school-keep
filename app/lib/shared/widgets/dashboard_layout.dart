@@ -43,7 +43,11 @@ class _DashboardLayoutState extends State<DashboardLayout> {
           elevation: 10,
           enableFeedback: true,
           onTap: (page) {
-            widget.shell.goBranch(page);
+            if (widget.shell.currentIndex == page) {
+              widget.shell.goBranch(page, initialLocation: true);
+            } else {
+              widget.shell.goBranch(page);
+            }
           },
           currentIndex: widget.shell.currentIndex,
           items: [

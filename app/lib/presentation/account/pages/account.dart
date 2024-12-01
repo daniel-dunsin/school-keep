@@ -1,6 +1,7 @@
 import 'package:app/configs/app_config.dart';
 import 'package:app/data/student/models/user_model.dart';
 import 'package:app/presentation/account/blocs/account_bloc.dart';
+import 'package:app/presentation/account/routes/routes.dart';
 import 'package:app/presentation/account/widgets/theme_switcher.dart';
 import 'package:app/presentation/auth/routes/routes.dart';
 import 'package:app/shared/constants/constants.dart';
@@ -111,7 +112,9 @@ class _AccountScreenState extends State<AccountScreen> {
           _buildSingleAccountOption(
             leadingIcon: Icons.person_2_outlined,
             title: "Profile Details",
-            onClick: () {},
+            onClick: () {
+              context.push(AccountRoutes.profile);
+            },
           ),
           SizedBox(height: 10),
           _buildSingleAccountOption(

@@ -10,6 +10,7 @@ class User {
   final String lastName;
   final String email;
   final String profilePicture;
+  final String phoneNumber;
   final SchoolModel? school;
   final StudentModel? student;
 
@@ -19,6 +20,7 @@ class User {
     required this.lastName,
     required this.email,
     required this.profilePicture,
+    required this.phoneNumber,
     this.school,
     this.student,
   });
@@ -29,6 +31,7 @@ class User {
     String? lastName,
     String? email,
     String? profilePicture,
+    String? phoneNumber,
     SchoolModel? school,
     StudentModel? student,
   }) {
@@ -37,6 +40,7 @@ class User {
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       email: email ?? this.email,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
       profilePicture: profilePicture ?? this.profilePicture,
       school: school ?? this.school,
       student: student ?? this.student,
@@ -52,6 +56,7 @@ class User {
       'profilePicture': profilePicture,
       'school': school?.toMap(),
       'student': student?.toMap(),
+      'phoneNumber': phoneNumber,
     };
   }
 
@@ -61,6 +66,7 @@ class User {
       firstName: map['firstName'] as String,
       lastName: map['lastName'] as String,
       email: map['email'] as String,
+      phoneNumber: map["phoneNumber"] as String,
       profilePicture: map['profilePicture'] as String,
       school: map['school'] != null && (map["school"].runtimeType is Map || map["school"] is Map<String, dynamic>) ? SchoolModel.fromMap(map['school']) : null,
       student: map['student'] != null && ((map["student"].runtimeType is Map || map["student"] is Map<String, dynamic>)) ? StudentModel.fromMap(map['student']) : null,
