@@ -10,7 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     AdminModule,
-    UserModule,
+    forwardRef(() => UserModule),
     SchoolModule,
     forwardRef(() => AuthModule),
     ConfigModule,

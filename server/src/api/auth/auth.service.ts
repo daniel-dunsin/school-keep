@@ -28,6 +28,7 @@ import { EmailService } from 'src/shared/modules/mail/mail.service';
 import { Roles } from '../user/enums';
 import { StudentStatus } from '../student/enums';
 import { add, isAfter } from 'date-fns';
+import { DocumentService } from '../documents/document.service';
 
 @Injectable()
 export class AuthService {
@@ -40,10 +41,12 @@ export class AuthService {
     private readonly schoolModel: Model<SchoolDocument>,
     @InjectModel(Student.name)
     private readonly studentModel: Model<StudentDocument>,
+
     private readonly fileService: FileService,
     private readonly utilService: UtilsService,
     private readonly jwtService: JwtService,
     private readonly emailService: EmailService,
+    private readonly documentService: DocumentService,
   ) {}
 
   async validateJwtPayload(accessToken: string, userId: string) {
@@ -284,6 +287,8 @@ export class AuthService {
 
     user.student = student._id as any;
     user = await user.save();
+
+    await this.documentService.initStudentFolders(student._id);
 
     user = await user.populate([
       { path: 'school', populate: 'manager' },

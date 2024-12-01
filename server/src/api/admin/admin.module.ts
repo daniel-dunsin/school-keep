@@ -16,7 +16,7 @@ import { SchoolModule } from '../school/school.module';
         schema: AdminSchema,
       },
     ]),
-    UserModule,
+    forwardRef(() => UserModule),
     SchoolModule,
     forwardRef(() => AuthModule),
     forwardRef(() => SharedModule),

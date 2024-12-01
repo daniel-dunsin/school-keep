@@ -1,7 +1,10 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Document, DocumentSchema } from './schemas/document.schema';
 import { Folder, FolderSchema } from './schemas/folders.schema';
+import { SchoolModule } from '../school/school.module';
+import { StudentModule } from '../student/student.module';
+import { DocumentService } from './document.service';
 
 @Module({
   imports: [
@@ -15,7 +18,10 @@ import { Folder, FolderSchema } from './schemas/folders.schema';
         schema: FolderSchema,
       },
     ]),
+    forwardRef(() => SchoolModule),
+    forwardRef(() => StudentModule),
   ],
-  exports: [MongooseModule],
+  providers: [DocumentService],
+  exports: [MongooseModule, DocumentService],
 })
 export class DocumentModule {}

@@ -10,6 +10,7 @@ import { Roles } from '../user/enums';
 import { UtilsService } from 'src/shared/services/util.service';
 import { EmailService } from 'src/shared/modules/mail/mail.service';
 import { StudentStatus } from './enums';
+import { DocumentService } from '../documents/document.service';
 
 @Injectable()
 export class StudentService {
@@ -24,6 +25,7 @@ export class StudentService {
     private readonly authService: AuthService,
     private readonly utilService: UtilsService,
     private readonly emailService: EmailService,
+    private readonly documentService: DocumentService,
   ) {}
 
   async createStudent(createStudentDto: CreateStudentDto, schoolId: string) {
@@ -70,6 +72,7 @@ export class StudentService {
       .then(async (student) => {
         user.student = student._id as any;
         await user.save();
+        await this.documentService.initStudentFolders(student._id);
         return await student.populate('department', 'name');
       });
 

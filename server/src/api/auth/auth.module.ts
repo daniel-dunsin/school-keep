@@ -11,6 +11,7 @@ import { AuthGuard } from './guards/jwt.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { SchoolModule } from '../school/school.module';
 import { StudentModule } from '../student/student.module';
+import { DocumentModule } from '../documents/documents.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { StudentModule } from '../student/student.module';
     StudentModule,
     SharedModule,
     SchoolModule,
+    DocumentModule,
   ],
 
   controllers: [AuthController],

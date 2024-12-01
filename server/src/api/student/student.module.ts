@@ -10,6 +10,7 @@ import {
   StudentActivity,
   StudentActivitySchema,
 } from './schemas/student-activity.schema';
+import { DocumentModule } from '../documents/documents.module';
 
 @Module({
   imports: [
@@ -24,8 +25,9 @@ import {
       },
     ]),
     forwardRef(() => AuthModule),
-    UserModule,
+    forwardRef(() => UserModule),
     forwardRef(() => SharedModule),
+    DocumentModule,
   ],
   providers: [StudentService],
   controllers: [StudentController],
