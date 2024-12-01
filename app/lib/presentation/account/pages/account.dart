@@ -158,7 +158,6 @@ class _AccountScreenState extends State<AccountScreen> {
 
   _buildSignOut() {
     void signOut() {
-      print("hiii");
       getIt.get<AccountBloc>().add(SignOutRequested());
     }
 
