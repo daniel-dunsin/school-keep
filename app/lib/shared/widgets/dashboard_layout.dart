@@ -62,6 +62,11 @@ class _DashboardLayoutState extends State<DashboardLayout> {
               label: "Activities",
             ),
             BottomNavigationBarItem(
+              icon: Icon(Icons.school_outlined),
+              activeIcon: Icon(Icons.school),
+              label: "Clearance",
+            ),
+            BottomNavigationBarItem(
               icon: Icon(Icons.document_scanner_outlined),
               activeIcon: Icon(Icons.document_scanner),
               label: "Documents",

@@ -9,6 +9,8 @@ import 'package:app/presentation/auth/pages/reset_password.dart';
 import 'package:app/presentation/auth/pages/sign_in.dart';
 import 'package:app/presentation/auth/pages/sign_up.dart';
 import 'package:app/presentation/auth/routes/routes.dart';
+import 'package:app/presentation/clearance/pages/clearance.dart';
+import 'package:app/presentation/clearance/routes/routes.dart';
 import 'package:app/presentation/documents/pages/documents.dart';
 import 'package:app/presentation/documents/routes/routes.dart';
 import 'package:app/presentation/home/pages/home.dart';
@@ -112,6 +114,19 @@ final goRouter = GoRouter(
                 );
               },
             )
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: ClearanceRoutes.index,
+              name: ClearanceRoutes.index,
+              pageBuilder: (context, state) {
+                return MaterialPage(
+                  child: ClearanceScreen(),
+                );
+              },
+            ),
           ],
         ),
         StatefulShellBranch(

@@ -5,6 +5,7 @@ import { Folder, FolderSchema } from './schemas/folders.schema';
 import { SchoolModule } from '../school/school.module';
 import { StudentModule } from '../student/student.module';
 import { DocumentService } from './document.service';
+import { DocumentController } from './document.controller';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { DocumentService } from './document.service';
     forwardRef(() => SchoolModule),
     forwardRef(() => StudentModule),
   ],
+  controllers: [DocumentController],
   providers: [DocumentService],
   exports: [MongooseModule, DocumentService],
 })

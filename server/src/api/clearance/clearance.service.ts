@@ -15,7 +15,6 @@ export class ClearanceService {
   constructor(
     @InjectModel(SchoolClearance.name)
     private readonly schoolClearanceModel: Model<SchoolClearance>,
-
     @InjectModel(Department.name)
     private readonly departmentModel: Model<Department>,
   ) {}
