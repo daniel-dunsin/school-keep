@@ -93,3 +93,7 @@ export interface GetAnnouncementsQuery {
   destination_type?: AnnouncementDestination;
   status?: AnnouncementStatus;
 }
+
+export interface GetClearanceQuery {
+  search?: string;
+}

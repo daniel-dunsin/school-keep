@@ -19,6 +19,10 @@ import { FileService } from 'src/shared/services/file.service';
 import { CreateDepartmentDto } from './dtos/department.dto';
 import { Student, StudentDocument } from '../student/schemas/student.schema';
 import { Admin, AdminDocument } from '../admin/schemas/admin.schema';
+import {
+  SchoolClearance,
+  SchoolClearanceDocument,
+} from '../clearance/schemas/school-clearance.schema';
 
 @Injectable()
 export class SchoolService {
@@ -33,6 +37,8 @@ export class SchoolService {
     private readonly studentModel: Model<StudentDocument>,
     @InjectModel(Admin.name)
     private readonly adminModel: Model<AdminDocument>,
+    @InjectModel(SchoolClearance.name)
+    private readonly schoolClearanceModel: Model<SchoolClearanceDocument>,
     private readonly fileService: FileService,
   ) {}
 
@@ -146,6 +152,11 @@ export class SchoolService {
 
     await this.validateDepartmentsCreation(createDepartmentsDto);
 
+    const schoolClearances = await this.schoolClearanceModel
+      .find({ school: new Types.ObjectId(schoolId) })
+      .select('_id')
+      .then((c) => c.map((c) => c._id));
+
     const createDepartmentsQuery = await Promise.all(
       departments.map(async (dept) => {
         const { url, public_id } = await this.fileService.uploadResource(
@@ -160,6 +171,7 @@ export class SchoolService {
           logoPublicId: public_id,
           college: new Types.ObjectId(collegeId),
           levelsCount: dept.levelsCount,
+          required_clearance: schoolClearances,
         };
       }),
     );

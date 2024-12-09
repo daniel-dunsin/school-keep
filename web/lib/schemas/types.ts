@@ -62,6 +62,7 @@ export type Department = {
   totalAdmins?: number;
   students?: Student[];
   admins?: Admin[];
+  required_clearance: SchoolClearance[];
 };
 
 export type College = {
@@ -82,6 +83,15 @@ export type Announcement = {
   start_date?: Date;
   end_date?: Date;
   status: AnnouncementStatus;
+};
+
+export type SchoolClearance = {
+  clearance_name: string;
+  payment_required: boolean;
+  fee?: number;
+  _id?: string;
+  required_documents: string[];
+  is_default?: boolean;
 };
 
 export type AuthPages =

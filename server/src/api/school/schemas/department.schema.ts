@@ -3,6 +3,7 @@ import mongoose, { HydratedDocument } from 'mongoose';
 import { DBSchema, TimestampMixin } from 'src/shared/schemas/db.schema';
 import { School, SchoolDocument } from './school.schema';
 import { College, CollegeDocument } from './college.schema';
+import { SchoolClearance } from 'src/api/clearance/schemas/school-clearance.schema';
 
 @DBSchema()
 export class Department extends TimestampMixin {
@@ -32,6 +33,17 @@ export class Department extends TimestampMixin {
 
   @Prop({ default: 1 })
   levelsCount: number;
+
+  @Prop({
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: SchoolClearance.name,
+      },
+    ],
+    default: [],
+  })
+  required_clearance: SchoolClearance[];
 }
 
 export type DepartmentDocument = HydratedDocument<Department>;

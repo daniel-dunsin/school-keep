@@ -3,3 +3,8 @@ export enum ClearanceStatus {
   Rejected = 'Rejected',
   Approved = 'Approved',
 }
+
+export enum SchoolClearanceStatus {
+  Active = 'Active',
+  Deleted = 'Deleted',
+}

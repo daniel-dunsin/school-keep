@@ -8,6 +8,7 @@ import { SchoolService } from './school.service';
 import { SchoolController } from './school.controller';
 import { StudentModule } from '../student/student.module';
 import { AdminModule } from '../admin/admin.module';
+import { ClearanceModule } from '../clearance/clearance.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AdminModule } from '../admin/admin.module';
     forwardRef(() => SharedModule),
     StudentModule,
     forwardRef(() => AdminModule),
+    ClearanceModule,
   ],
   controllers: [SchoolController],
   providers: [SchoolService],

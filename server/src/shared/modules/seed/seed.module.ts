@@ -6,6 +6,7 @@ import { SchoolModule } from 'src/api/school/school.module';
 import { UtilsService } from 'src/shared/services/util.service';
 import { AuthModule } from 'src/api/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { ClearanceModule } from 'src/api/clearance/clearance.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ConfigModule } from '@nestjs/config';
     SchoolModule,
     forwardRef(() => AuthModule),
     ConfigModule,
+    ClearanceModule,
   ],
   providers: [SeedService, UtilsService],
 })

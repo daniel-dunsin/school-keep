@@ -10,6 +10,7 @@ import { UtilsService } from 'src/shared/services/util.service';
 import { Roles } from 'src/api/user/enums';
 import { Auth, AuthDocument } from 'src/api/auth/schemas/auth.schema';
 import { AdminRoles } from 'src/api/admin/enums';
+import { SchoolClearanceDocument } from 'src/api/clearance/schemas/school-clearance.schema';
 
 @Injectable()
 export class SeedService {
@@ -23,6 +24,8 @@ export class SeedService {
     private readonly userModel: Model<UserDocument>,
     @InjectModel(Auth.name)
     private readonly authModel: Model<AuthDocument>,
+    @InjectModel(School.name)
+    private readonly schoolClearanceModel: Model<SchoolClearanceDocument>,
     private readonly configService: ConfigService,
     private readonly utilService: UtilsService,
   ) {}
@@ -49,17 +52,34 @@ export class SeedService {
         };
 
         createSchoolPromises.push(
-          this.schoolModel.findOneAndUpdate(
-            {
-              name: school.name,
-              acronym: school.acronym,
-            },
-            updateData,
-            {
-              upsert: true,
-              new: true,
-            },
-          ),
+          this.schoolModel
+            .findOneAndUpdate(
+              {
+                name: school.name,
+                acronym: school.acronym,
+              },
+              updateData,
+              {
+                upsert: true,
+                new: true,
+              },
+            )
+            .then(async (school) => {
+              return await this.schoolClearanceModel.findOneAndUpdate(
+                {
+                  school: school._id,
+                  name: 'Department/Programme',
+                  payment_required: false,
+                },
+                {
+                  is_default: true,
+                },
+                {
+                  upsert: true,
+                  new: true,
+                },
+              );
+            }),
         );
       });
 

@@ -40,7 +40,7 @@ const DashboardSidebar = () => {
   });
 
   return (
-    <div className="w-[280px] max-h-screen bg-white p-4">
+    <div className="w-[280px] max-h-screen bg-white p-4 overflow-y-scroll">
       <header className="flex items-center">
         <div>
           <Image
