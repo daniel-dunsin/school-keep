@@ -10,4 +10,21 @@ class FolderRepository {
 
     return response?.data;
   }
+
+  createFolder(String folderName) async {
+    final response = await this.networkService.post(
+      "/document/folder",
+      data: {
+        "folderName": folderName
+      },
+    );
+
+    return response?.data;
+  }
+
+  deleteFolder(String folderId) async {
+    final response = await this.networkService.delete("/document/folder/$folderId");
+
+    return response?.data;
+  }
 }

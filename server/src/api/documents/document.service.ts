@@ -53,7 +53,7 @@ export class DocumentService {
       isCustom: false,
     });
 
-    await new this.folderModel(data).save();
+    await this.folderModel.create(data);
   }
 
   async createFolder(createFolderDto: CreateFolderDto, studentId: string) {
@@ -76,7 +76,7 @@ export class DocumentService {
         student: new Types.ObjectId(studentId),
       })
       .select('-student -updatedAt')
-      .sort({ level: 1, createdAt: 1 });
+      .sort({ level: 1, createdAt: -1 });
 
     return {
       message: 'Folders fetched successfully',

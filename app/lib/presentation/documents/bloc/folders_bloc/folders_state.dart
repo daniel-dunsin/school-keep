@@ -14,3 +14,15 @@ class GetFoldersSuccess extends FoldersState {
 }
 
 class GetFoldersError extends FoldersState {}
+
+class AddFolderLoading extends FoldersState {}
+
+class AddFolderSuccess extends FoldersState {}
+
+class AddFolderError extends FoldersState {}
+
+class DeleteFolderLoading extends FoldersState {}
+
+class DeleteFolderSuccess extends FoldersState {}
+
+class DeleteFolderError extends FoldersState {}

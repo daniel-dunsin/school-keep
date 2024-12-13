@@ -1,6 +1,8 @@
 import 'package:app/configs/app_config.dart';
 import 'package:app/data/documents/models/folder_model.dart';
 import 'package:app/presentation/documents/bloc/folders_bloc/folders_bloc.dart';
+import 'package:app/presentation/documents/widgets/add_folder.dart';
+import 'package:app/presentation/documents/widgets/single_folder.dart';
 import 'package:app/shared/constants/constants.dart';
 import 'package:app/shared/utils/misc.dart';
 import 'package:flutter/material.dart';
@@ -26,44 +28,49 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: AddFolderBottomActionButton(),
       body: SafeArea(
         child: Padding(
           padding: AppStyles.defaultPagePadding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Folders",
-                style: getTextTheme(context).headlineLarge,
-              ),
-              SizedBox(height: 30),
-              Expanded(
-                child: BlocConsumer(
-                  bloc: getIt.get<FoldersBloc>(),
-                  buildWhen: (previous, current) => previous != current,
-                  builder: (context, state) {
-                    if (state is GetFoldersLoading) {
-                      return _buildFoldersShimmer();
-                    } else if (state is GetFoldersSuccess) {
-                      print(state.folders);
+          child: RefreshIndicator.adaptive(
+            onRefresh: () async {
+              getIt.get<FoldersBloc>().add(GetFoldersRequested());
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Folders",
+                  style: getTextTheme(context).headlineLarge,
+                ),
+                SizedBox(height: 30),
+                Expanded(
+                  child: BlocConsumer(
+                    bloc: getIt.get<FoldersBloc>(),
+                    builder: (context, state) {
+                      if (state is GetFoldersLoading) {
+                        return _buildFoldersShimmer();
+                      } else if (state is GetFoldersError) {
+                        return _buildError();
+                      }
+
                       return Visibility(
                         child: _buildFolders(),
                         replacement: _buildNoFolder(),
-                        visible: state.folders.length > 0,
+                        visible: folders.length > 0,
                       );
-                    }
-                    return _buildError();
-                  },
-                  listener: (context, state) {
-                    if (state is GetFoldersSuccess) {
-                      setState(() {
-                        folders = state.folders;
-                      });
-                    }
-                  },
+                    },
+                    listener: (context, state) {
+                      if (state is GetFoldersSuccess) {
+                        setState(() {
+                          folders = state.folders;
+                        });
+                      }
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -91,12 +98,21 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
           ),
         );
       },
-      itemCount: 1,
+      itemCount: 5,
     );
   }
 
   _buildFolders() {
-    return Center();
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
+        childAspectRatio: .9,
+      ),
+      itemBuilder: (context, index) => SingleFolder(folder: folders[index]),
+      itemCount: folders.length,
+    );
   }
 
   _buildNoFolder() {

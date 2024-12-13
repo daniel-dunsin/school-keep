@@ -31,5 +31,35 @@ class FoldersBloc extends Bloc<FoldersEvent, FoldersState> {
         }
       },
     );
+
+    on<AddFolderRequested>(
+      (event, emit) async {
+        emit(AddFolderLoading());
+
+        try {
+          await this.folderRepository.createFolder(event.folderName);
+
+          emit(AddFolderSuccess());
+        } catch (e) {
+          emit(AddFolderError());
+          NetworkToast.handleError(e);
+        }
+      },
+    );
+
+    on<DeleteFolderRequested>(
+      (event, emit) async {
+        emit(DeleteFolderLoading());
+
+        try {
+          await this.folderRepository.deleteFolder(event.folderId);
+
+          emit(DeleteFolderSuccess());
+        } catch (e) {
+          emit(DeleteFolderError());
+          NetworkToast.handleError(e);
+        }
+      },
+    );
   }
 }

@@ -2,7 +2,7 @@ import 'package:app/shared/utils/misc.dart';
 import 'package:flutter/material.dart';
 
 class AppBottomSheet {
-  static void display(BuildContext context, {required List<Widget> bottomSheetContents, double initialChildSize = .8}) {
+  static void display(BuildContext context, {required List<Widget> bottomSheetContents, double initialChildSize = .8}) async {
     showModalBottomSheet(
       context: context,
       useSafeArea: true,

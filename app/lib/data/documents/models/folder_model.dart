@@ -3,7 +3,7 @@ import 'dart:convert';
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class FolderModel {
   String id;
-  int level;
+  int? level;
   String folderName;
   bool isCustom;
   FolderModel({
@@ -22,10 +22,10 @@ class FolderModel {
     };
   }
 
-  factory FolderModel.fromMap(Map map) {
+  factory FolderModel.fromMap(Map<String, dynamic> map) {
     return FolderModel(
-      id: map['_id'] as String,
-      level: map['level'] as int,
+      id: map['id'] as String,
+      level: map['level'] != null ? map['level'] as int : null,
       folderName: map['folderName'] as String,
       isCustom: map['isCustom'] as bool,
     );
