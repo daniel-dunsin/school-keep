@@ -13,6 +13,9 @@ export class Document extends TimestampMixin {
   @Prop({ default: 1 })
   version: number;
 
+  @Prop()
+  documentName: string;
+
   @Prop({ required: true })
   reference: string;
 

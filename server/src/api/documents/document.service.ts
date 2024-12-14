@@ -5,12 +5,15 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Document } from './schemas/document.schema';
-import { Model, Types } from 'mongoose';
+import { Model, PopulateOptions, Types } from 'mongoose';
 import { Folder } from './schemas/folders.schema';
 import { Department } from '../school/schemas/department.schema';
 import { Student } from '../student/schemas/student.schema';
 import { isEmpty } from 'lodash';
-import { CreateFolderDto } from './dtos';
+import { CreateDocumentDto, CreateFolderDto, UpdateDocumentDto } from './dtos';
+import { FileService } from 'src/shared/services/file.service';
+import { v4 } from 'uuid';
+import { Promise } from 'mongoose';
 
 @Injectable()
 export class DocumentService {
@@ -23,7 +26,19 @@ export class DocumentService {
     private readonly departmentModel: Model<Department>,
     @InjectModel(Student.name)
     private readonly studentModel: Model<Student>,
+
+    private readonly fileService: FileService,
   ) {}
+
+  private async getDocReference() {
+    const reference = v4();
+
+    if (await this.documentModel.findOne({ reference })) {
+      return this.getDocReference();
+    }
+
+    return reference;
+  }
 
   async initStudentFolders(studentId: string) {
     const student = await this.studentModel
@@ -93,6 +108,34 @@ export class DocumentService {
 
     await data.deleteOne();
 
+    const uniquePublicIds: string[] = [];
+    const ids: string[] = [];
+
+    await this.documentModel
+      .find({
+        folder: data._id,
+      })
+      .then((docs) => {
+        docs.forEach((doc) => {
+          ids.push(doc._id);
+          if (doc.publicId && !uniquePublicIds.includes(doc.publicId)) {
+            uniquePublicIds.push(doc.publicId);
+          }
+        });
+      });
+
+    await this.documentModel.deleteMany({
+      _id: {
+        $in: ids,
+      },
+    });
+
+    await Promise.all(
+      uniquePublicIds.map(async (publicId) =>
+        this.fileService.deleteResource(publicId),
+      ),
+    );
+
     return {
       message: 'Folder deleted successfully',
       success: true,
@@ -110,6 +153,278 @@ export class DocumentService {
 
     return {
       message: 'Folder updated successfully',
+      success: true,
+    };
+  }
+
+  async createDocument(
+    documentDto: CreateDocumentDto,
+    userId: string,
+    studentId?: string,
+  ) {
+    const folder = await this.folderModel.findById(documentDto.folder);
+    if (!folder) throw new NotFoundException('Oops! folder not found');
+
+    const { url, public_id } = await this.fileService.uploadResource(
+      documentDto.file.path,
+      true,
+    );
+
+    const reference = await this.getDocReference();
+
+    const data = await this.documentModel.create({
+      documentName: documentDto.documentName,
+      folder: folder._id,
+      url,
+      publicId: public_id,
+      version: 1,
+      reference,
+      uploadedBy: new Types.ObjectId(userId),
+      student: new Types.ObjectId(studentId ?? documentDto.studentId),
+      mediaType: documentDto.file.mimetype,
+    });
+
+    return {
+      message: 'Document created',
+      success: true,
+      data,
+    };
+  }
+
+  async getFolderDocuments(folder_id: string) {
+    const data = await this.documentModel.aggregate([
+      {
+        $match: { folder: new Types.ObjectId(folder_id) },
+      },
+      {
+        $group: {
+          _id: '$reference',
+          latestVersion: { $max: '$version' },
+          docFields: { $first: '$$ROOT' },
+        },
+      },
+      {
+        $replaceRoot: { newRoot: '$docFields' },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          as: 'uploadedBy',
+          localField: 'uploadedBy',
+          foreignField: '_id',
+          pipeline: [
+            {
+              $lookup: {
+                from: 'admins',
+                as: 'admin',
+                localField: '_id',
+                foreignField: 'user',
+                pipeline: [
+                  {
+                    $lookup: {
+                      from: 'departments',
+                      as: 'department',
+                      localField: 'department',
+                      foreignField: '_id',
+                    },
+                  },
+                  {
+                    $unwind: {
+                      path: '$department',
+                      preserveNullAndEmptyArrays: true,
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $unwind: {
+                path: '$admin',
+                preserveNullAndEmptyArrays: true,
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                firstName: 1,
+                lastName: 1,
+                profilePicture: 1,
+                admin: {
+                  _id: 1,
+                  permission: 1,
+                  department: {
+                    name: 1,
+                    unionName: 1,
+                    logo: 1,
+                    _id: 1,
+                  },
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          updatedAt: 0,
+          publicId: 0,
+          folder: 0,
+          version: 0,
+          student: 0,
+        },
+      },
+    ]);
+
+    return {
+      message: 'Documents fetched successfully',
+      success: true,
+      data,
+    };
+  }
+
+  async updateDocument(
+    updateDocumentDto: UpdateDocumentDto,
+    reference: string,
+    userId: string,
+  ) {
+    const { file, documentName } = updateDocumentDto;
+
+    const versions = await this.documentModel
+      .find({ reference })
+      .sort({ version: -1 })
+      .limit(1);
+
+    const latestVersion = versions[0];
+
+    if (!latestVersion) throw new NotFoundException('Document not found');
+
+    const requestData = {
+      ...latestVersion.toObject(),
+      version: latestVersion.version + 1,
+      uploadedBy: new Types.ObjectId(userId),
+    };
+
+    if (file) {
+      const { url, public_id } = await this.fileService.uploadResource(
+        file.path,
+        true,
+      );
+
+      requestData.url = url;
+      requestData.publicId = public_id;
+    }
+
+    if (documentName) {
+      requestData.documentName = documentName;
+    }
+
+    const data = await this.documentModel.create(requestData);
+
+    return {
+      message: 'Document updated (new version created)',
+      success: true,
+      data,
+    };
+  }
+
+  async getDocument(document_id: string) {
+    const populateOptions: PopulateOptions[] = [
+      {
+        path: 'uploadedBy',
+        select: 'admin firstName lastName profilePicture',
+        populate: {
+          path: 'admin',
+          select: 'department permission',
+          populate: {
+            path: 'department',
+            select: 'logo unionName name',
+          },
+        },
+      },
+    ];
+
+    const selectOptions = '-updatedAt -publicId -folder -version -student';
+
+    const data = await this.documentModel
+      .findById(document_id)
+      .populate(populateOptions)
+      .select(selectOptions);
+
+    if (!data) throw new NotFoundException('Document not found');
+
+    const otherVersions = await this.documentModel
+      .find({
+        reference: data.reference,
+        _id: { $ne: data._id },
+      })
+      .populate(populateOptions)
+      .select(selectOptions);
+
+    return {
+      message: 'Document fetched',
+      data,
+      meta: {
+        otherVersions,
+      },
+    };
+  }
+
+  async deleteDocument(document_id: string) {
+    const document = await this.documentModel.findById(document_id);
+
+    if (!document) throw new NotFoundException('Document not found');
+
+    const uniquePublicIds: string[] = [];
+    const ids: string[] = [];
+
+    await this.documentModel
+      .find({
+        reference: document.reference,
+      })
+      .then((docs) => {
+        docs.forEach((doc) => {
+          ids.push(doc._id);
+          if (doc.publicId && !uniquePublicIds.includes(doc.publicId)) {
+            uniquePublicIds.push(doc.publicId);
+          }
+        });
+      });
+
+    await this.documentModel.deleteMany({
+      _id: {
+        $in: ids,
+      },
+    });
+    await Promise.all(
+      uniquePublicIds.map(async (publicId) =>
+        this.fileService.deleteResource(publicId),
+      ),
+    );
+
+    return {
+      message: 'All versions of this document has been deleted',
+      success: true,
+    };
+  }
+
+  async moveDocumentFolder(document_id: string, folder_id: string) {
+    const document = await this.documentModel.findById(document_id);
+    if (!document) throw new NotFoundException('Document not found');
+
+    const folder = await this.folderModel.findById(folder_id);
+    if (!folder) throw new NotFoundException('Folder not found');
+
+    await this.documentModel.updateMany(
+      { reference: document.reference },
+      {
+        $set: {
+          folder: folder._id,
+        },
+      },
+    );
+
+    return {
+      message: 'Document moved',
       success: true,
     };
   }

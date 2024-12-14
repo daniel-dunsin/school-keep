@@ -6,6 +6,7 @@ import { SchoolModule } from '../school/school.module';
 import { StudentModule } from '../student/student.module';
 import { DocumentService } from './document.service';
 import { DocumentController } from './document.controller';
+import { SharedModule } from 'src/shared/shared.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { DocumentController } from './document.controller';
     ]),
     forwardRef(() => SchoolModule),
     forwardRef(() => StudentModule),
+    forwardRef(() => SharedModule),
   ],
   controllers: [DocumentController],
   providers: [DocumentService],

@@ -1,6 +1,8 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { v2, UploadApiOptions, UploadApiResponse } from 'cloudinary';
 import { CLOUDINARY_PROVIDER } from '../providers';
+import * as mime from 'mime-types';
+import { unlink } from 'fs/promises';
 
 @Injectable()
 export class FileService {
@@ -10,13 +12,31 @@ export class FileService {
 
   async uploadResource(
     file: string,
+    isFilePath: boolean = false,
     options: UploadApiOptions = {},
   ): Promise<Pick<UploadApiResponse, 'url' | 'public_id'>> {
     try {
+      let resource_type: UploadApiOptions['resource_type'] = 'auto';
+
+      if (isFilePath) {
+        const mimetype = mime.lookup(file);
+
+        if (mimetype && mimetype.startsWith('image')) {
+          resource_type = 'image';
+        } else {
+          resource_type = 'video';
+        }
+      }
+
       const data = await this.cloudinary.uploader.upload(file, {
-        ...options,
         folder: 'school_keep',
+        resource_type,
+        ...options,
       });
+
+      if (isFilePath) {
+        await unlink(file);
+      }
 
       return { url: data.secure_url, public_id: data.public_id };
     } catch (error: any) {

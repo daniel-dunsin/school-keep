@@ -85,6 +85,7 @@ class _AddFolderBottomActionButtonState extends State<AddFolderBottomActionButto
                         AppInputField(
                           hintText: "Folder name",
                           controller: folderNameController,
+                          disabled: state is AddFolderLoading,
                         ),
                         SizedBox(
                           height: 40,
