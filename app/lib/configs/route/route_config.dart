@@ -11,7 +11,8 @@ import 'package:app/presentation/auth/pages/sign_up.dart';
 import 'package:app/presentation/auth/routes/routes.dart';
 import 'package:app/presentation/clearance/pages/clearance.dart';
 import 'package:app/presentation/clearance/routes/routes.dart';
-import 'package:app/presentation/documents/pages/documents.dart';
+import 'package:app/presentation/documents/pages/folders.dart';
+import 'package:app/presentation/documents/pages/folder_details.dart';
 import 'package:app/presentation/documents/routes/routes.dart';
 import 'package:app/presentation/home/pages/home.dart';
 import 'package:app/presentation/home/routes/routes.dart';
@@ -139,7 +140,19 @@ final goRouter = GoRouter(
                   child: DocumentsScreen(),
                 );
               },
-            )
+            ),
+            GoRoute(
+              path: DocumentRoutes.folderDetail,
+              name: DocumentRoutes.folderDetail,
+              pageBuilder: (context, state) {
+                final Map args = state.extra as Map;
+                return MaterialPage(
+                  child: FolderDetailScreen(
+                    folder: args["folder"],
+                  ),
+                );
+              },
+            ),
           ],
         ),
         StatefulShellBranch(

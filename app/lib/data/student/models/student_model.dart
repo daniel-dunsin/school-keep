@@ -8,14 +8,14 @@ import 'package:app/data/student/models/user_model.dart';
 class StudentModel {
   final String id;
   final String matricNumber;
-  final StudentStatus status;
+  final StudentStatus? status;
   final DepartmentModel? department;
   final User? user;
 
   StudentModel({
     required this.id,
     required this.matricNumber,
-    required this.status,
+    this.status,
     this.department,
     this.user,
   });
@@ -40,7 +40,7 @@ class StudentModel {
     return <String, dynamic>{
       'id': id,
       'matricNumber': matricNumber,
-      'status': status.name,
+      'status': status?.name,
       'department': department?.toMap(),
       "user": user?.toMap(),
     };
@@ -50,7 +50,7 @@ class StudentModel {
     return StudentModel(
       id: map['id'] as String,
       matricNumber: map['matricNumber'] as String,
-      status: StudentStatus.values.firstWhere((v) => v.name == map["status"]),
+      status: map["status"] != null ? StudentStatus.values.firstWhere((v) => v.name == map["status"]) : null,
       department: map['department'] != null && map["department"] is Map ? DepartmentModel.fromMap(map['department'] as Map) : null,
       user: map["user"] != null && map["user"] is Map ? User.fromMap(map["user"] as Map) : null,
     );

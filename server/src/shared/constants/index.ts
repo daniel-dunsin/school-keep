@@ -7,9 +7,7 @@ export const DEFAULT_IMAGES = {
 };
 
 export const MULTER_DISK_STORAGE = diskStorage({
-  destination(req, file, cb) {
-    return cb(null, join(__dirname, '../../uploads'));
-  },
+  destination: join(__dirname, '../uploads'),
   filename(req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     const extension = extname(file.originalname);

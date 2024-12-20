@@ -23,8 +23,10 @@ export class FileService {
 
         if (mimetype && mimetype.startsWith('image')) {
           resource_type = 'image';
-        } else {
+        } else if (mimetype && mimetype.startsWith('video')) {
           resource_type = 'video';
+        } else {
+          resource_type = 'raw';
         }
       }
 

@@ -61,6 +61,7 @@ class _AppInputDecoratorState extends State<AppInputDecorator> {
                     style: getTextTheme(context).labelSmall?.copyWith(
                           color: getColorScheme(context).onSecondary,
                         ),
+                    overflow: TextOverflow.ellipsis,
                   ),
             decoration: InputDecoration(
               helper: widget.helper,

@@ -11,6 +11,7 @@ import 'package:app/shared/widgets/dp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SignUpStep3 extends StatefulWidget {
   const SignUpStep3({super.key});
@@ -68,7 +69,7 @@ class _SignUpStep3State extends State<SignUpStep3> {
                 size: 250,
                 fileImage: state.signUpModel.profilePicture,
                 onPressed: () async {
-                  final image = await FileUtils.pickImage();
+                  final image = await FileUtils.pickImage(ImageSource.gallery);
 
                   getIt.get<SignUpStepsBloc>().add(
                         SignUpStepsSetSameStepFieldRequested(

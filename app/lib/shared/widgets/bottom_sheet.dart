@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:app/shared/utils/misc.dart';
 import 'package:flutter/material.dart';
 
@@ -6,11 +8,14 @@ class AppBottomSheet {
     showModalBottomSheet(
       context: context,
       useSafeArea: true,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       barrierColor: Color.fromRGBO(46, 46, 46, 0.294),
+      isDismissible: true,
       builder: (context) {
         return DraggableScrollableSheet(
           initialChildSize: initialChildSize,
+          minChildSize: max(initialChildSize - .1, .1),
           builder: (context, scrollController) {
             return Container(
               decoration: BoxDecoration(

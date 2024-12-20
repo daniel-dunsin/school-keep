@@ -1,3 +1,4 @@
+import 'package:app/domain/documents/document_form_data_repository.dart';
 import 'package:app/domain/documents/document_repository.dart';
 import 'package:app/domain/documents/folder_repository.dart';
 import 'package:app/shared/network/network_service.dart';
@@ -13,6 +14,14 @@ void setupDocumentsDomain(GetIt ioc) {
   ioc.registerSingleton<FolderRepository>(
     FolderRepository(
       networkService: NetworkService(),
+    ),
+  );
+
+  ioc.registerSingleton<DocumentFormDataRepository>(
+    DocumentFormDataRepository(
+      networkService: NetworkService(
+        isFormData: true,
+      ),
     ),
   );
 }

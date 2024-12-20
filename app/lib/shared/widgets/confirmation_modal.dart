@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:app/shared/constants/constants.dart';
 import 'package:app/shared/utils/misc.dart';
 import 'package:app/shared/widgets/button.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +21,20 @@ class ConfirmationModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(title),
-      content: content != null ? Text(content ?? "") : null,
+      title: Text(
+        title,
+        style: TextStyle(
+          color: getColorScheme(context).onPrimary,
+        ),
+      ),
+      content: content != null
+          ? Text(
+              content ?? "",
+              style: TextStyle(
+                color: getColorScheme(context).onPrimary,
+              ),
+            )
+          : null,
       actions: [
         TextButton(
           onPressed: onNo,
@@ -36,7 +49,9 @@ class ConfirmationModal extends StatelessWidget {
           padding: EdgeInsets.all(10),
           child: Text(
             "Yes",
-            style: getTextTheme(context).bodySmall,
+            style: getTextTheme(context).bodySmall?.copyWith(
+                  color: AppColors.white,
+                ),
           ),
           onPressed: onYes,
         ),

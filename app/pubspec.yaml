@@ -32,6 +32,8 @@ dependencies:
   intl: ^0.18.1
   url_launcher: ^6.3.1
   hugeicons: ^0.0.7
+  camera: ^0.11.0+2
+  path: ^1.9.0
 
 dev_dependencies:
   flutter_test:

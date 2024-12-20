@@ -13,7 +13,7 @@ import { isEmpty } from 'lodash';
 import { CreateDocumentDto, CreateFolderDto, UpdateDocumentDto } from './dtos';
 import { FileService } from 'src/shared/services/file.service';
 import { v4 } from 'uuid';
-import { Promise } from 'mongoose';
+import * as mime from 'mime-types';
 
 @Injectable()
 export class DocumentService {
@@ -181,7 +181,8 @@ export class DocumentService {
       reference,
       uploadedBy: new Types.ObjectId(userId),
       student: new Types.ObjectId(studentId ?? documentDto.studentId),
-      mediaType: documentDto.file.mimetype,
+      mediaType:
+        mime.lookup(documentDto.file.path) || documentDto.file.mimetype,
     });
 
     return {

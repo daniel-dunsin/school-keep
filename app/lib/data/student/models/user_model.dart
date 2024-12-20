@@ -62,12 +62,12 @@ class User {
 
   factory User.fromMap(Map map) {
     return User(
-      id: map['id'] as String,
-      firstName: map['firstName'] as String,
-      lastName: map['lastName'] as String,
-      email: map['email'] as String,
+      id: map['_id'] as String,
+      firstName: map['firstName'] ?? "",
+      lastName: map['lastName'] ?? "",
+      email: map['email'] ?? "",
       phoneNumber: map["phoneNumber"] ?? "",
-      profilePicture: map['profilePicture'] as String,
+      profilePicture: map['profilePicture'] ?? "",
       school: map['school'] != null && (map["school"].runtimeType is Map || map["school"] is Map<String, dynamic>) ? SchoolModel.fromMap(map['school']) : null,
       student: map['student'] != null && ((map["student"].runtimeType is Map || map["student"] is Map<String, dynamic>)) ? StudentModel.fromMap(map['student']) : null,
     );

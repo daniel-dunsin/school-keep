@@ -5,6 +5,7 @@ import 'package:app/shared/cubits/app_cubit.dart';
 import 'package:app/shared/cubits/app_state.dart';
 import 'package:app/shared/themes/dark.dart';
 import 'package:app/shared/themes/light.dart';
+import 'package:app/shared/utils/misc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -48,8 +49,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1)),
           child: ToastificationWrapper(
-            child: BlocBuilder<AppCubit, AppState>(
+            child: BlocConsumer<AppCubit, AppState>(
                 bloc: getIt.get<AppCubit>(),
+                listener: (context, state) {
+                  if (state.appTheme != null) {
+                    setStatusBarTheme(context, state.appTheme!);
+                  } else {
+                    final platformBrightness = MediaQuery.of(context).platformBrightness;
+
+                    platformBrightness == Brightness.light ? setStatusBarTheme(context, AppTheme.light) : setStatusBarTheme(context, AppTheme.dark);
+                  }
+                },
                 builder: (context, state) {
                   final AppTheme? appTheme = state.appTheme;
 

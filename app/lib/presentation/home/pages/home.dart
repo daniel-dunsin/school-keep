@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   WidgetSpan(
                     alignment: PlaceholderAlignment.middle,
                     child: StudentStatusWidget(
-                      status: user.student!.status,
+                      status: user.student!.status!,
                       fontSize: getTextTheme(context).labelSmall?.fontSize,
                     ),
                   ),
