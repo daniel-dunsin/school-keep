@@ -12,6 +12,12 @@ class FileUtils {
     return file != null ? File(file.path) : null;
   }
 
+  static Future<File?> pickImageAndVideo() async {
+    final XFile? file = await ImagePicker().pickMedia();
+
+    return file != null ? File(file.path) : null;
+  }
+
   static Future<File?> pickFile() async {
     final FilePickerResult? files = await FilePickerIO().pickFiles(allowMultiple: false);
 

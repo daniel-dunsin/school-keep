@@ -1,25 +1,72 @@
+import 'package:app/configs/app_config.dart';
+import 'package:app/data/documents/models/document_model.dart';
 import 'package:app/data/documents/models/folder_model.dart';
+import 'package:app/presentation/documents/bloc/documents_bloc/documents_bloc.dart';
 import 'package:app/presentation/documents/widgets/add_document_bottom_sheet.dart';
 import 'package:app/presentation/documents/widgets/folder_bottom_sheet.dart';
+import 'package:app/presentation/documents/widgets/single_document.dart';
 import 'package:app/shared/constants/constants.dart';
 import 'package:app/shared/utils/misc.dart';
 import 'package:app/shared/widgets/bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
-class FolderDetailScreen extends StatelessWidget {
+class FolderDetailScreen extends StatefulWidget {
   final FolderModel folder;
 
   const FolderDetailScreen({super.key, required this.folder});
 
   @override
+  State<FolderDetailScreen> createState() => _FolderDetailScreenState();
+}
+
+class _FolderDetailScreenState extends State<FolderDetailScreen> {
+  List<DocumentModel> documents = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchDocuments();
+  }
+
+  void fetchDocuments() async {
+    getIt.get<DocumentsBloc>().add(
+          GetDocumentsRequested(folderId: widget.folder.id),
+        );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: Padding(
-        padding: AppStyles.defaultPagePadding,
-        child: _buildNoDoc(context),
+      body: BlocConsumer<DocumentsBloc, DocumentsState>(
+        bloc: getIt.get<DocumentsBloc>(),
+        listener: (context, state) {
+          if (state is GetDocumentsSuccess) {
+            setState(() {
+              documents = state.documents;
+            });
+          }
+        },
+        builder: (context, state) {
+          return Padding(
+            padding: AppStyles.defaultPagePadding,
+            child: RefreshIndicator(
+              onRefresh: () async => fetchDocuments(),
+              child: Visibility(
+                child: _buildDocsShimmer(),
+                replacement: Visibility(
+                  child: _buildDocs(context),
+                  replacement: _buildNoDoc(context),
+                  visible: documents.length > 0,
+                ),
+                visible: state is GetDocumentsLoading,
+              ),
+            ),
+          );
+        },
       ),
       floatingActionButton: _buildFloatingActionButton(context),
     );
@@ -32,7 +79,7 @@ class FolderDetailScreen extends StatelessWidget {
           iconSize: WidgetStatePropertyAll(20),
         ),
       ),
-      title: Text(folder.folderName),
+      title: Text(widget.folder.folderName),
       actions: [
         IconButton(
           onPressed: () {
@@ -40,7 +87,7 @@ class FolderDetailScreen extends StatelessWidget {
               context,
               bottomSheetContents: [
                 FolderBottomSheet(
-                  folder: folder,
+                  folder: widget.folder,
                   onComplete: context.pop,
                 ),
               ],
@@ -105,6 +152,19 @@ class FolderDetailScreen extends StatelessWidget {
     );
   }
 
+  _buildDocs(BuildContext context) {
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
+        childAspectRatio: .9,
+      ),
+      itemBuilder: (context, index) => SingleDocument(document: documents[index]),
+      itemCount: documents.length,
+    );
+  }
+
   _buildFloatingActionButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
@@ -112,7 +172,7 @@ class FolderDetailScreen extends StatelessWidget {
           context,
           bottomSheetContents: [
             AddDocumentBottomSheet(
-              folderId: folder.id,
+              folderId: widget.folder.id,
             ),
           ],
           initialChildSize: .5,

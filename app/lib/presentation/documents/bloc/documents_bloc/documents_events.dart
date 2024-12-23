@@ -8,3 +8,9 @@ class AddDocumentRequested extends DocumentsEvent {
 
   AddDocumentRequested(this.addDocumentModel);
 }
+
+class GetDocumentsRequested extends DocumentsEvent {
+  final String folderId;
+
+  GetDocumentsRequested({required this.folderId});
+}

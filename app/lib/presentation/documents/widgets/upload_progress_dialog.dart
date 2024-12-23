@@ -42,9 +42,9 @@ class UploadProgressDialog {
                         child: BlocConsumer<UploadDocumentProgressBloc, double>(
                           bloc: getIt.get<UploadDocumentProgressBloc>(),
                           listener: (context, state) {
-                            if (state >= 99.5) {
-                              context.pop();
-                            }
+                            // if (state >= 99.5) {
+                            //   context.pop();
+                            // }
                           },
                           builder: (context, state) {
                             return Text(

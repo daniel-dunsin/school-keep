@@ -11,6 +11,6 @@ export const MULTER_DISK_STORAGE = diskStorage({
   filename(req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     const extension = extname(file.originalname);
-    cb(null, `${uniqueSuffix}${extension}`);
+    cb(null, `${uniqueSuffix}.${extension}`);
   },
 });

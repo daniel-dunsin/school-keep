@@ -165,6 +165,8 @@ export class DocumentService {
     const folder = await this.folderModel.findById(documentDto.folder);
     if (!folder) throw new NotFoundException('Oops! folder not found');
 
+    console.log(documentDto.file);
+
     const { url, public_id } = await this.fileService.uploadResource(
       documentDto.file.path,
       true,
@@ -266,12 +268,23 @@ export class DocumentService {
         },
       },
       {
+        $unwind: {
+          path: '$uploadedBy',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
         $project: {
           updatedAt: 0,
           publicId: 0,
           folder: 0,
           version: 0,
           student: 0,
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
         },
       },
     ]);

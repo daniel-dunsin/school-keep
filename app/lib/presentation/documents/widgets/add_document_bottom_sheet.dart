@@ -86,7 +86,7 @@ class _AddDocumentBottomSheetState extends State<AddDocumentBottomSheet> {
           icon: Icons.video_file_outlined,
           onTap: () async {
             selectFile(
-              file: await FileUtils.pickImage(ImageSource.gallery),
+              file: await FileUtils.pickImageAndVideo(),
             );
           },
         ),

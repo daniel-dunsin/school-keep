@@ -34,7 +34,7 @@ class _SingleFolderState extends State<SingleFolder> {
           children: [
             Icon(
               Icons.folder,
-              size: 130,
+              size: 100,
               color: Colors.grey,
             ),
             Row(

@@ -1,4 +1,5 @@
 import 'package:app/domain/documents/document_form_data_repository.dart';
+import 'package:app/domain/documents/document_repository.dart';
 import 'package:app/domain/documents/folder_repository.dart';
 import 'package:app/presentation/documents/bloc/documents_bloc/documents_bloc.dart';
 import 'package:app/presentation/documents/bloc/folders_bloc/folders_bloc.dart';
@@ -19,6 +20,7 @@ void setupDocumentsPresentation(GetIt ioc) {
   ioc.registerSingleton<DocumentsBloc>(
     DocumentsBloc(
       documentFormDataRepository: ioc.get<DocumentFormDataRepository>(),
+      documentsJsonRepository: ioc.get<DocumentRepository>(),
     ),
   );
 }

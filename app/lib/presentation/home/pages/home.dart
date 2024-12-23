@@ -1,11 +1,13 @@
 import 'package:app/configs/app_config.dart';
 import 'package:app/data/student/models/user_model.dart';
+import 'package:app/presentation/account/routes/routes.dart';
 import 'package:app/presentation/home/widgets/announcements_banner.dart';
 import 'package:app/shared/constants/constants.dart';
 import 'package:app/shared/utils/misc.dart';
 import 'package:app/shared/widgets/image.dart';
 import 'package:app/shared/widgets/status_render.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -40,7 +42,12 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Expanded(
           child: ListTile(
-            leading: AppCircleAvatar(image: user.profilePicture),
+            leading: GestureDetector(
+              onTap: () {
+                GoRouter.of(context).push(AccountRoutes.profile);
+              },
+              child: AppCircleAvatar(image: user.profilePicture),
+            ),
             contentPadding: EdgeInsets.all(0),
             isThreeLine: true,
             title: Text(

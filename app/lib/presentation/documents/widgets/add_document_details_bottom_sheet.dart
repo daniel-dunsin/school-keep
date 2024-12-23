@@ -84,8 +84,12 @@ class _AddDocumentDetailsBottomSheetState extends State<AddDocumentDetailsBottom
           }
 
           if (state is AddDocumentsSuccess) {
-            // context.pop();
+            context.pop();
+            context.pop();
             NetworkToast.handleSuccess("Document uploaded successfully");
+            getIt.get<DocumentsBloc>().add(
+                  GetDocumentsRequested(folderId: widget.folderId),
+                );
           }
         },
         child: Column(

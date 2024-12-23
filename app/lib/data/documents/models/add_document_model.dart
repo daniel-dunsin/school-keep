@@ -22,7 +22,7 @@ class AddDocumentModel {
       "folder": folder,
       "file": MultipartFile.fromFileSync(
         file.path,
-        filename: documentName,
+        filename: file.path,
       ),
     });
 
