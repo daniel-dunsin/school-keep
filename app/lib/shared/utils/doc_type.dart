@@ -156,6 +156,7 @@ class DocTypeUtils {
     required String mimeType,
     required DocumentModel document,
     required BuildContext context,
+    bool previewVideo = false,
   }) {
     final docType = getDocTypeFromMimeType(mimeType);
 
@@ -164,7 +165,10 @@ class DocTypeUtils {
         return AppImage(image: document.url);
 
       case DocType.video:
-        return AppVideoPlayer(videoUrl: document.url, playOnStart: false);
+        return AppVideoPlayer(
+          videoUrl: document.url,
+          playOnStart: previewVideo,
+        );
 
       default:
         return Center(

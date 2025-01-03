@@ -77,13 +77,13 @@ class _AddDocumentDetailsBottomSheetState extends State<AddDocumentDetailsBottom
       child: BlocListener<DocumentsBloc, DocumentsState>(
         bloc: getIt.get<DocumentsBloc>(),
         listener: (context, state) {
-          print(state);
           if (state is AddDocumentsError) {
             // for the upload progress
             context.pop();
           }
 
           if (state is AddDocumentsSuccess) {
+            context.pop();
             context.pop();
             context.pop();
             NetworkToast.handleSuccess("Document uploaded successfully");

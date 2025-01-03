@@ -11,6 +11,8 @@ import 'package:app/presentation/auth/pages/sign_up.dart';
 import 'package:app/presentation/auth/routes/routes.dart';
 import 'package:app/presentation/clearance/pages/clearance.dart';
 import 'package:app/presentation/clearance/routes/routes.dart';
+import 'package:app/presentation/documents/pages/document_details.dart';
+import 'package:app/presentation/documents/pages/documents_version.dart';
 import 'package:app/presentation/documents/pages/folders.dart';
 import 'package:app/presentation/documents/pages/folder_details.dart';
 import 'package:app/presentation/documents/routes/routes.dart';
@@ -179,5 +181,32 @@ final goRouter = GoRouter(
         ),
       ],
     ),
+    GoRoute(
+      path: DocumentRoutes.documentDetail,
+      name: DocumentRoutes.documentDetail,
+      pageBuilder: (context, state) {
+        final Map args = state.extra as Map;
+
+        return MaterialPage(
+          child: DocumentDetailsScreen(
+            document: args["document"],
+            showOptions: args["showOptions"] ?? true,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: DocumentRoutes.documentVersions,
+      name: DocumentRoutes.documentVersions,
+      pageBuilder: (context, state) {
+        final Map args = state.extra as Map;
+
+        return MaterialPage(
+          child: DocumentsVersion(
+            documentVersions: args["documentVersions"],
+          ),
+        );
+      },
+    )
   ],
 );

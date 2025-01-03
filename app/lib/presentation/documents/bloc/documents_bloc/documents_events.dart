@@ -14,3 +14,9 @@ class GetDocumentsRequested extends DocumentsEvent {
 
   GetDocumentsRequested({required this.folderId});
 }
+
+class GetSingleDocumentRequested extends DocumentsEvent {
+  final String documentId;
+
+  GetSingleDocumentRequested({required this.documentId});
+}

@@ -5,7 +5,6 @@ import 'package:app/configs/route/route_config.dart';
 import 'package:app/presentation/documents/widgets/add_document_details_bottom_sheet.dart';
 import 'package:app/shared/network/network_toast.dart';
 import 'package:app/shared/utils/file.dart';
-import 'package:app/shared/utils/misc.dart';
 import 'package:app/shared/widgets/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -51,7 +50,8 @@ class _AddDocumentBottomSheetState extends State<AddDocumentBottomSheet> {
   Widget _buildPrimarySheet() {
     return Column(
       children: [
-        _buildTile(
+        AppBottomSheet.buildTile(
+          context,
           title: "Upload File",
           icon: Icons.upload_outlined,
           onTap: () {
@@ -65,7 +65,8 @@ class _AddDocumentBottomSheetState extends State<AddDocumentBottomSheet> {
             );
           },
         ),
-        _buildTile(
+        AppBottomSheet.buildTile(
+          context,
           title: "Take Photo",
           icon: Icons.photo_camera_outlined,
           onTap: () async {
@@ -81,7 +82,8 @@ class _AddDocumentBottomSheetState extends State<AddDocumentBottomSheet> {
   Widget _buildSecondarySheet() {
     return Column(
       children: [
-        _buildTile(
+        AppBottomSheet.buildTile(
+          context,
           title: "Photos and Videos",
           icon: Icons.video_file_outlined,
           onTap: () async {
@@ -90,7 +92,8 @@ class _AddDocumentBottomSheetState extends State<AddDocumentBottomSheet> {
             );
           },
         ),
-        _buildTile(
+        AppBottomSheet.buildTile(
+          context,
           title: "Browse",
           icon: Icons.more_horiz_outlined,
           onTap: () async {
@@ -100,22 +103,6 @@ class _AddDocumentBottomSheetState extends State<AddDocumentBottomSheet> {
           },
         ),
       ],
-    );
-  }
-
-  ListTile _buildTile({
-    required String title,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      onTap: onTap,
-      leading: Icon(icon),
-      contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-      title: Text(
-        title,
-        style: getTextTheme(context).bodyLarge,
-      ),
     );
   }
 }

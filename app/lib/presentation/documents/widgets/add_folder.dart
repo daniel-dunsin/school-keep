@@ -47,6 +47,7 @@ class _AddFolderBottomActionButtonState extends State<AddFolderBottomActionButto
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
+      heroTag: "Folders List Floating Action Button",
       onPressed: () {
         AppBottomSheet.display(
           context,

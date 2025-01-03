@@ -10,4 +10,10 @@ class DocumentRepository {
 
     return response?.data;
   }
+
+  getDocument(String documentId) async {
+    final response = await this.networkService.get("/document/$documentId");
+
+    return response?.data;
+  }
 }

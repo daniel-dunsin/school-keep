@@ -45,7 +45,8 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
 
     if (widget.playOnStart) {
       videoPlayerController.play();
-      videoPlayerController.setVolume(1);
+      videoPlayerController.setVolume(0);
+      videoPlayerController.setLooping(true);
     } else {
       videoPlayerController.pause();
     }

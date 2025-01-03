@@ -20,3 +20,14 @@ class GetDocumentsSuccess extends DocumentsState {
 }
 
 class GetDocumentsError extends DocumentsState {}
+
+class GetSingleDocumentLoading extends DocumentsState {}
+
+class GetSingleDocumentSuccess extends DocumentsState {
+  final DocumentModel document;
+  final List<DocumentModel> versions;
+
+  GetSingleDocumentSuccess({required this.document, required this.versions});
+}
+
+class GetSingleDocumentError extends DocumentsState {}

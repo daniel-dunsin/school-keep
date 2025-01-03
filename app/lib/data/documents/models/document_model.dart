@@ -12,6 +12,7 @@ class DocumentModel {
   String url;
   User uploadedBy;
   FolderModel? folder;
+  DateTime? createdAt;
 
   DocumentModel({
     required this.id,
@@ -21,6 +22,7 @@ class DocumentModel {
     required this.url,
     required this.uploadedBy,
     required this.folder,
+    this.createdAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -31,6 +33,7 @@ class DocumentModel {
       'url': url,
       'uploadedBy': uploadedBy.toMap(),
       'folder': folder?.toMap(),
+      'createdAt': createdAt,
     };
   }
 
@@ -43,6 +46,7 @@ class DocumentModel {
       uploadedBy: User.fromMap(map['uploadedBy'] as Map<String, dynamic>),
       folder: map["folder"] != null && map["folder"] is Map ? FolderModel.fromMap(map['folder']) : null,
       name: map["documentName"] ?? "",
+      createdAt: map["createdAt"] != null ? DateTime.parse(map["createdAt"]) : null,
     );
   }
 

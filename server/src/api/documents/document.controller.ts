@@ -90,7 +90,7 @@ export class DocumentController {
 
   @Get('folder/:folder_id/documents')
   async getFolderDocuments(@Param('folder_id', MongoIdPipe) folderId: string) {
-    return await this.documentService.getFolderDocuments(folderId);
+    return await this.documentService.getDocuments({ folder_id: folderId });
   }
 
   @Get(':document_id')

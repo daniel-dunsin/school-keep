@@ -51,5 +51,29 @@ class DocumentsBloc extends Bloc<DocumentsEvent, DocumentsState> {
         }
       },
     );
+
+    on<GetSingleDocumentRequested>(
+      (event, emit) async {
+        emit(GetSingleDocumentLoading());
+        try {
+          final response = await this.documentsJsonRepository.getDocument(event.documentId);
+
+          final data = DocumentModel.fromMap(response["data"]);
+          final otherVersionsMap = response["meta"]["otherVersions"] as List<dynamic>;
+
+          final otherVersions = otherVersionsMap.map((d) => DocumentModel.fromMap(d)).toList();
+
+          emit(
+            GetSingleDocumentSuccess(
+              document: data,
+              versions: otherVersions,
+            ),
+          );
+        } catch (e) {
+          emit(GetSingleDocumentError());
+          NetworkToast.handleError(e);
+        }
+      },
+    );
   }
 }

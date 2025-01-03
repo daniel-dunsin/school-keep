@@ -8,9 +8,14 @@ import 'package:go_router/go_router.dart';
 
 class SingleFolder extends StatefulWidget {
   final FolderModel folder;
+  final bool showOptions;
+  final VoidCallback? onClick;
+
   const SingleFolder({
     super.key,
     required this.folder,
+    this.showOptions = true,
+    this.onClick,
   });
 
   @override
@@ -22,12 +27,16 @@ class _SingleFolderState extends State<SingleFolder> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.pushNamed(
-          DocumentRoutes.folderDetail,
-          extra: {
-            "folder": widget.folder,
-          },
-        );
+        if (widget.onClick != null) {
+          widget.onClick!();
+        } else {
+          context.pushNamed(
+            DocumentRoutes.folderDetail,
+            extra: {
+              "folder": widget.folder,
+            },
+          );
+        }
       },
       child: Container(
         child: Column(
@@ -46,20 +55,21 @@ class _SingleFolderState extends State<SingleFolder> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    AppBottomSheet.display(
-                      context,
-                      bottomSheetContents: [
-                        FolderBottomSheet(folder: widget.folder),
-                      ],
-                    );
-                  },
-                  icon: Icon(
-                    Icons.more_vert,
-                    color: getColorScheme(context).onPrimary,
+                if (widget.showOptions)
+                  IconButton(
+                    onPressed: () {
+                      AppBottomSheet.display(
+                        context,
+                        bottomSheetContents: [
+                          FolderBottomSheet(folder: widget.folder),
+                        ],
+                      );
+                    },
+                    icon: Icon(
+                      Icons.more_vert,
+                      color: getColorScheme(context).onPrimary,
+                    ),
                   ),
-                ),
               ],
             )
           ],

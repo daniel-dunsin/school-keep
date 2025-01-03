@@ -52,4 +52,27 @@ class AppBottomSheet {
       },
     );
   }
+
+  static ListTile buildTile(
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required VoidCallback onTap,
+    Color? color,
+  }) {
+    return ListTile(
+      onTap: onTap,
+      leading: Icon(
+        icon,
+        color: color,
+      ),
+      contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+      title: Text(
+        title,
+        style: getTextTheme(context).bodyLarge?.copyWith(
+              color: color,
+            ),
+      ),
+    );
+  }
 }

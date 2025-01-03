@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Document } from './schemas/document.schema';
-import { Model, PopulateOptions, Types } from 'mongoose';
+import { FilterQuery, Model, PopulateOptions, Types } from 'mongoose';
 import { Folder } from './schemas/folders.schema';
 import { Department } from '../school/schemas/department.schema';
 import { Student } from '../student/schemas/student.schema';
@@ -194,10 +194,20 @@ export class DocumentService {
     };
   }
 
-  async getFolderDocuments(folder_id: string) {
+  async getDocuments(query?: any) {
+    const _query: FilterQuery<Document> = {};
+
+    if (query.folder_id) {
+      _query['folder'] = new Types.ObjectId(query.folder_id);
+    }
+
+    if (query.reference) {
+      _query['reference'] = query.reference;
+    }
+
     const data = await this.documentModel.aggregate([
       {
-        $match: { folder: new Types.ObjectId(folder_id) },
+        $match: _query,
       },
       {
         $group: {
@@ -278,7 +288,6 @@ export class DocumentService {
           updatedAt: 0,
           publicId: 0,
           folder: 0,
-          version: 0,
           student: 0,
         },
       },
@@ -357,7 +366,7 @@ export class DocumentService {
       },
     ];
 
-    const selectOptions = '-updatedAt -publicId -folder -version -student';
+    const selectOptions = '-updatedAt -publicId -folder -student';
 
     const data = await this.documentModel
       .findById(document_id)
@@ -372,7 +381,8 @@ export class DocumentService {
         _id: { $ne: data._id },
       })
       .populate(populateOptions)
-      .select(selectOptions);
+      .select(selectOptions)
+      .sort({ version: -1 });
 
     return {
       message: 'Document fetched',

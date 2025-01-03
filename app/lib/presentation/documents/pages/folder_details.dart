@@ -167,6 +167,7 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
 
   _buildFloatingActionButton(BuildContext context) {
     return FloatingActionButton(
+      heroTag: "Folder Details Floating Action Button",
       onPressed: () {
         AppBottomSheet.display(
           context,

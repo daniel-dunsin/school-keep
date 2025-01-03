@@ -236,7 +236,7 @@ class _SignUpStep1State extends State<SignUpStep1> {
       },
       child: Center(
         child: Text(
-          "Sign In",
+          "Sign In Instead",
           style: getTextTheme(context).bodyLarge?.copyWith(
                 color: getColorScheme(context).brightness == Brightness.light
                     ? getColorScheme(
