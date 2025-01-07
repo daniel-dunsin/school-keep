@@ -210,9 +210,14 @@ export class DocumentService {
         $match: _query,
       },
       {
+        $sort: {
+          reference: 1,
+          version: -1,
+        },
+      },
+      {
         $group: {
           _id: '$reference',
-          latestVersion: { $max: '$version' },
           docFields: { $first: '$$ROOT' },
         },
       },
@@ -287,7 +292,6 @@ export class DocumentService {
         $project: {
           updatedAt: 0,
           publicId: 0,
-          folder: 0,
           student: 0,
         },
       },
@@ -325,6 +329,9 @@ export class DocumentService {
       ...latestVersion.toObject(),
       version: latestVersion.version + 1,
       uploadedBy: new Types.ObjectId(userId),
+      id: undefined,
+      _id: undefined,
+      __v: undefined,
     };
 
     if (file) {
@@ -366,7 +373,7 @@ export class DocumentService {
       },
     ];
 
-    const selectOptions = '-updatedAt -publicId -folder -student';
+    const selectOptions = '-updatedAt -publicId -student';
 
     const data = await this.documentModel
       .findById(document_id)

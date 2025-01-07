@@ -11,6 +11,12 @@ class AddDocumentsSuccess extends DocumentsState {}
 
 class AddDocumentsError extends DocumentsState {}
 
+class UpdateDocumentsLoading extends DocumentsState {}
+
+class UpdateDocumentsSuccess extends DocumentsState {}
+
+class UpdateDocumentsError extends DocumentsState {}
+
 class GetDocumentsLoading extends DocumentsState {}
 
 class GetDocumentsSuccess extends DocumentsState {
@@ -31,3 +37,9 @@ class GetSingleDocumentSuccess extends DocumentsState {
 }
 
 class GetSingleDocumentError extends DocumentsState {}
+
+class DeleteDocumentsLoading extends DocumentsState {}
+
+class DeleteDocumentsSuccess extends DocumentsState {}
+
+class DeleteDocumentsError extends DocumentsState {}

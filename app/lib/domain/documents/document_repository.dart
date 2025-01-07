@@ -16,4 +16,10 @@ class DocumentRepository {
 
     return response?.data;
   }
+
+  deleteDocument(String documentId) async {
+    final response = await this.networkService.delete("/document/$documentId");
+
+    return response?.data;
+  }
 }

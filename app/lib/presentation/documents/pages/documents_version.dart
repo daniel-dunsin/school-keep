@@ -5,11 +5,15 @@ import 'package:app/shared/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class DocumentsVersion extends StatelessWidget {
-  final List<DocumentModel> documentVersions;
-  const DocumentsVersion({
+  late final List<DocumentModel> documentVersions;
+
+  DocumentsVersion({
     Key? key,
-    required this.documentVersions,
-  }) : super(key: key);
+    required List<DocumentModel> documentVersions,
+  }) : super(key: key) {
+    documentVersions.sort((a, b) => a.version!.compareTo(b.version!));
+    this.documentVersions = documentVersions;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +22,8 @@ class DocumentsVersion extends StatelessWidget {
       body: Padding(
         padding: AppStyles.defaultPagePadding,
         child: ListView.builder(
+          reverse: true,
+          shrinkWrap: true,
           itemBuilder: (context, index) => SingleDocumentVersion(
             currentVersion: documentVersions[index],
             previousVersion: index != 0 ? documentVersions[index - 1] : null,

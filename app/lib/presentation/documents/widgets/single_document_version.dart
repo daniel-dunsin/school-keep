@@ -37,7 +37,7 @@ class SingleDocumentVersion extends StatelessWidget {
           },
           child: Card(
             margin: EdgeInsets.all(0),
-            color: getColorScheme(context).primary,
+            color: getColorScheme(context).secondary,
             child: Container(
               width: double.maxFinite,
               padding: EdgeInsets.all(15),

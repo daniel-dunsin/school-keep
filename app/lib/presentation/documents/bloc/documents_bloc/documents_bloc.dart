@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:app/data/documents/models/add_document_model.dart';
 import 'package:app/data/documents/models/document_model.dart';
+import 'package:app/data/documents/models/update_document_model.dart';
 import 'package:app/domain/documents/document_form_data_repository.dart';
 import 'package:app/domain/documents/document_repository.dart';
 import 'package:app/shared/network/network_toast.dart';
@@ -71,6 +72,39 @@ class DocumentsBloc extends Bloc<DocumentsEvent, DocumentsState> {
           );
         } catch (e) {
           emit(GetSingleDocumentError());
+          NetworkToast.handleError(e);
+        }
+      },
+    );
+
+    on<UpdateDocumentRequested>(
+      (event, emit) async {
+        emit(UpdateDocumentsLoading());
+
+        try {
+          await this.documentFormDataRepository.updateDocument(
+                event.documentReference,
+                event.updateDocumentModel,
+              );
+
+          emit(UpdateDocumentsSuccess());
+        } catch (e) {
+          emit(UpdateDocumentsError());
+          NetworkToast.handleError(e);
+        }
+      },
+    );
+
+    on<DeleteDocumentRequested>(
+      (event, emit) async {
+        emit(DeleteDocumentsLoading());
+
+        try {
+          await this.documentsJsonRepository.deleteDocument(event.documentId);
+
+          emit(DeleteDocumentsSuccess());
+        } catch (e) {
+          emit(DeleteDocumentsError());
           NetworkToast.handleError(e);
         }
       },

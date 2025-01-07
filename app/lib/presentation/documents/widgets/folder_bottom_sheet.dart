@@ -51,7 +51,7 @@ class FolderBottomSheet extends StatelessWidget {
 
                   showDialog(
                     context: context,
-                    builder: (context) => ConfirmationModal(
+                    builder: (context) => ConfirmationModal<FoldersBloc, DeleteFolderLoading>(
                       title: "Delete Folder",
                       content: "Are you sure you want to delete this folder? it may contain documents",
                       onNo: context.pop,

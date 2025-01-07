@@ -81,7 +81,7 @@ export class DocumentController {
     @Auth() user: User,
     @Param('document_reference') reference: string,
   ) {
-    if (body.file) {
+    if (file) {
       body.file = file;
     }
 

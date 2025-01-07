@@ -3,11 +3,14 @@ import 'package:app/configs/app_config.dart';
 import 'package:app/data/documents/models/document_model.dart';
 import 'package:app/presentation/documents/bloc/documents_bloc/documents_bloc.dart';
 import 'package:app/presentation/documents/routes/routes.dart';
+import 'package:app/presentation/documents/widgets/edit_document_bottom_sheet.dart';
 import 'package:app/shared/constants/constants.dart';
+import 'package:app/shared/network/network_toast.dart';
 import 'package:app/shared/utils/doc_type.dart';
 import 'package:app/shared/utils/misc.dart';
 import 'package:app/shared/widgets/bottom_sheet.dart';
 import 'package:app/shared/widgets/confirmation_modal.dart';
+import 'package:app/shared/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -163,28 +166,35 @@ class _DocumentDetailsScreenState extends State<DocumentDetailsScreen> {
                 splashFactory: NoSplash.splashFactory,
                 splashColor: Colors.transparent,
               ),
-              child: ListTile(
-                onTap: () {
-                  context.push(
-                    DocumentRoutes.documentVersions,
-                    extra: {
-                      "documentVersions": [
-                        document,
-                        ...otherVersions
-                      ],
-                    },
-                  );
-                },
-                title: Text(
-                  "All Versions",
-                  style: getTextTheme(context).bodySmall,
-                ),
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 0,
-                ),
-                trailing: Icon(Icons.chevron_right),
-              ),
+              child: BlocBuilder(
+                  bloc: getIt.get<DocumentsBloc>(),
+                  builder: (context, state) {
+                    final getVersionsLoading = state is GetSingleDocumentLoading;
+                    return ListTile(
+                      onTap: getVersionsLoading
+                          ? null
+                          : () {
+                              context.push(
+                                DocumentRoutes.documentVersions,
+                                extra: {
+                                  "documentVersions": [
+                                    document,
+                                    ...otherVersions
+                                  ],
+                                },
+                              );
+                            },
+                      title: Text(
+                        "All Versions",
+                        style: getTextTheme(context).bodySmall,
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 0,
+                      ),
+                      trailing: getVersionsLoading ? AppLoader() : Icon(Icons.chevron_right),
+                    );
+                  }),
             ),
         ],
       ),
@@ -192,6 +202,18 @@ class _DocumentDetailsScreenState extends State<DocumentDetailsScreen> {
   }
 
   _buildDocumentOptionsBottomSheet() {
+    void onSuccessfulDeletion() {
+      NetworkToast.handleSuccess("Document deleted successfully");
+      context.pop();
+      context.pop();
+      context.pop();
+      if (document.folderId != null) {
+        getIt.get<DocumentsBloc>().add(
+              GetDocumentsRequested(folderId: document.folderId!),
+            );
+      }
+    }
+
     return Column(
       children: [
         AppBottomSheet.buildTile(
@@ -201,36 +223,48 @@ class _DocumentDetailsScreenState extends State<DocumentDetailsScreen> {
           onTap: () {
             AppBottomSheet.display(
               context,
-              bottomSheetContents: [],
+              bottomSheetContents: [
+                EditDocumentBottomSheet(document: document),
+              ],
             );
           },
         ),
-        AppBottomSheet.buildTile(
-          context,
-          title: "Move document to another folder",
-          icon: HugeIcons.strokeRoundedCopy02,
-          onTap: () {},
-        ),
-        AppBottomSheet.buildTile(
-          context,
-          title: "Delete document",
-          icon: HugeIcons.strokeRoundedDelete01,
-          color: getColorScheme(context).error,
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (context) => ConfirmationModal(
-                title: "Delete Document",
-                content: "Are you sure you want to delete this document?",
-                onNo: () {
-                  context.pop();
-                },
-                onYes: () {
-                  context.pop();
-                },
-              ),
-            );
+        // AppBottomSheet.buildTile(
+        //   context,
+        //   title: "Move document to another folder",
+        //   icon: HugeIcons.strokeRoundedCopy02,
+        //   onTap: () {},
+        // ),
+        BlocListener(
+          bloc: getIt.get<DocumentsBloc>(),
+          listener: (context, state) {
+            if (state is DeleteDocumentsSuccess) {
+              onSuccessfulDeletion();
+            }
           },
+          child: AppBottomSheet.buildTile(
+            context,
+            title: "Delete document",
+            icon: HugeIcons.strokeRoundedDelete01,
+            color: getColorScheme(context).error,
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) => ConfirmationModal<DocumentsBloc, DeleteDocumentsLoading>(
+                  title: "Delete Document",
+                  content: "Are you sure you want to delete this document?",
+                  onNo: () {
+                    context.pop();
+                  },
+                  onYes: () {
+                    getIt.get<DocumentsBloc>().add(
+                          DeleteDocumentRequested(documentId: widget.document.id),
+                        );
+                  },
+                ),
+              );
+            },
+          ),
         ),
       ],
     );
