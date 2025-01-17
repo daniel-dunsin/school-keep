@@ -100,4 +100,6 @@ export interface GetClearanceQuery {
 
 export interface GetAllDocumentsQuery {
   search?: string;
+  student_id?: string;
+  folder_id?: string;
 }

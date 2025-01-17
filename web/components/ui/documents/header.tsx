@@ -2,7 +2,7 @@
 import SearchField from '@/components/common/input/search';
 import { View } from '@/lib/schemas/enums';
 import { cn } from '@/lib/utils';
-import { GridIcon, TableIcon } from 'lucide-react';
+import { ArrowLeftCircleIcon, TableIcon } from 'lucide-react';
 import React, { FC } from 'react';
 import { CiGrid31 } from 'react-icons/ci';
 
@@ -10,20 +10,26 @@ interface Props {
   onSelect(view: View): void;
   selectedView: View;
   onSearch(s?: string): void;
+  onClose?(): void;
 }
 
 const DocumentsPageHeader: FC<Props> = ({
   onSelect,
   selectedView,
   onSearch,
+  onClose,
 }) => {
   return (
     <div className="my-8">
-      <SearchField
-        InputProps={{ placeholder: 'Search documents...' }}
-        onSearch={(s) => onSearch(s)}
-      />
-
+      <div className="flex items-center gap-3">
+        {onClose && (
+          <ArrowLeftCircleIcon size={35} onClick={onClose} cursor={'pointer'} />
+        )}
+        <SearchField
+          InputProps={{ placeholder: 'Search documents...' }}
+          onSearch={(s) => onSearch(s)}
+        />
+      </div>
       <div className="flex items-center justify-end space-x-3 mt-4">
         <ViewSwitch
           view={View.grid}

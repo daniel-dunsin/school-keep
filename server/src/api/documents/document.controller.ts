@@ -10,7 +10,7 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { DocumentService } from './document.service';
 import {
   CreateDocumentDto,
@@ -40,8 +40,14 @@ export class DocumentController {
   }
 
   @Get('folder')
-  async getFolders(@Auth('student') student: Student) {
-    return await this.documentService.getStudentFolders(student._id);
+  @ApiQuery({ name: 'studentId', required: false })
+  async getFolders(
+    @Auth('student') student: Student,
+    @Query('studentId') studentId?: string,
+  ) {
+    return await this.documentService.getStudentFolders(
+      student?._id || studentId,
+    );
   }
 
   @Delete('folder/:folder_id')

@@ -110,7 +110,7 @@ export type Document = {
 export type Folder = {
   level: number;
   folderName: string;
-  _id?: string;
+  _id: string;
   createdAt: number;
 };
 

@@ -1,6 +1,8 @@
+'use client';
+import { useSearchParams } from '@/lib/hooks/use-search-params';
 import { TabsDto } from '@/lib/schemas/interfaces';
 import { cn } from '@/lib/utils';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 interface Props {
   tabs: TabsDto[];
@@ -8,6 +10,22 @@ interface Props {
 
 const Tabs: FC<Props> = ({ tabs }) => {
   const [tab, setTab] = useState<number>(0);
+  const { searchParams, setParam } = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get('tab')) {
+      const header = searchParams.get('tab');
+
+      const tab = tabs.findIndex((t) => t.header === header);
+      if (tab != -1) {
+        setTab(tab);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    setParam('tab', tabs[tab].header);
+  }, [tab]);
 
   return (
     <div className="mt-6 space-y-4">

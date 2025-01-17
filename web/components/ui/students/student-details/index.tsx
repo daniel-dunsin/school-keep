@@ -34,7 +34,7 @@ const StudentDetails = () => {
           },
           {
             header: 'Documents',
-            widget: <StudentDocumentsTab />,
+            widget: <StudentDocumentsTab student={student!} />,
           },
         ]}
       />

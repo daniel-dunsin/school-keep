@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 import SingleDocument, {
   GridDocumentSkeleton as Skeleton,
 } from './single-document';
+import NoData from '@/components/common/no-data';
 
 interface Props {
   documents?: Document[];
@@ -23,6 +24,10 @@ const DocumentsGridView: FC<Props> = ({ loading, documents }) => {
         <Skeleton />
       </div>
     );
+  }
+
+  if (documents?.length === 0) {
+    return <NoData title="No documents found" />;
   }
 
   return (
