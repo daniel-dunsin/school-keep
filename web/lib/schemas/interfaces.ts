@@ -97,3 +97,7 @@ export interface GetAnnouncementsQuery {
 export interface GetClearanceQuery {
   search?: string;
 }
+
+export interface GetAllDocumentsQuery {
+  search?: string;
+}

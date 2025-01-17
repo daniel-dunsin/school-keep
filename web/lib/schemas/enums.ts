@@ -19,3 +19,22 @@ export enum StudentStatus {
   Expelled = 'expelled',
   Suspended = 'suspended',
 }
+
+export enum DocType {
+  image = 'image',
+  video = 'video',
+  pdf = 'pdf',
+  xlsx = 'xlsx',
+  pptx = 'pptx',
+  csv = 'csv',
+  apk = 'apk',
+  json = 'json',
+  doc = 'doc',
+  txt = 'txt',
+  unknown = 'unknown',
+}
+
+export enum View {
+  grid = 'grid',
+  table = 'table',
+}

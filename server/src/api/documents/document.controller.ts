@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { DocumentService } from './document.service';
 import {
   CreateDocumentDto,
   CreateFolderDto,
+  GetAllDocumentsQuery,
   MoveDocumentDto,
   UpdateDocumentDto,
 } from './dtos';
@@ -89,8 +91,14 @@ export class DocumentController {
   }
 
   @Get('folder/:folder_id/documents')
-  async getFolderDocuments(@Param('folder_id', MongoIdPipe) folderId: string) {
-    return await this.documentService.getDocuments({ folder_id: folderId });
+  async getFolderDocuments(
+    @Param('folder_id', MongoIdPipe) folderId: string,
+    @Auth() user: User,
+  ) {
+    return await this.documentService.getDocuments(
+      { folder_id: folderId },
+      user,
+    );
   }
 
   @Get(':document_id')
@@ -111,6 +119,32 @@ export class DocumentController {
     return await this.documentService.moveDocumentFolder(
       documentId,
       moveDocumentDto.folder_id,
+    );
+  }
+
+  @Get()
+  async getAllDocuments(
+    @Query() query: GetAllDocumentsQuery,
+    @Auth() user: User,
+  ) {
+    return await this.documentService.getDocuments(
+      {
+        ...query,
+        school_id: user?.school?._id,
+      },
+      user,
+    );
+  }
+
+  @Get('student/:student_id')
+  async getStudentDocuments(
+    @Query() query: GetAllDocumentsQuery,
+    @Param('student_id', MongoIdPipe) student_id: string,
+    @Auth() user: User,
+  ) {
+    return await this.documentService.getDocuments(
+      { ...query, student_id },
+      user,
     );
   }
 }

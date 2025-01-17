@@ -31,3 +31,12 @@ export class MoveDocumentDto {
   @IsMongoId(false)
   folder_id: string;
 }
+
+export class GetAllDocumentsQuery {
+  @IsString(true)
+  search?: string;
+  reference?: string;
+  school_id?: string;
+  folder_id?: string;
+  student_id?: string;
+}

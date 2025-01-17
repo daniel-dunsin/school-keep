@@ -94,6 +94,26 @@ export type SchoolClearance = {
   is_default?: boolean;
 };
 
+export type Document = {
+  version: number;
+  documentName: string;
+  reference: string;
+  mediaType?: string;
+  url?: string;
+  student?: Student;
+  uploadedBy?: User;
+  folder?: Folder;
+  _id: string;
+  createdAt: Date;
+};
+
+export type Folder = {
+  level: number;
+  folderName: string;
+  _id?: string;
+  createdAt: number;
+};
+
 export type AuthPages =
   | 'login'
   | 'forgot-password'

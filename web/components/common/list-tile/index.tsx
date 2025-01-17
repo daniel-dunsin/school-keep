@@ -1,14 +1,23 @@
+import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import React, { FC } from 'react';
 
 interface Props {
   leadingImage: string;
   title: string;
+  onClick?(): void;
+  trailing?: string;
 }
 
-const ListTile: FC<Props> = ({ title, leadingImage }) => {
+const ListTile: FC<Props> = ({ title, leadingImage, onClick, trailing }) => {
   return (
-    <div className="flex items-center gap-2">
+    <div
+      className={cn(
+        'flex items-center gap-2',
+        onClick && 'underline cursor-pointer'
+      )}
+      onClick={onClick}
+    >
       <Image
         src={leadingImage}
         alt={title}
@@ -16,7 +25,9 @@ const ListTile: FC<Props> = ({ title, leadingImage }) => {
         height={80}
         className="w-[30px] h-[30px] rounded-full border-2"
       />
-      <p>{title}</p>
+      <p className="text-[.9rem] flex-1">{title}</p>
+
+      {trailing && <p className="text-[.9rem] justify-self-end">{trailing}</p>}
     </div>
   );
 };

@@ -5,15 +5,28 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Document } from './schemas/document.schema';
-import { FilterQuery, Model, PopulateOptions, Types } from 'mongoose';
+import {
+  FilterQuery,
+  Model,
+  PipelineStage,
+  PopulateOptions,
+  Types,
+} from 'mongoose';
 import { Folder } from './schemas/folders.schema';
 import { Department } from '../school/schemas/department.schema';
 import { Student } from '../student/schemas/student.schema';
 import { isEmpty } from 'lodash';
-import { CreateDocumentDto, CreateFolderDto, UpdateDocumentDto } from './dtos';
+import {
+  CreateDocumentDto,
+  CreateFolderDto,
+  GetAllDocumentsQuery,
+  UpdateDocumentDto,
+} from './dtos';
 import { FileService } from 'src/shared/services/file.service';
 import { v4 } from 'uuid';
 import * as mime from 'mime-types';
+import { User } from '../user/schemas/user.schema';
+import { Roles } from '../user/enums';
 
 @Injectable()
 export class DocumentService {
@@ -194,21 +207,55 @@ export class DocumentService {
     };
   }
 
-  async getDocuments(query?: any) {
+  async getDocuments(query?: GetAllDocumentsQuery, user?: User) {
     const _query: FilterQuery<Document> = {};
 
     if (query.folder_id) {
-      _query['folder'] = new Types.ObjectId(query.folder_id);
+      _query['folder._id'] = new Types.ObjectId(query.folder_id);
+      delete query.folder_id;
     }
 
     if (query.reference) {
       _query['reference'] = query.reference;
+      delete query.reference;
     }
 
-    const data = await this.documentModel.aggregate([
-      {
-        $match: _query,
-      },
+    if (query.student_id) {
+      _query['student._id'] = new Types.ObjectId(query.student_id);
+      delete query.student_id;
+    }
+
+    if (query.school_id) {
+      const students = await this.studentModel.aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            as: 'user',
+            localField: 'user',
+            foreignField: '_id',
+            pipeline: [{ $project: { school: 1 } }],
+          },
+        },
+        {
+          $unwind: '$user',
+        },
+        {
+          $match: {
+            'user.school': new Types.ObjectId(query.school_id),
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+          },
+        },
+      ]);
+
+      _query['student._id'] = { $in: students.map((st) => st._id) };
+      delete query.school_id;
+    }
+
+    let pipelines: PipelineStage[] = [
       {
         $sort: {
           reference: 1,
@@ -289,18 +336,148 @@ export class DocumentService {
         },
       },
       {
+        $lookup: {
+          from: 'folders',
+          localField: 'folder',
+          foreignField: '_id',
+          as: 'folder',
+          pipeline: [
+            {
+              $project: {
+                folderName: 1,
+                level: 1,
+                createdAt: 1,
+                _id: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $unwind: {
+          path: '$folder',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
         $project: {
           updatedAt: 0,
           publicId: 0,
-          student: 0,
         },
+      },
+      ...(user?.role != Roles.Student
+        ? [
+            {
+              $lookup: {
+                from: 'students',
+                localField: 'student',
+                foreignField: '_id',
+                as: 'student',
+                pipeline: [
+                  {
+                    $lookup: {
+                      from: 'users',
+                      localField: 'user',
+                      foreignField: '_id',
+                      as: 'user',
+                      pipeline: [
+                        {
+                          $project: {
+                            firstName: 1,
+                            lastName: 1,
+                            profilePicture: 1,
+                            email: 1,
+                            _id: 1,
+                          },
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    $unwind: {
+                      path: '$user',
+                      preserveNullAndEmptyArrays: true,
+                    },
+                  },
+                  {
+                    $project: {
+                      _id: 1,
+                      user: 1,
+                      matricNumber: 1,
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $unwind: {
+                path: '$student',
+                preserveNullAndEmptyArrays: true,
+              },
+            },
+          ]
+        : [
+            {
+              $project: {
+                student: 0,
+              },
+            },
+          ]),
+      {
+        $match: _query,
       },
       {
         $sort: {
           createdAt: -1,
         },
       },
-    ]);
+    ];
+
+    if (query.search) {
+      const searchRegex = { $regex: query.search, $options: 'i' };
+      pipelines = [
+        ...pipelines,
+        {
+          $addFields: {
+            'student.user.fullName': {
+              $concat: [
+                '$student.user.firstName',
+                ' ',
+                '$student.user.lastName',
+              ],
+            },
+            'student.user.fullNameReversed': {
+              $concat: [
+                '$student.user.lastName',
+                ' ',
+                '$student.user.firstName',
+              ],
+            },
+            'uploadedBy.fullName': {
+              $concat: ['$uploadedBy.firstName', ' ', '$uploadedBy.lastName'],
+            },
+            'uploadedBy.fullNameReversed': {
+              $concat: ['$uploadedBy.lastName', ' ', '$uploadedBy.firstName'],
+            },
+          },
+        },
+        {
+          $match: {
+            $or: [
+              { 'student.user.fullName': searchRegex },
+              { 'student.user.fullNameReversed': searchRegex },
+              { 'uploadedBy.fullName': searchRegex },
+              { 'uploadedBy.fullNameReversed': searchRegex },
+              { 'student.matricNumber': searchRegex },
+              { documentName: searchRegex },
+              { 'folder.folderName': searchRegex },
+            ],
+          },
+        },
+      ];
+    }
+
+    const data = await this.documentModel.aggregate(pipelines);
 
     return {
       message: 'Documents fetched successfully',
