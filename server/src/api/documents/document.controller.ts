@@ -108,8 +108,11 @@ export class DocumentController {
   }
 
   @Get(':document_id')
-  async getDocument(@Param('document_id', MongoIdPipe) documentId: string) {
-    return await this.documentService.getDocument(documentId);
+  async getDocument(
+    @Param('document_id', MongoIdPipe) documentId: string,
+    @Auth() user?: User,
+  ) {
+    return await this.documentService.getDocument(documentId, user);
   }
 
   @Delete(':document_id')

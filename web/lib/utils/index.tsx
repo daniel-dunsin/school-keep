@@ -124,23 +124,23 @@ export const getDocTypeFromMimeType = (mimeType: string) => {
   }
 };
 
-export const getDocTypeIcon = (mimeType: string, color?: string) => {
+export const getDocTypeIcon = (mimeType: string, color?: string, size = 25) => {
   const docType = getDocTypeFromMimeType(mimeType);
 
   switch (docType) {
     case DocType.image:
-      return <FileImageIcon color={color ?? 'black'} size={25} />;
+      return <FileImageIcon color={color ?? 'black'} size={size} />;
     case DocType.video:
-      return <FileVideoIcon color={color ?? 'black'} size={25} />;
+      return <FileVideoIcon color={color ?? 'black'} size={size} />;
     case DocType.pdf:
       return (
-        <FaRegFilePdf className="text-red-500" size={25} style={{ color }} />
+        <FaRegFilePdf className="text-red-500" size={size} style={{ color }} />
       );
     case DocType.xlsx:
       return (
         <BsFiletypeXlsx
           className="text-green-500"
-          size={25}
+          size={size}
           style={{ color }}
         />
       );
@@ -148,36 +148,44 @@ export const getDocTypeIcon = (mimeType: string, color?: string) => {
       return (
         <PresentationIcon
           className="text-red-500"
-          size={25}
+          size={size}
           style={{ color }}
         />
       );
     case DocType.csv:
       return (
-        <PiFileCsv className="text-blue-500" size={25} style={{ color }} />
+        <PiFileCsv className="text-blue-500" size={size} style={{ color }} />
       );
     case DocType.apk:
       return (
         <BiLogoPlayStore
           className="text-green-500"
-          size={25}
+          size={size}
           style={{ color }}
         />
       );
     case DocType.json:
       return (
-        <FileJsonIcon className="text-green-500" size={25} style={{ color }} />
+        <FileJsonIcon
+          className="text-green-500"
+          size={size}
+          style={{ color }}
+        />
       );
     case DocType.doc:
       return (
-        <BsFiletypeDocx className="text-blue-500" size={25} style={{ color }} />
+        <BsFiletypeDocx
+          className="text-blue-500"
+          size={size}
+          style={{ color }}
+        />
       );
     case DocType.txt:
       return (
-        <BsFileWord className="text-blue-500" size={25} style={{ color }} />
+        <BsFileWord className="text-blue-500" size={size} style={{ color }} />
       );
     case DocType.unknown:
-      return <RiFileUnknowLine color={color ?? 'black'} size={25} />;
+      return <RiFileUnknowLine color={color ?? 'black'} size={size} />;
   }
 };
 

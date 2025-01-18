@@ -23,7 +23,7 @@ const ListTile: FC<Props> = ({ title, leadingImage, onClick, trailing }) => {
         alt={title}
         width={80}
         height={80}
-        className="w-[30px] h-[30px] rounded-full border-2"
+        className="w-[30px] h-[30px] rounded-full border-2 object-cover"
       />
       <p className="text-[.9rem] flex-1">{title}</p>
 

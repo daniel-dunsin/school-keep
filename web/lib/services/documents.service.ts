@@ -35,8 +35,21 @@ const getStudentFolders = async (studentId: string) => {
   }
 };
 
+const getDocument = async (documentId: string) => {
+  try {
+    const response = await https.get<
+      ApiResponse<Document, { otherVersions: Document[] }>
+    >(`/document/${documentId}`);
+
+    return response?.data;
+  } catch (error) {
+    return errorHandler(error);
+  }
+};
+
 const documentService = {
   getAllDocuments,
   getStudentFolders,
+  getDocument,
 };
 export default documentService;

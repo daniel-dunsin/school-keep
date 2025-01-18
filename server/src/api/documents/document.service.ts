@@ -542,7 +542,7 @@ export class DocumentService {
     };
   }
 
-  async getDocument(document_id: string) {
+  async getDocument(document_id: string, user?: User) {
     const populateOptions: PopulateOptions[] = [
       {
         path: 'uploadedBy',
@@ -556,6 +556,22 @@ export class DocumentService {
           },
         },
       },
+      ...(user?.role === Roles.Admin
+        ? [
+            {
+              path: 'folder',
+              select: 'folderName level',
+            },
+            {
+              path: 'student',
+              select: 'user',
+              populate: {
+                path: 'user',
+                select: 'firstName lastName profilePicture',
+              },
+            },
+          ]
+        : []),
     ];
 
     const selectOptions = '-updatedAt -publicId -student';

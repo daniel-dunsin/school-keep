@@ -9,6 +9,7 @@ import {
 } from '@/lib/utils';
 import { format } from 'date-fns';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
 
 interface Props {
@@ -16,6 +17,7 @@ interface Props {
 }
 
 const SingleDocument: FC<Props> = ({ document }) => {
+  const router = useRouter();
   const docType = getDocTypeFromMimeType(document.mediaType!);
   const docIcon = getDocTypeIcon(document.mediaType!, 'white');
   const hasPreview =
@@ -32,6 +34,7 @@ const SingleDocument: FC<Props> = ({ document }) => {
       className="w-full"
       onMouseEnter={() => setShowName(true)}
       onMouseLeave={() => setShowName(false)}
+      onClick={() => router.push(`/dashboard/documents/${document._id}`)}
     >
       <div className="relative mb-3">
         <div className="h-[200px] w-full rounded-md overflow-hidden flex flex-col gap-3 text-center justify-center items-center border border-black cursor-pointer">

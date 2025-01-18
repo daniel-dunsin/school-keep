@@ -2,6 +2,7 @@ import ListTile from '@/components/common/list-tile';
 import { Document } from '@/lib/schemas/types';
 import { formatDate, getDocPreview } from '@/lib/utils';
 import { ColumnDef } from '@tanstack/react-table';
+import Link from 'next/link';
 
 export const fullColumns: ColumnDef<Document>[] = [
   {
@@ -91,6 +92,20 @@ export const fullColumns: ColumnDef<Document>[] = [
     accessorKey: 'createdAt',
     cell({ row }) {
       return formatDate(row?.original?.createdAt);
+    },
+  },
+  {
+    header: '',
+    accessorKey: '',
+    cell({ row }) {
+      return (
+        <Link
+          href={`/dashboard/documents/${row.original._id}`}
+          className="underline text-mainLight text-[.9rem]"
+        >
+          View
+        </Link>
+      );
     },
   },
 ];
