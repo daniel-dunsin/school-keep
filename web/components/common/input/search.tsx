@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 import TextField from './text-field';
 import { cn } from '@/lib/utils';
+import { useSearchParams } from '@/lib/hooks/use-search-params';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
   label?: string;
@@ -20,9 +21,15 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
   inputSuffix?: ReactElement;
   onSearch(search?: string): void;
   initialValue?: string;
+  searchParam?: string;
 }
 
-const SearchField: FC<Props> = ({ onSearch, ...props }) => {
+const SearchField: FC<Props> = ({
+  onSearch,
+  searchParam = 'search',
+  ...props
+}) => {
+  const { setParam, searchParams, removeParam } = useSearchParams();
   const [value, setValue] = React.useState(props.initialValue);
 
   React.useEffect(() => {
@@ -32,10 +39,18 @@ const SearchField: FC<Props> = ({ onSearch, ...props }) => {
   React.useEffect(() => {
     const timeout = setTimeout(() => {
       onSearch(value);
+      value ? setParam(searchParam, value!) : removeParam(searchParam);
     }, 500);
 
     return () => clearTimeout(timeout);
   }, [value]);
+
+  React.useEffect(() => {
+    const searchValue = searchParams.get(searchParam);
+    if (searchValue) {
+      setValue(searchValue);
+    }
+  }, []);
 
   return (
     <TextField

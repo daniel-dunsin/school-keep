@@ -474,6 +474,14 @@ export class DocumentService {
             ],
           },
         },
+        {
+          $project: {
+            'student.user.fullName': 0,
+            'student.user.fullNameReversed': 0,
+            'uploadedBy.fullName': 0,
+            'uploadedBy.fullNameReversed': 0,
+          },
+        },
       ];
     }
 

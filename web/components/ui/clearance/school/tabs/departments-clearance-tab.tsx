@@ -28,6 +28,7 @@ const DepartmentsClearanceTab = () => {
           changeQuery('search', search);
         }}
         InputProps={{ placeholder: 'Search Departments' }}
+        searchParam="departmentClearanceSearch"
       />
 
       <DepartmentClearanceTable data={data} loading={gettingClearance} />

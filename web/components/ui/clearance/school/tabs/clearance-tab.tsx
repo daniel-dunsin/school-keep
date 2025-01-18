@@ -25,6 +25,7 @@ const ClearanceTab = () => {
           changeQuery('search', search);
         }}
         InputProps={{ placeholder: 'Search Clearance' }}
+        searchParam="schoolClearanceSearch"
       />
 
       <ClearanceTable data={clearance} loading={gettingClearance} />
