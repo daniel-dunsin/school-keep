@@ -44,7 +44,7 @@ class FolderBottomSheet extends StatelessWidget {
               SizedBox(height: 30),
               ListTile(
                 onTap: () {
-                  if (!folder.isCustom) {
+                  if (!folder.isCustom!) {
                     NetworkToast.handleError("Only custom folders can be deleted");
                     return;
                   }
@@ -68,12 +68,12 @@ class FolderBottomSheet extends StatelessWidget {
                     ? AppLoader()
                     : Icon(
                         Icons.delete,
-                        color: getColorScheme(context).error.withOpacity(folder.isCustom ? 1 : .5),
+                        color: getColorScheme(context).error.withOpacity(folder.isCustom! ? 1 : .5),
                       ),
                 title: Text(
                   state is DeleteFolderLoading ? "Deleting folder" : "Delete Folder",
                   style: getTextTheme(context).titleSmall?.copyWith(
-                        color: state is DeleteFolderLoading ? null : getColorScheme(context).error.withOpacity(folder.isCustom ? 1 : .5),
+                        color: state is DeleteFolderLoading ? null : getColorScheme(context).error.withOpacity(folder.isCustom! ? 1 : .5),
                       ),
                 ),
               )

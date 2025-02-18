@@ -1,5 +1,6 @@
 import ListTile from '@/components/common/list-tile';
 import { Student } from '@/lib/schemas/types';
+import { cn } from '@/lib/utils';
 import { CircleUserIcon, SchoolIcon } from 'lucide-react';
 import React, { FC, ReactNode } from 'react';
 
@@ -77,13 +78,26 @@ const StudentProfileTab: FC<Props> = ({ student }) => {
 interface QAProps {
   question: string;
   answer: string | ReactNode;
+  onAnswerClick?(): void;
 }
 
-export const ProfileQuestionAndAnswer: FC<QAProps> = ({ question, answer }) => {
+export const ProfileQuestionAndAnswer: FC<QAProps> = ({
+  question,
+  answer,
+  onAnswerClick,
+}) => {
   return (
     <div>
       <h1 className="text-[.85rem] text-[#444] mb-1">{question}</h1>
-      <p className="text-[.9rem]">{answer}</p>
+      <p
+        className={cn(
+          'text-[.9rem]',
+          onAnswerClick && 'underline cursor-pointer'
+        )}
+        onClick={onAnswerClick}
+      >
+        {answer}
+      </p>
     </div>
   );
 };

@@ -40,3 +40,8 @@ export class GetAllDocumentsQuery {
   folder_id?: string;
   student_id?: string;
 }
+
+export interface DownloadFileDto {
+  url: string;
+  fileName: string;
+}

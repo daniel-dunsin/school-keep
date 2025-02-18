@@ -5,7 +5,7 @@ class FolderModel {
   String id;
   int? level;
   String folderName;
-  bool isCustom;
+  bool? isCustom;
   FolderModel({
     required this.id,
     required this.level,
@@ -24,10 +24,10 @@ class FolderModel {
 
   factory FolderModel.fromMap(Map<String, dynamic> map) {
     return FolderModel(
-      id: map['id'] as String,
+      id: map['_id'] as String,
       level: map['level'] != null ? map['level'] as int : null,
       folderName: map['folderName'] as String,
-      isCustom: map['isCustom'] as bool,
+      isCustom: map['isCustom'],
     );
   }
 

@@ -8,9 +8,9 @@ class User {
   final String id;
   final String firstName;
   final String lastName;
-  final String email;
+  final String? email;
   final String profilePicture;
-  final String phoneNumber;
+  final String? phoneNumber;
   final SchoolModel? school;
   final StudentModel? student;
 

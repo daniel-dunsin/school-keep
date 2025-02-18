@@ -1,5 +1,5 @@
 import { https } from '../configs/http.config';
-import { GetAllDocumentsQuery } from '../schemas/interfaces';
+import { GetAllDocumentsQuery, UpdateDocumentDto } from '../schemas/interfaces';
 import { ApiResponse, Document, Folder } from '../schemas/types';
 import { errorHandler } from '../utils';
 
@@ -47,9 +47,34 @@ const getDocument = async (documentId: string) => {
   }
 };
 
+const updateDocument = async (
+  documentReference: string,
+  body: UpdateDocumentDto
+) => {
+  const formData = new FormData();
+
+  if (body.documentName) {
+    formData.append('documentName', body.documentName);
+  }
+
+  if (body.file) {
+    formData.append('file', body.file);
+  }
+
+  try {
+    const response = await https.put(
+      `/document/${documentReference}`,
+      formData
+    );
+  } catch (error) {
+    return errorHandler(error);
+  }
+};
+
 const documentService = {
   getAllDocuments,
   getStudentFolders,
   getDocument,
+  updateDocument,
 };
 export default documentService;

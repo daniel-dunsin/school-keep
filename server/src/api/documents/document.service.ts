@@ -19,6 +19,7 @@ import { isEmpty } from 'lodash';
 import {
   CreateDocumentDto,
   CreateFolderDto,
+  DownloadFileDto,
   GetAllDocumentsQuery,
   UpdateDocumentDto,
 } from './dtos';
@@ -27,6 +28,8 @@ import { v4 } from 'uuid';
 import * as mime from 'mime-types';
 import { User } from '../user/schemas/user.schema';
 import { Roles } from '../user/enums';
+import axios from 'axios';
+import { Response } from 'express';
 
 @Injectable()
 export class DocumentService {
@@ -527,6 +530,8 @@ export class DocumentService {
 
       requestData.url = url;
       requestData.publicId = public_id;
+      requestData.mediaType =
+        mime.lookup(file.path) || file.mimetype || requestData.mediaType;
     }
 
     if (documentName) {
@@ -659,5 +664,28 @@ export class DocumentService {
       message: 'Document moved',
       success: true,
     };
+  }
+
+  async downloadFile(res: Response, body: DownloadFileDto) {
+    const { url, fileName } = body;
+
+    try {
+      const response = await axios.get(url, { responseType: 'stream' });
+
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="${fileName}"`,
+      );
+      res.setHeader('Content-Type', 'application/octet-stream');
+      res.setHeader(
+        'Content-Length',
+        response.headers['content-length'] || '0',
+      );
+
+      response.data.pipe(res);
+    } catch (error) {
+      console.error('Download error:', error);
+      res.status(500).json({ error: 'Failed to download file' });
+    }
   }
 }

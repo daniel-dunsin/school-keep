@@ -18,12 +18,13 @@ interface Props {
   data?: Option[];
   value?: string;
   onClear?(): void;
-  onSelect(option: Option): void;
+  onSelect?(option: Option): void;
   onSearch?(search?: string): Option[];
   loading?: boolean;
   className?: string;
   disabled?: boolean;
   placeholder?: string;
+  showDropDownSuffix?: string;
 }
 
 const SelectField: FC<Props> = ({
@@ -36,6 +37,7 @@ const SelectField: FC<Props> = ({
   className,
   disabled,
   placeholder,
+  showDropDownSuffix = true,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [options, setOptions] = useState<Option[]>(data ?? []);
@@ -59,7 +61,7 @@ const SelectField: FC<Props> = ({
 
   return (
     <div className={cn('relative w-[200px]', className)}>
-      <header className="bg-white border-2 border-gray-600 focus:border-mainLight p-2 flex items-center">
+      <header className="bg-white border-2 border-gray-600 focus:border-mainLight p-2 flex items-center h-full">
         <input
           className="bg-white outline-none border-none placeholder:text-[.8rem] text-[.8rem] text-[#444] flex-1 w-full"
           placeholder={value || placeholder || 'Select...'}
@@ -83,20 +85,24 @@ const SelectField: FC<Props> = ({
           </span>
         )}
 
-        <div className="w-[1.5px] h-[15px] mx-2 bg-gray-600" />
-        <motion.span
-          variants={dropdownVariant}
-          initial="arrowClosed"
-          animate={isOpen ? 'arrowOpen' : 'arrowClosed'}
-          className="min-w-fit cursor-pointer"
-          onClick={() => {
-            if (!disabled) {
-              setIsOpen((prev) => !prev);
-            }
-          }}
-        >
-          <BiChevronDown size={20} className="text-[#444]" />
-        </motion.span>
+        {showDropDownSuffix && (
+          <>
+            <div className="w-[1.5px] h-[15px] mx-2 bg-gray-600" />
+            <motion.span
+              variants={dropdownVariant}
+              initial="arrowClosed"
+              animate={isOpen ? 'arrowOpen' : 'arrowClosed'}
+              className="min-w-fit cursor-pointer"
+              onClick={() => {
+                if (!disabled) {
+                  setIsOpen((prev) => !prev);
+                }
+              }}
+            >
+              <BiChevronDown size={20} className="text-[#444]" />
+            </motion.span>
+          </>
+        )}
       </header>
 
       <AnimatePresence>
@@ -164,7 +170,7 @@ export const Option: FC<OptionsProps> = ({
   return (
     <div
       ref={ref}
-      onClick={() => onSelect(option)}
+      onClick={() => onSelect?.(option)}
       className={cn(
         'p-2 !text-[.85rem] cursor-pointer',
         focused && 'bg-mainLight text-white',

@@ -103,3 +103,8 @@ export interface GetAllDocumentsQuery {
   student_id?: string;
   folder_id?: string;
 }
+
+export interface UpdateDocumentDto {
+  documentName: string;
+  file?: File;
+}

@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -19,12 +20,13 @@ import {
   MoveDocumentDto,
   UpdateDocumentDto,
 } from './dtos';
-import { Auth } from 'src/core/decorators/auth.decoractor';
+import { Auth, IsPublic } from 'src/core/decorators/auth.decoractor';
 import { Student } from '../student/schemas/student.schema';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MULTER_DISK_STORAGE } from 'src/shared/constants';
 import { User } from '../user/schemas/user.schema';
 import { MongoIdPipe } from 'src/core/pipes/mongo-id.pipe';
+import { Response } from 'express';
 
 @Controller('document')
 @ApiTags('document')
@@ -107,14 +109,6 @@ export class DocumentController {
     );
   }
 
-  @Get(':document_id')
-  async getDocument(
-    @Param('document_id', MongoIdPipe) documentId: string,
-    @Auth() user?: User,
-  ) {
-    return await this.documentService.getDocument(documentId, user);
-  }
-
   @Delete(':document_id')
   async deleteDocument(@Param('document_id', MongoIdPipe) documentId: string) {
     return await this.documentService.deleteDocument(documentId);
@@ -155,5 +149,23 @@ export class DocumentController {
       { ...query, student_id },
       user,
     );
+  }
+
+  @IsPublic()
+  @Get('download')
+  async downloadFile(
+    @Query('url') url: string,
+    @Query('fileName') fileName: string,
+    @Res() res: Response,
+  ) {
+    return await this.documentService.downloadFile(res, { url, fileName });
+  }
+
+  @Get(':document_id')
+  async getDocument(
+    @Param('document_id', MongoIdPipe) documentId: string,
+    @Auth() user?: User,
+  ) {
+    return await this.documentService.getDocument(documentId, user);
   }
 }

@@ -1,9 +1,10 @@
 'use client';
 import SearchField from '@/components/common/input/search';
+import { useSearchParams } from '@/lib/hooks/use-search-params';
 import { View } from '@/lib/schemas/enums';
 import { cn } from '@/lib/utils';
 import { ArrowLeftCircleIcon, TableIcon } from 'lucide-react';
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { CiGrid31 } from 'react-icons/ci';
 
 interface Props {
@@ -13,12 +14,27 @@ interface Props {
   onClose?(): void;
 }
 
+const viewParams = 'view';
+
 const DocumentsPageHeader: FC<Props> = ({
   onSelect,
   selectedView,
   onSearch,
   onClose,
 }) => {
+  const { setParam, searchParams } = useSearchParams();
+
+  useEffect(() => {
+    setParam(viewParams, selectedView);
+  }, [selectedView]);
+
+  useEffect(() => {
+    const param = searchParams.get(viewParams);
+    if (param) {
+      onSelect(param as View);
+    }
+  }, []);
+
   return (
     <div className="my-8">
       <div className="flex items-center gap-3">

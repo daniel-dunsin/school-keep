@@ -25,9 +25,11 @@ const ListTile: FC<Props> = ({ title, leadingImage, onClick, trailing }) => {
         height={80}
         className="w-[30px] h-[30px] rounded-full border-2 object-cover"
       />
-      <p className="text-[.9rem] flex-1">{title}</p>
+      <div className="text-[.9rem] flex-1">{title}</div>
 
-      {trailing && <p className="text-[.9rem] justify-self-end">{trailing}</p>}
+      {trailing && (
+        <div className="text-[.9rem] justify-self-end">{trailing}</div>
+      )}
     </div>
   );
 };

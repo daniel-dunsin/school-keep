@@ -106,7 +106,7 @@ class SingleDocumentVersion extends StatelessWidget {
   }
 
   getVersionChanges() {
-    if (currentVersion == 1 || previousVersion == null) {
+    if (currentVersion.version == 1 || previousVersion == null) {
       return "Created ${currentVersion.name}";
     } else {
       if (currentVersion.name != previousVersion?.name && currentVersion.url != previousVersion?.url) {

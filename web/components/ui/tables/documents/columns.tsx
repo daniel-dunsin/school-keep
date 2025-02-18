@@ -15,7 +15,7 @@ export const fullColumns: ColumnDef<Document>[] = [
 
       return (
         <div className="flex items-center mt-3 gap-3">
-          <span className="w-[30px] h-[30px] rounded-full grid place-content-center border border-mainLight overflow-hidden">
+          <span className="w-[30px] h-[30px] rounded-full grid place-content-center  overflow-hidden">
             {preview}
           </span>
           <div className="flex-1">
@@ -97,6 +97,7 @@ export const fullColumns: ColumnDef<Document>[] = [
   {
     header: '',
     accessorKey: '',
+    id: 'view',
     cell({ row }) {
       return (
         <Link
