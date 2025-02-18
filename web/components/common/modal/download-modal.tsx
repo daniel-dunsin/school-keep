@@ -57,10 +57,14 @@ const DownloadModal: FC<Props> = ({ url, fileName, studentName }) => {
         signal: abortController.current?.signal,
         onDownloadProgress: (progress) => {
           if (progress) {
-            setTotalBytes(progress.total || progress.bytes);
-            if (progress.loaded > downloadedBytes) {
-              setDownloadedBytes(progress.loaded);
-            }
+            setTotalBytes(progress.total!);
+            setDownloadedBytes((prev) => {
+              if (prev + progress.loaded > progress.total!) {
+                return progress.total!;
+              } else {
+                return prev + progress.loaded;
+              }
+            });
           }
         },
       });
@@ -70,7 +74,6 @@ const DownloadModal: FC<Props> = ({ url, fileName, studentName }) => {
       const downloadUrl = window.URL.createObjectURL(blob);
       const linkTag = document.createElement('a');
       linkTag.href = url;
-      linkTag.download = name;
       linkTag.target = '_blank';
       linkTag.setAttribute('download', name);
       document.body.appendChild(linkTag);

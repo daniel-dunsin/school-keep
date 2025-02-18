@@ -1,17 +1,24 @@
 'use client';
+import Button from '@/components/common/button';
 import SearchField from '@/components/common/input/search';
 import { useSearchParams } from '@/lib/hooks/use-search-params';
+import { useModal } from '@/lib/providers/contexts/modal-context';
 import { View } from '@/lib/schemas/enums';
+import { Folder } from '@/lib/schemas/types';
 import { cn } from '@/lib/utils';
 import { ArrowLeftCircleIcon, TableIcon } from 'lucide-react';
 import React, { FC, useEffect } from 'react';
+import { BiPlus } from 'react-icons/bi';
 import { CiGrid31 } from 'react-icons/ci';
+import CreateDocumentModal from './modals/create-document-modal';
 
 interface Props {
   onSelect(view: View): void;
   selectedView: View;
   onSearch(s?: string): void;
   onClose?(): void;
+  folderId: string;
+  studentId: string;
 }
 
 const viewParams = 'view';
@@ -21,7 +28,10 @@ const DocumentsPageHeader: FC<Props> = ({
   selectedView,
   onSearch,
   onClose,
+  folderId,
+  studentId,
 }) => {
+  const { showModal } = useModal();
   const { setParam, searchParams } = useSearchParams();
 
   useEffect(() => {
@@ -57,6 +67,18 @@ const DocumentsPageHeader: FC<Props> = ({
           selectedView={selectedView}
           onSelect={onSelect}
         />
+
+        <Button
+          variant="outline"
+          icon={<BiPlus />}
+          onClick={() =>
+            showModal(
+              <CreateDocumentModal studentId={studentId} folder={folderId} />
+            )
+          }
+        >
+          Add Document
+        </Button>
       </div>
     </div>
   );

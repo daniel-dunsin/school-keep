@@ -1,5 +1,9 @@
 import { https } from '../configs/http.config';
-import { GetAllDocumentsQuery, UpdateDocumentDto } from '../schemas/interfaces';
+import {
+  CreateDocumentDto,
+  GetAllDocumentsQuery,
+  UpdateDocumentDto,
+} from '../schemas/interfaces';
 import { ApiResponse, Document, Folder } from '../schemas/types';
 import { errorHandler } from '../utils';
 
@@ -66,6 +70,36 @@ const updateDocument = async (
       `/document/${documentReference}`,
       formData
     );
+
+    return response?.data;
+  } catch (error) {
+    return errorHandler(error);
+  }
+};
+
+const createDocument = async (body: CreateDocumentDto) => {
+  const formData = new FormData();
+
+  formData.append('file', body.file!);
+  formData.append('documentName', body.documentName);
+  formData.append('folder', body.folder);
+  formData.append('studentId', body.studentId);
+
+  try {
+    const response = await https.post(`/document`, formData, {
+      signal: body.abortController?.signal,
+      onUploadProgress(progress) {
+        if (body.onUploadProgress) {
+          const fileSize = progress.total || 1;
+          const uploadedFileSize = progress.loaded;
+          const uploadPercentage = (uploadedFileSize / fileSize) * 100;
+
+          body.onUploadProgress(Number(uploadPercentage.toFixed(2)));
+        }
+      },
+    });
+
+    return response?.data;
   } catch (error) {
     return errorHandler(error);
   }
@@ -76,5 +110,6 @@ const documentService = {
   getStudentFolders,
   getDocument,
   updateDocument,
+  createDocument,
 };
 export default documentService;

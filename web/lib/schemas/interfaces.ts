@@ -108,3 +108,12 @@ export interface UpdateDocumentDto {
   documentName: string;
   file?: File;
 }
+
+export interface CreateDocumentDto {
+  studentId: string;
+  folder: string;
+  documentName: string;
+  file?: File;
+  onUploadProgress?(uploadPercentage: number): void;
+  abortController?: AbortController;
+}

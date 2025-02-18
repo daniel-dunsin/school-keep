@@ -14,6 +14,7 @@ type Props = {
   fullWidth?: boolean;
   loading?: boolean;
   onClick?: Function;
+  loadingWithDefaultChildren?: boolean;
 } & DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
@@ -33,6 +34,7 @@ const Button: FC<Props> = (props) => {
     rounded = 'none',
     fullWidth = false,
     role,
+    loadingWithDefaultChildren = false,
     ...rest
   } = props;
   let mainClass = `rounded-${rounded} font-normal text-center duration-300 ${
@@ -102,7 +104,7 @@ const Button: FC<Props> = (props) => {
       )}
 
       <span className="flex-shrink-0">
-        {!loading ? children : 'Loading...'}
+        {loading && !loadingWithDefaultChildren ? 'Loading...' : children}
       </span>
 
       {iconPosition === 'right' && (

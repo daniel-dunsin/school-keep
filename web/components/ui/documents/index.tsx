@@ -15,10 +15,11 @@ import {
 
 interface Props {
   folderId?: string;
+  studentId?: string;
   onClose?(): void;
 }
 
-const DocumentsList: FC<Props> = ({ folderId, onClose }) => {
+const DocumentsList: FC<Props> = ({ folderId, onClose, studentId }) => {
   const { changeQuery, query } = useApiQuery<GetAllDocumentsQuery>({
     defaultValues: {
       search: '',
@@ -44,10 +45,12 @@ const DocumentsList: FC<Props> = ({ folderId, onClose }) => {
   return (
     <section className="my-5">
       <DocumentsPageHeader
+        studentId={studentId!}
         onSelect={onChangeView}
         selectedView={view}
         onSearch={(s) => changeQuery('search', s)}
         onClose={onClose}
+        folderId={folderId!}
       />
 
       {view == View.grid ? (

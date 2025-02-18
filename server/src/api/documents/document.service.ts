@@ -181,8 +181,6 @@ export class DocumentService {
     const folder = await this.folderModel.findById(documentDto.folder);
     if (!folder) throw new NotFoundException('Oops! folder not found');
 
-    console.log(documentDto.file);
-
     const { url, public_id } = await this.fileService.uploadResource(
       documentDto.file.path,
       true,

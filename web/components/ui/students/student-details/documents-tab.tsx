@@ -36,6 +36,7 @@ const StudentDocumentsTab: FC<Props> = ({ student }) => {
   return (
     <DocumentsList
       folderId={selectedFolder}
+      studentId={student._id}
       onClose={() => (setSelectedFolder(undefined), removeParam(folderParam))}
     />
   );
