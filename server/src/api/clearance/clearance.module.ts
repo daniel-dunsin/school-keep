@@ -11,10 +11,21 @@ import {
 import { ClearanceController } from './clearance.controller';
 import { ClearanceService } from './clearance.service';
 import { SchoolModule } from '../school/school.module';
+import { StudentModule } from '../student/student.module';
+import { DocumentModule } from '../documents/documents.module';
+import { Clearance, ClearanceSchema } from './schemas/clearance.schema';
+import {
+  ClearanceActivity,
+  ClearanceActivitySchema,
+} from './schemas/clearance-activity.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
+      {
+        name: Clearance.name,
+        schema: ClearanceSchema,
+      },
       {
         name: StudentClearance.name,
         schema: StudentClearanceSchema,
@@ -23,8 +34,14 @@ import { SchoolModule } from '../school/school.module';
         name: SchoolClearance.name,
         schema: SchoolClearanceSchema,
       },
+      {
+        name: ClearanceActivity.name,
+        schema: ClearanceActivitySchema,
+      },
     ]),
     forwardRef(() => SchoolModule),
+    StudentModule,
+    DocumentModule,
   ],
   controllers: [ClearanceController],
   providers: [ClearanceService],

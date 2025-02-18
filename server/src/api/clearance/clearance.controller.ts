@@ -23,6 +23,7 @@ import { ClearanceService } from './clearance.service';
 import { Roles } from '../user/enums';
 import { AdminRoles } from '../admin/enums';
 import { MongoIdPipe } from 'src/core/pipes/mongo-id.pipe';
+import { Student } from '../student/schemas/student.schema';
 
 @Controller('clearance')
 @ApiTags('clearance')
@@ -85,5 +86,20 @@ export class ClearanceController {
       departmentId,
       body.required_clearance,
     );
+  }
+
+  @Get('/student')
+  @RolesDec([Roles.Student])
+  async getStudentClearance(@Auth('student') student: Student) {
+    return await this.clearanceService.getStudentClearance(student._id);
+  }
+
+  @Get('/student/:student_id')
+  @RolesDec([Roles.Admin])
+  @AdminRolesDec([AdminRoles.SuperAdmin, AdminRoles.Admin])
+  async adminGetStudentClearance(
+    @Param('student_id', MongoIdPipe) studentId: string,
+  ) {
+    return await this.clearanceService.getStudentClearance(studentId);
   }
 }
