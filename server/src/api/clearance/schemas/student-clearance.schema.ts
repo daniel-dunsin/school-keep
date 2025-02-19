@@ -4,6 +4,7 @@ import { Document } from 'src/api/documents/schemas/document.schema';
 import { Student } from 'src/api/student/schemas/student.schema';
 import { DBSchema, TimestampMixin } from 'src/shared/schemas/db.schema';
 import { SchoolClearance } from './school-clearance.schema';
+import { StudentClearanceStatus } from '../enums';
 
 @DBSchema()
 export class StudentClearance extends TimestampMixin {
@@ -20,9 +21,26 @@ export class StudentClearance extends TimestampMixin {
   clearance: SchoolClearance;
 
   @Prop({
-    type: Boolean,
+    type: String,
+    enum: Object.values(StudentClearanceStatus),
+    default: StudentClearanceStatus.Requested,
   })
-  cleared: boolean;
+  status: StudentClearanceStatus;
+
+  @Prop()
+  approvalDate: Date;
+
+  @Prop()
+  approvalSignature: string;
+
+  @Prop()
+  rejectionReason: string;
+
+  @Prop()
+  rejectionDate: Date;
+
+  @Prop()
+  lastRequestDate: Date;
 
   @Prop({
     type: [

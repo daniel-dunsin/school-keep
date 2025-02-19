@@ -5,6 +5,12 @@ export enum ClearanceStatus {
   Completed = 'Completed',
 }
 
+export enum StudentClearanceStatus {
+  Requested = 'Requested',
+  Rejected = 'Rejected',
+  Approved = 'Approved',
+}
+
 export enum SchoolClearanceStatus {
   Active = 'Active',
   Deleted = 'Deleted',

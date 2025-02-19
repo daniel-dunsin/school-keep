@@ -35,3 +35,28 @@ export class SetDepartmentRequiredClearance {
   })
   required_clearance: string[];
 }
+
+export class RejectClearanceDto {
+  @IsString(true)
+  rejectionReason: string;
+
+  clearanceId: string;
+  userId: string;
+}
+
+export class ApproveStudentClearanceDto {
+  @IsString(true)
+  approvalSignature: string;
+
+  clearanceId: string;
+  userId: string;
+}
+
+export class RequestStudentClearanceDto {
+  @IsString(true)
+  schoolClearanceId: string;
+
+  @IsArray()
+  @IsMongoId({ each: true })
+  documents: string[];
+}

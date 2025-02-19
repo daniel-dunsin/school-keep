@@ -53,6 +53,9 @@ export class User extends TimestampMixin {
     ref: Admin.name,
   })
   admin: AdminDocument;
+
+  @Prop()
+  signature: string;
 }
 
 export type UserDocument = HydratedDocument<User>;

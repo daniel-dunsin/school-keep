@@ -10,7 +10,10 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import {
   AddClearanceDto,
+  ApproveStudentClearanceDto,
   GetClearanceQuery,
+  RejectClearanceDto,
+  RequestStudentClearanceDto,
   SetDepartmentRequiredClearance,
 } from './dtos';
 import {
@@ -24,6 +27,7 @@ import { Roles } from '../user/enums';
 import { AdminRoles } from '../admin/enums';
 import { MongoIdPipe } from 'src/core/pipes/mongo-id.pipe';
 import { Student } from '../student/schemas/student.schema';
+import { User } from '../user/schemas/user.schema';
 
 @Controller('clearance')
 @ApiTags('clearance')
@@ -101,5 +105,109 @@ export class ClearanceController {
     @Param('student_id', MongoIdPipe) studentId: string,
   ) {
     return await this.clearanceService.getStudentClearance(studentId);
+  }
+
+  @Post('/request')
+  @RolesDec([Roles.Student])
+  async requestClearance(@Auth() user: User) {
+    return await this.clearanceService.requestClearance(
+      user?.student?._id,
+      user?._id,
+    );
+  }
+
+  @Post('/reject/:clearance_id')
+  @RolesDec([Roles.Admin])
+  @AdminRolesDec([AdminRoles.SuperAdmin, AdminRoles.Admin])
+  async rejectClearance(
+    @Param('clearance_id', MongoIdPipe) clearanceId: string,
+    @Body() body: RejectClearanceDto,
+    @Auth() user: User,
+  ) {
+    body.clearanceId = clearanceId;
+    body.userId = user._id;
+
+    return await this.clearanceService.rejectClearance(body);
+  }
+
+  @Post('/approve/:clearance_id')
+  @RolesDec([Roles.Admin])
+  @AdminRolesDec([AdminRoles.SuperAdmin, AdminRoles.Admin])
+  async approveClearance(
+    @Param('clearance_id', MongoIdPipe) clearanceId: string,
+    @Auth() user: User,
+  ) {
+    return await this.clearanceService.approveClearance(clearanceId, user._id);
+  }
+
+  @Get('/overview')
+  @RolesDec([Roles.Admin])
+  @AdminRolesDec([AdminRoles.SuperAdmin, AdminRoles.Admin])
+  async getClearanceOverview() {
+    return await this.clearanceService.getClearanceOverview();
+  }
+
+  @Get('/school-clearance/:school_clearance_id/student/:student_id')
+  @RolesDec([Roles.Admin])
+  @AdminRolesDec([AdminRoles.SuperAdmin, AdminRoles.Admin])
+  async adminGetStudentSchoolClearance(
+    @Param('school_clearance_id', MongoIdPipe) schoolClearanceId: string,
+    @Param('student_id', MongoIdPipe) studentId: string,
+  ) {
+    return await this.clearanceService.getStudentSchoolClearance(
+      schoolClearanceId,
+      studentId,
+    );
+  }
+
+  @Get('/school-clearance/:school_clearance_id/student')
+  @RolesDec([Roles.Student])
+  async getStudentSchoolClearance(
+    @Param('school_clearance_id', MongoIdPipe) schoolClearanceId: string,
+    @Auth('student') student: Student,
+  ) {
+    return await this.clearanceService.getStudentSchoolClearance(
+      schoolClearanceId,
+      student._id,
+    );
+  }
+
+  @Post('/student-clearance/request')
+  @RolesDec([Roles.Student])
+  async requestStudentClearance(
+    @Body() body: RequestStudentClearanceDto,
+    @Auth() user: User,
+  ) {
+    return await this.clearanceService.requestStudentClearance(
+      body,
+      user?.student?._id,
+      user?._id,
+    );
+  }
+
+  @Post('/student-clearance/:student_clearance_id/reject')
+  @RolesDec([Roles.Admin])
+  @AdminRolesDec([AdminRoles.SuperAdmin, AdminRoles.Admin])
+  async rejectStudentClearance(
+    @Param('student_clearance_id', MongoIdPipe) studentClearanceId: string,
+    @Body() body: RejectClearanceDto,
+    @Auth() user: User,
+  ) {
+    body.clearanceId = studentClearanceId;
+    body.userId = user._id;
+    return await this.clearanceService.rejectStudentClearance(body);
+  }
+
+  @Post('/student-clearance/:student_clearance_id/approve')
+  @RolesDec([Roles.Admin])
+  @AdminRolesDec([AdminRoles.SuperAdmin, AdminRoles.Admin])
+  async approveStudentClearance(
+    @Param('student_clearance_id', MongoIdPipe) studentClearanceId: string,
+    @Auth() user: User,
+    @Body() body: ApproveStudentClearanceDto,
+  ) {
+    body.clearanceId = studentClearanceId;
+    body.userId = user._id;
+    return await this.clearanceService.approveStudentClearance(body);
   }
 }
