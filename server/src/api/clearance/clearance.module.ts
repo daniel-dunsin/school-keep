@@ -18,6 +18,8 @@ import {
   ClearanceActivity,
   ClearanceActivitySchema,
 } from './schemas/clearance-activity.schema';
+import { UserModule } from '../user/user.module';
+import { SharedModule } from 'src/shared/shared.module';
 
 @Module({
   imports: [
@@ -42,6 +44,8 @@ import {
     forwardRef(() => SchoolModule),
     StudentModule,
     DocumentModule,
+    forwardRef(() => UserModule),
+    forwardRef(() => SharedModule),
   ],
   controllers: [ClearanceController],
   providers: [ClearanceService],

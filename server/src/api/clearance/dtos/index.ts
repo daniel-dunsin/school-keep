@@ -48,6 +48,9 @@ export class ApproveStudentClearanceDto {
   @IsString(true)
   approvalSignature: string;
 
+  @IsBoolean(true)
+  setDefaultSignature: boolean;
+
   clearanceId: string;
   userId: string;
 }
@@ -58,5 +61,9 @@ export class RequestStudentClearanceDto {
 
   @IsArray()
   @IsMongoId({ each: true })
+  @ApiProperty({
+    type: [String],
+    example: [new Types.ObjectId()],
+  })
   documents: string[];
 }

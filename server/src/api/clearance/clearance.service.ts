@@ -10,7 +10,7 @@ import {
   RejectClearanceDto,
   RequestStudentClearanceDto,
 } from './dtos';
-import { Model, PopulateOptions, Promise, Types } from 'mongoose';
+import { Model, PopulateOptions, Types } from 'mongoose';
 import { SchoolClearance } from './schemas/school-clearance.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import {
@@ -25,6 +25,8 @@ import { Folder, FolderDocument } from '../documents/schemas/folders.schema';
 import { Clearance } from './schemas/clearance.schema';
 import { ClearanceActivity } from './schemas/clearance-activity.schema';
 import { StudentClearance } from './schemas/student-clearance.schema';
+import { User } from '../user/schemas/user.schema';
+import { FileService } from 'src/shared/services/file.service';
 
 @Injectable()
 export class ClearanceService {
@@ -41,8 +43,12 @@ export class ClearanceService {
     private readonly departmentModel: Model<Department>,
     @InjectModel(Student.name)
     private readonly studentModel: Model<Student>,
+    @InjectModel(User.name)
+    private readonly userModel: Model<User>,
     @InjectModel(Folder.name)
     private readonly folderModel: Model<FolderDocument>,
+
+    private readonly fileService: FileService,
   ) {}
 
   private async trackActivity(data: {
@@ -181,11 +187,13 @@ export class ClearanceService {
     });
 
     if (!studentClearance) {
-      const totalRequiredFolders = await this.folderModel.countDocuments({
-        isCustom: false,
-        level: { $ne: null },
-        student: new Types.ObjectId(studentId),
-      });
+      const totalRequiredFolders = await this.folderModel
+        .find({
+          isCustom: false,
+          level: { $ne: null },
+          student: new Types.ObjectId(studentId),
+        })
+        .countDocuments();
 
       const foldersWithDocuments = await this.folderModel
         .aggregate([
@@ -216,7 +224,10 @@ export class ClearanceService {
         ])
         .then((r) => r?.[0]?.count);
 
-      if (foldersWithDocuments < totalRequiredFolders) {
+      if (
+        !foldersWithDocuments ||
+        foldersWithDocuments < totalRequiredFolders
+      ) {
         return {
           success: true,
           data: {
@@ -241,9 +252,9 @@ export class ClearanceService {
       .find({
         clearance: studentClearance._id,
       })
-      .select('user content createdAt _id')
+      .select('actor content createdAt _id')
       .populate({
-        path: 'user',
+        path: 'actor',
         select: '_id firstName lastName profilePicture role admin',
         populate: [
           {
@@ -263,7 +274,8 @@ export class ClearanceService {
         data: {
           message: 'Clearance requested',
           status: RequestClearanceStatus.REQUESTED,
-          activities: activities,
+          clearanceId: studentClearance._id,
+          activities,
         },
       };
     }
@@ -274,7 +286,8 @@ export class ClearanceService {
         data: {
           message: 'Clearance Rejected 😢',
           status: RequestClearanceStatus.REJECTED,
-          activities: activities,
+          clearanceId: studentClearance._id,
+          activities,
         },
       };
     }
@@ -285,13 +298,14 @@ export class ClearanceService {
         data: {
           message: 'Clearance Complete 🎉',
           status: RequestClearanceStatus.COMPLETED,
-          activities: activities,
+          clearanceId: studentClearance._id,
+          activities,
         },
       };
     }
 
     if (studentClearance.status === ClearanceStatus.Approved) {
-      const completedClearance = await this.studentClearanceModel
+      const submittedClearance = await this.studentClearanceModel
         .find({
           student: student._id,
         })
@@ -300,9 +314,12 @@ export class ClearanceService {
 
       const requiredClearanceIds = await this.departmentModel
         .findById(student.department)
+        .populate('required_clearance')
         .then((d) => {
           if (d) {
-            return d.required_clearance;
+            return d.required_clearance
+              .filter((c) => c.status !== SchoolClearanceStatus.Deleted)
+              .map((c) => c._id);
           } else {
             return [];
           }
@@ -311,6 +328,7 @@ export class ClearanceService {
       const allClearance = await this.schoolClearanceModel
         .find({
           school: student?.user?.school,
+          status: { $ne: SchoolClearanceStatus.Deleted },
         })
         .select('-school');
 
@@ -319,11 +337,12 @@ export class ClearanceService {
         data: {
           message: 'Clearance in progress',
           status: RequestClearanceStatus.IN_PROGRESS,
+          clearanceId: studentClearance._id,
           activities,
           clearanceDetails: {
             all: allClearance,
             requiredIds: requiredClearanceIds,
-            completedClearance,
+            submitted: submittedClearance,
           },
         },
       };
@@ -411,6 +430,11 @@ export class ClearanceService {
       user: userId,
       content: 'approved clearance request',
     });
+
+    return {
+      message: 'Clearance approved',
+      success: true,
+    };
   }
 
   async getClearanceOverview() {
@@ -470,7 +494,15 @@ export class ClearanceService {
         student: new Types.ObjectId(studentId),
         clearance: schoolClearance._id,
       })
-      .select('-student');
+      .select('-student -clearance -createdAt -updatedAt')
+      .populate({
+        path: 'documents',
+        select: '-student -createdAt -updatedAt -publicId -uploadedBy',
+        populate: {
+          path: 'folder',
+          select: '-student -createdAt -updatedAt',
+        },
+      });
 
     return {
       message: 'School clearance fetched',
@@ -557,6 +589,11 @@ export class ClearanceService {
     if (!studentMainClearance)
       throw new NotFoundException('Student clearance not found');
 
+    if (studentClearance.status !== StudentClearanceStatus.Requested)
+      throw new BadRequestException(
+        'Snap! only pending clearance requests can be rejected',
+      );
+
     studentClearance.status = StudentClearanceStatus.Rejected;
     studentClearance.rejectionDate = new Date();
     studentClearance.rejectionReason = body.rejectionReason;
@@ -575,6 +612,25 @@ export class ClearanceService {
   }
 
   async approveStudentClearance(body: ApproveStudentClearanceDto) {
+    const user = await this.userModel.findById(body.userId);
+
+    if (!user) throw new NotFoundException('User not found');
+
+    if (!body.approvalSignature && !user.signature) {
+      throw new NotFoundException(
+        'You have no signature to approve this clearance request',
+      );
+    }
+
+    if (body.approvalSignature) {
+      const { url } = await this.fileService.uploadResource(
+        body.approvalSignature,
+        false,
+      );
+
+      body.approvalSignature = url;
+    }
+
     const studentClearance = await this.studentClearanceModel
       .findById(body.clearanceId)
       .populate('clearance', 'clearance_name');
@@ -589,12 +645,22 @@ export class ClearanceService {
     if (!studentMainClearance)
       throw new NotFoundException('Student clearance not found');
 
+    if (studentClearance.status === StudentClearanceStatus.Approved)
+      throw new BadRequestException(
+        'Snap! this clearance request has already been approved',
+      );
+
     studentClearance.status = StudentClearanceStatus.Approved;
     studentClearance.approvalDate = new Date();
     studentClearance.approvalSignature = body.approvalSignature;
     studentClearance.rejectionDate = null;
     studentClearance.rejectionReason = '';
     await studentClearance.save();
+
+    if (body.setDefaultSignature && body.approvalSignature) {
+      user.signature = body.approvalSignature;
+      await user.save();
+    }
 
     await this.trackActivity({
       clearance: studentMainClearance._id,
