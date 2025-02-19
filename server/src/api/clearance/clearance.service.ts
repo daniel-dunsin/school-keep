@@ -272,8 +272,9 @@ export class ClearanceService {
       return {
         success: true,
         data: {
-          message: 'Clearance requested',
+          message: 'You have requested clearance, wait for approval',
           status: RequestClearanceStatus.REQUESTED,
+          lastRequestedDate: studentClearance.lastRequestedDate,
           clearanceId: studentClearance._id,
           activities,
         },
@@ -284,8 +285,10 @@ export class ClearanceService {
       return {
         success: true,
         data: {
-          message: 'Clearance Rejected 😢',
+          message: 'Your clearance request has been rejected 😢',
           status: RequestClearanceStatus.REJECTED,
+          rejectionReason: studentClearance.rejectionReason,
+          rejectionDate: studentClearance.rejectionDate,
           clearanceId: studentClearance._id,
           activities,
         },
@@ -300,6 +303,7 @@ export class ClearanceService {
           status: RequestClearanceStatus.COMPLETED,
           clearanceId: studentClearance._id,
           activities,
+          completionDate: studentClearance.completionDate,
         },
       };
     }
@@ -339,6 +343,7 @@ export class ClearanceService {
           status: RequestClearanceStatus.IN_PROGRESS,
           clearanceId: studentClearance._id,
           activities,
+          approvalDate: studentClearance.approvalDate,
           clearanceDetails: {
             all: allClearance,
             requiredIds: requiredClearanceIds,
@@ -364,6 +369,7 @@ export class ClearanceService {
       { student: new Types.ObjectId(studentId) },
       {
         status: ClearanceStatus.Requested,
+        lastRequestedDate: new Date(),
       },
       {
         upsert: true,
@@ -423,6 +429,7 @@ export class ClearanceService {
     clearance.approvalDate = new Date();
     clearance.rejectionDate = null;
     clearance.rejectionReason = '';
+    clearance.lastRequestedDate = null;
     await clearance.save();
 
     await this.trackActivity({

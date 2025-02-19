@@ -30,6 +30,12 @@ export class Clearance extends TimestampMixin {
 
   @Prop()
   rejectionDate: Date;
+
+  @Prop()
+  lastRequestedDate: Date;
+
+  @Prop()
+  completionDate: Date;
 }
 
 export type ClearanceDocument = HydratedDocument<Clearance>;
