@@ -2,6 +2,10 @@ import {
   AdminPermissions,
   AnnouncementDestination,
   AnnouncementStatus,
+  ClearanceStatus,
+  RequestClearanceStatus,
+  SchoolClearanceStatus,
+  StudentClearanceStatus,
   StudentStatus,
 } from './enums';
 
@@ -85,15 +89,6 @@ export type Announcement = {
   status: AnnouncementStatus;
 };
 
-export type SchoolClearance = {
-  clearance_name: string;
-  payment_required: boolean;
-  fee?: number;
-  _id?: string;
-  required_documents: string[];
-  is_default?: boolean;
-};
-
 export type Document = {
   version: number;
   documentName: string;
@@ -112,6 +107,65 @@ export type Folder = {
   folderName: string;
   _id: string;
   createdAt: number;
+};
+
+export type Clearance = {
+  _id: string;
+  student: Student;
+  status: ClearanceStatus;
+  approvalDate: Date;
+  rejectionReason: string;
+  rejectionDate: Date;
+  lastRequestedDate: Date;
+  completionDate: Date;
+};
+
+export type ClearanceActivity = {
+  _id: string;
+  createdAt: Date;
+  content: string;
+  actor: User;
+  clearance: Clearance;
+};
+
+export type SchoolClearance = {
+  clearance_name: string;
+  payment_required: boolean;
+  fee: number;
+  status: SchoolClearanceStatus;
+  required_documents: string[];
+  _id: string;
+  createdAt: Date;
+};
+
+export type StudentClearance = {
+  _id: string;
+  student: Student;
+  clearance: SchoolClearance;
+  status: StudentClearanceStatus;
+  approvalDate: Date;
+  approvalSignature: string;
+  rejectionReason: string;
+  rejectionDate: Date;
+  lastRequestDate: Date;
+  documents: Document[];
+};
+
+export type RequestClearance = {
+  message: string;
+  status: RequestClearanceStatus;
+  clearanceId: string;
+  activities: ClearanceActivity[];
+  rejectionReason: string;
+  approvalDate: Date;
+  completionDate: Date;
+  lastRequestedDate: Date;
+  rejectionDate: Date;
+  clearanceDetails: {
+    all: SchoolClearance[];
+    requiredIds: string[];
+    submitted: StudentClearance[];
+  };
 };
 
 export type AuthPages =

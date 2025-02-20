@@ -1,22 +1,32 @@
+'use client';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React, { FC } from 'react';
 
 interface Props {
   leadingImage: string;
   title: string;
-  onClick?(): void;
+  onClick?: (() => void) | string;
   trailing?: string;
 }
 
 const ListTile: FC<Props> = ({ title, leadingImage, onClick, trailing }) => {
+  const { push } = useRouter();
+
   return (
     <div
       className={cn(
         'flex items-center gap-2',
         onClick && 'underline cursor-pointer'
       )}
-      onClick={onClick}
+      onClick={() => {
+        if (typeof onClick === 'string') {
+          push(onClick);
+        } else {
+          onClick?.();
+        }
+      }}
     >
       <Image
         src={leadingImage}

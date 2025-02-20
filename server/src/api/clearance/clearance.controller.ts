@@ -28,6 +28,7 @@ import { AdminRoles } from '../admin/enums';
 import { MongoIdPipe } from 'src/core/pipes/mongo-id.pipe';
 import { Student } from '../student/schemas/student.schema';
 import { User } from '../user/schemas/user.schema';
+import { AdminDocument } from '../admin/schemas/admin.schema';
 
 @Controller('clearance')
 @ApiTags('clearance')
@@ -143,8 +144,8 @@ export class ClearanceController {
   @Get('/overview')
   @RolesDec([Roles.Admin])
   @AdminRolesDec([AdminRoles.SuperAdmin, AdminRoles.Admin])
-  async getClearanceOverview() {
-    return await this.clearanceService.getClearanceOverview();
+  async getClearanceOverview(@Auth('admin') admin: AdminDocument) {
+    return await this.clearanceService.getClearanceOverview(admin);
   }
 
   @Get('/school-clearance/:school_clearance_id/student/:student_id')

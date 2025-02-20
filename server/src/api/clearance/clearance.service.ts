@@ -10,7 +10,7 @@ import {
   RejectClearanceDto,
   RequestStudentClearanceDto,
 } from './dtos';
-import { Model, PopulateOptions, Types } from 'mongoose';
+import { FilterQuery, Model, PopulateOptions, Types } from 'mongoose';
 import { SchoolClearance } from './schemas/school-clearance.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import {
@@ -22,11 +22,12 @@ import {
 import { Department } from '../school/schemas/department.schema';
 import { Student } from '../student/schemas/student.schema';
 import { Folder, FolderDocument } from '../documents/schemas/folders.schema';
-import { Clearance } from './schemas/clearance.schema';
+import { Clearance, ClearanceDocument } from './schemas/clearance.schema';
 import { ClearanceActivity } from './schemas/clearance-activity.schema';
 import { StudentClearance } from './schemas/student-clearance.schema';
 import { User } from '../user/schemas/user.schema';
 import { FileService } from 'src/shared/services/file.service';
+import { AdminDocument } from '../admin/schemas/admin.schema';
 
 @Injectable()
 export class ClearanceService {
@@ -444,7 +445,18 @@ export class ClearanceService {
     };
   }
 
-  async getClearanceOverview() {
+  async getClearanceOverview(admin: AdminDocument) {
+    const query: FilterQuery<ClearanceDocument> = {};
+
+    if (admin.department) {
+      const students = await this.studentModel
+        .find({ department: admin.department?._id })
+        .select('_id')
+        .then((r) => r.map((r) => r._id));
+
+      query.student = { $in: students };
+    }
+
     const populateOptions: PopulateOptions[] = [
       {
         path: 'student',
@@ -458,16 +470,16 @@ export class ClearanceService {
 
     const [requested, rejected, approved, completed] = await Promise.all([
       this.clearanceModel
-        .find({ status: ClearanceStatus.Requested })
+        .find({ ...query, status: ClearanceStatus.Requested })
         .populate(populateOptions),
       this.clearanceModel
-        .find({ status: ClearanceStatus.Rejected })
+        .find({ ...query, status: ClearanceStatus.Rejected })
         .populate(populateOptions),
       this.clearanceModel
-        .find({ status: ClearanceStatus.Approved })
+        .find({ ...query, status: ClearanceStatus.Approved })
         .populate(populateOptions),
       this.clearanceModel
-        .find({ status: ClearanceStatus.Completed })
+        .find({ ...query, status: ClearanceStatus.Completed })
         .populate(populateOptions),
     ]);
 

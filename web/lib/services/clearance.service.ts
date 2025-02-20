@@ -1,5 +1,10 @@
 import { https } from '../configs/http.config';
-import { ApiResponse, Department, SchoolClearance } from '../schemas/types';
+import {
+  ApiResponse,
+  Clearance,
+  Department,
+  SchoolClearance,
+} from '../schemas/types';
 import { errorHandler } from '../utils';
 
 const getSchoolClearance = async (search?: string) => {
@@ -66,12 +71,30 @@ const setDepartmentRequiredClearance = async (
   }
 };
 
+const getClearanceOverview = async () => {
+  try {
+    const response = await https.get<
+      ApiResponse<{
+        requested: Clearance[];
+        rejected: Clearance[];
+        approved: Clearance[];
+        completed: Clearance[];
+      }>
+    >('/clearance/overview');
+
+    return response?.data?.data;
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
 const clearanceService = {
   getSchoolClearance,
   addSchoolClearance,
   deleteSchoolClearance,
   getDepartmentsClearance,
   setDepartmentRequiredClearance,
+  getClearanceOverview,
 };
 
 export default clearanceService;
