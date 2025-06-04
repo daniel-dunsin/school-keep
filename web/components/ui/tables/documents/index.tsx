@@ -8,14 +8,21 @@ interface Props {
   loading?: boolean;
   data?: Document[];
   columns?: ColumnDef<Document>[];
+  header?: string;
 }
 
 export const DocumentsTable: FC<Props> = ({
   loading,
   data,
   columns = fullColumns,
+  header,
 }) => {
   return (
-    <TableComponent data={data ?? []} columns={columns} loading={loading} />
+    <TableComponent
+      data={data ?? []}
+      columns={columns}
+      loading={loading}
+      heading={header ? { title: header } : undefined}
+    />
   );
 };

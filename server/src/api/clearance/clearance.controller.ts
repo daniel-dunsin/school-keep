@@ -117,28 +117,28 @@ export class ClearanceController {
     );
   }
 
-  @Post('/reject/:clearance_id')
+  @Post('/reject/:student_id')
   @RolesDec([Roles.Admin])
   @AdminRolesDec([AdminRoles.SuperAdmin, AdminRoles.Admin])
   async rejectClearance(
-    @Param('clearance_id', MongoIdPipe) clearanceId: string,
+    @Param('student_id', MongoIdPipe) studentId: string,
     @Body() body: RejectClearanceDto,
     @Auth() user: User,
   ) {
-    body.clearanceId = clearanceId;
+    body.studentId = studentId;
     body.userId = user._id;
 
     return await this.clearanceService.rejectClearance(body);
   }
 
-  @Post('/approve/:clearance_id')
+  @Post('/approve/:student_id')
   @RolesDec([Roles.Admin])
   @AdminRolesDec([AdminRoles.SuperAdmin, AdminRoles.Admin])
   async approveClearance(
-    @Param('clearance_id', MongoIdPipe) clearanceId: string,
+    @Param('student_id', MongoIdPipe) studentId: string,
     @Auth() user: User,
   ) {
-    return await this.clearanceService.approveClearance(clearanceId, user._id);
+    return await this.clearanceService.approveClearance(studentId, user._id);
   }
 
   @Get('/overview')
@@ -186,6 +186,15 @@ export class ClearanceController {
     );
   }
 
+  @Post('/student-clearance/request/paid')
+  @RolesDec([Roles.Student])
+  async requestPaidStudentClearance(
+    @Body() body: RequestStudentClearanceDto,
+    @Auth() user: User,
+  ) {
+    return await this.clearanceService.requestPaidStudentClearance(body, user);
+  }
+
   @Post('/student-clearance/:student_clearance_id/reject')
   @RolesDec([Roles.Admin])
   @AdminRolesDec([AdminRoles.SuperAdmin, AdminRoles.Admin])
@@ -210,5 +219,26 @@ export class ClearanceController {
     body.clearanceId = studentClearanceId;
     body.userId = user._id;
     return await this.clearanceService.approveStudentClearance(body);
+  }
+
+  @Get('/student-clearance/student/:studentId/overview')
+  @RolesDec([Roles.Admin])
+  @AdminRolesDec([AdminRoles.SuperAdmin, AdminRoles.Admin])
+  async getStudentClearanceOverview(@Param('studentId') studentId: string) {
+    return await this.clearanceService.getStudentClearanceOverview(studentId);
+  }
+
+  @Get('/student-clearance/student/:studentId/activities')
+  async getStudentClearanceActivities(@Param('studentId') studentId: string) {
+    return await this.clearanceService.getStudentClearanceActivities(studentId);
+  }
+
+  @Get('/student-clearance/:clearance_id/activities')
+  async getStudentSubClearanceActivities(
+    @Param('clearance_id') clearanceId: string,
+  ) {
+    return await this.clearanceService.getStudentSubClearanceActivities(
+      clearanceId,
+    );
   }
 }

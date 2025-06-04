@@ -20,7 +20,8 @@ class AppImages {
   static const String logoWhite = '$imagesRoute/logo-white.png';
   static const String logoBlack = '$imagesRoute/logo-black.png';
   static const String logoPurple = '$imagesRoute/logo-purple.png';
-  static const String noDp = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1H81w4SmKH5DZmIbxU7EB0aMSkNQDoPQA1mRQxf2Y0wMF1NSa7vghbwwKASi1q4NPmNw&usqp=CAU';
+  static const String noDp =
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1H81w4SmKH5DZmIbxU7EB0aMSkNQDoPQA1mRQxf2Y0wMF1NSa7vghbwwKASi1q4NPmNw&usqp=CAU';
   static const String noFolder = '$imagesRoute/no_folder.webp';
 }
 
@@ -37,9 +38,11 @@ class AppMatchers {
 
   static RegExp base64 = RegExp(r"/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+)/");
 
-  static RegExp phoneNumber = RegExp(r"^\+?[1-9]\d{0,2}[\s.-]?\(?\d{1,4}\)?[\s.-]?\d{1,4}[\s.-]?\d{1,9}$");
+  static RegExp phoneNumber = RegExp(
+      r"^\+?[1-9]\d{0,2}[\s.-]?\(?\d{1,4}\)?[\s.-]?\d{1,4}[\s.-]?\d{1,9}$");
 
-  static RegExp password = RegExp(r'^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>])(?=.{8,}).*$');
+  static RegExp password =
+      RegExp(r'^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>])(?=.{8,}).*$');
 }
 
 class AppUrls {
@@ -49,4 +52,8 @@ class AppUrls {
 enum AppTheme {
   dark,
   light,
+}
+
+class AppConstants {
+  static String nairaSymbol = "₦";
 }

@@ -11,6 +11,7 @@ import { SharedModule } from './shared/shared.module';
     ConfigModule.forRoot({
       envFilePath: '.env',
       validationSchema: envSchema,
+      isGlobal: true,
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

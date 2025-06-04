@@ -1,8 +1,10 @@
 import { https } from '../configs/http.config';
+import { RequestClearanceStatus } from '../schemas/enums';
 import {
   ApiResponse,
   Clearance,
   Department,
+  RequestClearance,
   SchoolClearance,
 } from '../schemas/types';
 import { errorHandler } from '../utils';
@@ -88,6 +90,68 @@ const getClearanceOverview = async () => {
   }
 };
 
+const requestStudentClearanceStatus = async (studentId: string) => {
+  try {
+    const response = await https.get<ApiResponse<RequestClearance>>(
+      `/clearance/student/${studentId}`
+    );
+
+    return response?.data?.data;
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
+const getStudentClearanceOverview = async (studentId: string) => {
+  try {
+    const response = await https.get<
+      ApiResponse<{
+        requested: number;
+        approved: number;
+        rejected: number;
+      }>
+    >(`/clearance/student-clearance/student/${studentId}/overview`);
+
+    return response?.data?.data;
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
+const rejectClearance = async (studentId: string, rejectionReason: string) => {
+  try {
+    const response = await https.post(`/clearance/reject/${studentId}`, {
+      rejectionReason,
+    });
+
+    return response?.data;
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
+const approveClearance = async (studentId: string) => {
+  try {
+    const response = await https.post(`/clearance/approve/${studentId}`);
+
+    return response?.data;
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
+const getStudentClearance = async (studentId: string) => {
+  try {
+    const response = await https.get<ApiResponse<SchoolClearance[]>>(
+      `/clearance/student/${studentId}`
+    );
+
+    return;
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
 const clearanceService = {
   getSchoolClearance,
   addSchoolClearance,
@@ -95,6 +159,10 @@ const clearanceService = {
   getDepartmentsClearance,
   setDepartmentRequiredClearance,
   getClearanceOverview,
+  requestStudentClearanceStatus,
+  getStudentClearanceOverview,
+  rejectClearance,
+  approveClearance,
 };
 
 export default clearanceService;

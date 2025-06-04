@@ -28,6 +28,13 @@ import { StudentClearance } from './schemas/student-clearance.schema';
 import { User } from '../user/schemas/user.schema';
 import { FileService } from 'src/shared/services/file.service';
 import { AdminDocument } from '../admin/schemas/admin.schema';
+import {
+  Transaction,
+  TransactionDocument,
+} from '../payment/schemas/transaction.schema';
+import { v4 } from 'uuid';
+import { PayDirection, PaymentReason } from '../payment/enums';
+import { SquadProvider } from '../payment/providers/squad.provider';
 
 @Injectable()
 export class ClearanceService {
@@ -48,18 +55,25 @@ export class ClearanceService {
     private readonly userModel: Model<User>,
     @InjectModel(Folder.name)
     private readonly folderModel: Model<FolderDocument>,
+    @InjectModel(Transaction.name)
+    private readonly transactiomModel: Model<TransactionDocument>,
 
     private readonly fileService: FileService,
+    private readonly squadProvider: SquadProvider,
   ) {}
 
-  private async trackActivity(data: {
+  async trackActivity(data: {
     clearance: string;
     user: string;
     content: string;
+    subClearance?: string;
   }) {
     return await this.clearanceActivityModel.create({
       clearance: new Types.ObjectId(data?.clearance),
       actor: new Types.ObjectId(data?.user),
+      subClearance: data.subClearance
+        ? new Types.ObjectId(data.subClearance)
+        : undefined,
       content: data?.content,
     });
   }
@@ -392,7 +406,9 @@ export class ClearanceService {
   }
 
   async rejectClearance(body: RejectClearanceDto) {
-    const clearance = await this.clearanceModel.findById(body.clearanceId);
+    const clearance = await this.clearanceModel.findOne({
+      student: new Types.ObjectId(body.studentId),
+    });
 
     if (!clearance) throw new NotFoundException('clearance request not found');
     if (clearance.status != ClearanceStatus.Requested)
@@ -417,14 +433,16 @@ export class ClearanceService {
     };
   }
 
-  async approveClearance(clearanceId: string, userId: string) {
-    const clearance = await this.clearanceModel.findById(clearanceId);
+  async approveClearance(studentId: string, userId: string) {
+    const clearance = await this.clearanceModel.findOne({
+      student: new Types.ObjectId(studentId),
+    });
 
     if (!clearance) throw new NotFoundException('clearance request not found');
-    if (clearance.status != ClearanceStatus.Requested)
-      throw new NotFoundException(
-        'Snap! only pending clearance requests can be approved',
-      );
+    // if (clearance.status != ClearanceStatus.Requested)
+    //   throw new NotFoundException(
+    //     'Snap! only pending clearance requests can be approved',
+    //   );
 
     clearance.status = ClearanceStatus.Approved;
     clearance.approvalDate = new Date();
@@ -546,7 +564,7 @@ export class ClearanceService {
       throw new NotFoundException('Student clearance not found');
     }
 
-    const studentClearance = await this.studentClearanceModel
+    let studentClearance = await this.studentClearanceModel
       .findOne({
         student: new Types.ObjectId(studentId),
         clearance: new Types.ObjectId(body.schoolClearanceId),
@@ -554,36 +572,44 @@ export class ClearanceService {
       .populate('clearance', 'clearance_name');
 
     if (studentClearance) {
-      await this.studentClearanceModel.updateOne(
-        { _id: studentClearance._id },
-        {
-          $set: {
-            status: StudentClearanceStatus.Requested,
-            documents: body.documents,
-            lastRequestDate: new Date(),
+      await this.studentClearanceModel
+        .updateOne(
+          { _id: studentClearance._id },
+          {
+            $set: {
+              status: StudentClearanceStatus.Requested,
+              documents: body.documents,
+              lastRequestDate: new Date(),
+            },
+            $unset: {
+              rejectionDate: '',
+              rejectionReason: '',
+            },
           },
-          $unset: {
-            rejectionDate: '',
-            rejectionReason: '',
+          {
+            runValidators: true,
           },
-        },
-        {
-          runValidators: true,
-        },
-      );
+        )
+        .populate('clearance', 'clearance_name');
     } else {
-      await this.studentClearanceModel.create({
+      studentClearance = await this.studentClearanceModel.create({
         student: new Types.ObjectId(studentId),
         clearance: new Types.ObjectId(body.schoolClearanceId),
         status: StudentClearanceStatus.Requested,
         documents: body.documents,
         lastRequestDate: new Date(),
       });
+
+      studentClearance = await studentClearance.populate(
+        'clearance',
+        'clearance_name',
+      );
     }
 
     await this.trackActivity({
       clearance: studentMainClearance._id,
       user: studentUserId,
+      subClearance: studentClearance._id,
       content: `sent clearance request for ${studentClearance?.clearance?.clearance_name}`,
     });
 
@@ -621,6 +647,7 @@ export class ClearanceService {
     await this.trackActivity({
       clearance: studentMainClearance._id,
       user: body.userId,
+      subClearance: studentClearance._id,
       content: `rejected clearance request for ${studentClearance?.clearance?.clearance_name}`,
     });
 
@@ -684,12 +711,195 @@ export class ClearanceService {
     await this.trackActivity({
       clearance: studentMainClearance._id,
       user: body.userId,
+      subClearance: studentClearance?._id,
       content: `approved clearance request for ${studentClearance?.clearance?.clearance_name}`,
     });
 
     return {
       message: 'Student clearance approved',
       success: true,
+    };
+  }
+
+  async requestPaidStudentClearance(
+    body: RequestStudentClearanceDto,
+    user: User,
+  ) {
+    const studentId = user.student._id;
+    const studentUserId = user._id;
+    const studentMainClearance = await this.clearanceModel.findOne({
+      student: new Types.ObjectId(studentId),
+    });
+
+    if (!studentMainClearance) {
+      throw new NotFoundException('Student clearance not found');
+    }
+
+    const schoolClearance = await this.schoolClearanceModel.findOne({
+      _id: new Types.ObjectId(body.schoolClearanceId),
+    });
+
+    if (!schoolClearance)
+      throw new NotFoundException('School clearance not found');
+
+    if (!schoolClearance.payment_required)
+      throw new NotFoundException(
+        'Oops! payment is not required for this clearance',
+      );
+
+    let studentClearance: any = await this.studentClearanceModel
+      .findOne({
+        clearance: schoolClearance._id,
+        student: new Types.ObjectId(studentId),
+      })
+      .populate('clearance', 'clearance_name');
+
+    if (studentClearance) {
+      studentClearance = await this.studentClearanceModel
+        .updateOne(
+          { _id: studentClearance._id },
+          {
+            $set: {
+              status: StudentClearanceStatus.Requested,
+              documents: body.documents,
+              lastRequestDate: new Date(),
+            },
+            $unset: {
+              rejectionDate: '',
+              rejectionReason: '',
+            },
+          },
+          {
+            runValidators: true,
+          },
+        )
+        .populate('clearance', 'clearance_name');
+
+      await await this.trackActivity({
+        clearance: studentMainClearance._id,
+        user: studentUserId,
+        subClearance: studentClearance._id,
+        content: `sent clearance request for ${studentClearance?.clearance?.clearance_name}`,
+      });
+
+      return {
+        message: 'Requested',
+        success: true,
+      };
+    } else {
+      const transaction_reference = v4();
+
+      await this.transactiomModel.create({
+        transaction_reference,
+        direction: PayDirection.DEBIT,
+        amount: schoolClearance.fee,
+        user: new Types.ObjectId(studentUserId),
+        student: new Types.ObjectId(studentId),
+        school: schoolClearance.school,
+        payment_for: PaymentReason.CLEARANCE,
+        meta: {
+          school_clearance_id: schoolClearance._id,
+          documents: body.documents,
+        },
+      });
+
+      const { auth_url, amount, transaction_ref } =
+        await this.squadProvider.initiatePayment({
+          email: user?.email,
+          amount: schoolClearance.fee,
+          transaction_ref: transaction_reference,
+          customer_name: `${user?.firstName} ${user?.lastName}`,
+          payment_channels: ['card', 'bank'],
+        });
+
+      return {
+        message: 'Payment initiated',
+        success: true,
+        data: {
+          auth_url,
+          amount,
+          transaction_ref,
+        },
+      };
+    }
+  }
+
+  async getStudentClearanceOverview(studentId: string) {
+    const clearance = await this.clearanceModel.findOne({
+      student: new Types.ObjectId(studentId),
+    });
+
+    if (!clearance) throw new NotFoundException('Clearance not found');
+    if (clearance.status != ClearanceStatus.Approved)
+      throw new BadRequestException(
+        'Can only return metrics for approved clearance',
+      );
+
+    const baseQuery: FilterQuery<StudentClearance> = {
+      student: new Types.ObjectId(studentId),
+    };
+
+    const [requested, approved, rejected] = await Promise.all([
+      this.studentClearanceModel.countDocuments({
+        ...baseQuery,
+        status: StudentClearanceStatus.Requested,
+      }),
+      this.studentClearanceModel.countDocuments({
+        ...baseQuery,
+        status: StudentClearanceStatus.Approved,
+      }),
+      this.studentClearanceModel.countDocuments({
+        ...baseQuery,
+        status: StudentClearanceStatus.Rejected,
+      }),
+    ]);
+
+    return {
+      success: true,
+      message: 'metrics fetched successfully',
+      data: {
+        requested,
+        approved,
+        rejected,
+      },
+    };
+  }
+
+  async getStudentClearanceActivities(studentId: string) {
+    const clearance = await this.clearanceModel.findOne({
+      student: new Types.ObjectId(studentId),
+    });
+
+    if (!clearance) throw new NotFoundException('Clearance not found');
+
+    const data = await this.clearanceActivityModel
+      .find({
+        clearance: clearance._id,
+      })
+      .sort({ createdAt: -1 })
+      .populate('actor')
+      .select('-clearance -subClearance');
+
+    return {
+      success: true,
+      message: 'Fetched',
+      data,
+    };
+  }
+
+  async getStudentSubClearanceActivities(subClearanceId: string) {
+    const data = await this.clearanceActivityModel
+      .find({
+        subClearance: new Types.ObjectId(subClearanceId),
+      })
+      .sort({ createdAt: -1 })
+      .populate('actor')
+      .select('-clearance -subClearance');
+
+    return {
+      success: true,
+      message: 'Fetched',
+      data,
     };
   }
 }

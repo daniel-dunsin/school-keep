@@ -9,7 +9,6 @@ import {
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { UserDocument } from 'src/api/user/schemas/user.schema';
 import {
   AdminRolesDec,
   IsPublic,
@@ -58,12 +57,13 @@ export class AuthGuard implements CanActivate {
       if (!accessToken)
         throw new UnauthorizedException('Access token not found');
 
-      const jwtUser =
-        await this.jwtService.verifyAsync<UserDocument>(accessToken);
+      const jwtUser = await this.jwtService.verifyAsync<{ user_id: string }>(
+        accessToken,
+      );
 
       const user = await this.authService.validateJwtPayload(
         accessToken,
-        jwtUser._id,
+        jwtUser.user_id,
       );
 
       if (!user) {

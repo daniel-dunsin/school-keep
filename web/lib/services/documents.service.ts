@@ -105,11 +105,24 @@ const createDocument = async (body: CreateDocumentDto) => {
   }
 };
 
+const getStudentDocuments = async (studentId: string) => {
+  try {
+    const response = await https.get<ApiResponse<Document[]>>(
+      `/document/student/${studentId}`
+    );
+
+    return response?.data?.data;
+  } catch (error) {
+    return errorHandler(error);
+  }
+};
+
 const documentService = {
   getAllDocuments,
   getStudentFolders,
   getDocument,
   updateDocument,
   createDocument,
+  getStudentDocuments,
 };
 export default documentService;

@@ -42,9 +42,11 @@ class StudentClearanceStatusModel {
       'status': status.name,
       'clearanceId': clearanceId,
       'activities': activities?.map((x) => x.toMap()).toList(),
-      'allSchoolClearances': allSchoolClearances?.map((x) => x.toMap()).toList(),
+      'allSchoolClearances':
+          allSchoolClearances?.map((x) => x.toMap()).toList(),
       'requiredSchoolClearancesIds': requiredSchoolClearancesIds,
-      'studentSubmittedClearances': studentSubmittedClearances?.map((x) => x.toMap()).toList(),
+      'studentSubmittedClearances':
+          studentSubmittedClearances?.map((x) => x.toMap()).toList(),
       'rejectionReason': rejectionReason,
       'rejectionDate': rejectionDate?.millisecondsSinceEpoch,
       'approvalDate': approvalDate?.millisecondsSinceEpoch,
@@ -55,7 +57,8 @@ class StudentClearanceStatusModel {
   factory StudentClearanceStatusModel.fromMap(Map map) {
     return StudentClearanceStatusModel(
       message: map['message'] as String,
-      status: RequestClearanceStatus.values.firstWhere((v) => v.name == (map['status'] as String)),
+      status: RequestClearanceStatus.values
+          .firstWhere((v) => v.name == (map['status'] as String)),
       clearanceId: map['clearanceId'],
       activities: map['activities'] != null
           ? List<ClearanceActivityModel>.from(
@@ -66,28 +69,43 @@ class StudentClearanceStatusModel {
           : null,
       allSchoolClearances: map['clearanceDetails']?["all"] != null
           ? List<SchoolClearanceModel>.from(
-              (map['clearanceDetails']?["all"] as List).map<SchoolClearanceModel?>(
+              (map['clearanceDetails']?["all"] as List)
+                  .map<SchoolClearanceModel?>(
                 (x) => SchoolClearanceModel.fromMap(x as Map),
               ),
             )
           : null,
-      requiredSchoolClearancesIds: map["clearanceDetails"]?["requiredIds"] != null ? List<String>.from(map["clearanceDetails"]["requiredIds"] as List<String>) : null,
+      requiredSchoolClearancesIds: map["clearanceDetails"]?["requiredIds"] !=
+              null
+          ? List<String>.from(
+              map["clearanceDetails"]["requiredIds"].map((s) => s.toString()))
+          : null,
       studentSubmittedClearances: map["clearanceDetails"]?["submitted"] != null
           ? List<StudentSubClearanceModel>.from(
-              (map["clearanceDetails"]?["submitted"] as List).map<StudentSubClearanceModel?>(
+              (map["clearanceDetails"]?["submitted"] as List)
+                  .map<StudentSubClearanceModel?>(
                 (x) => StudentSubClearanceModel.fromMap(x as Map),
               ),
             )
           : null,
       rejectionReason: map['rejectionReason'],
-      rejectionDate: map['rejectionDate'] != null ? DateTime.parse(map['rejectionDate'] as String) : null,
-      approvalDate: map['approvalDate'] != null ? DateTime.parse(map['approvalDate'] as String) : null,
-      lastRequestedDate: map['lastRequestedDate'] != null ? DateTime.parse(map['lastRequestedDate'] as String) : null,
-      completionDate: map['completionDate'] != null ? DateTime.parse(map['completionDate'] as String) : null,
+      rejectionDate: map['rejectionDate'] != null
+          ? DateTime.parse(map['rejectionDate'] as String)
+          : null,
+      approvalDate: map['approvalDate'] != null
+          ? DateTime.parse(map['approvalDate'] as String)
+          : null,
+      lastRequestedDate: map['lastRequestedDate'] != null
+          ? DateTime.parse(map['lastRequestedDate'] as String)
+          : null,
+      completionDate: map['completionDate'] != null
+          ? DateTime.parse(map['completionDate'] as String)
+          : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory StudentClearanceStatusModel.fromJson(String source) => StudentClearanceStatusModel.fromMap(json.decode(source) as Map);
+  factory StudentClearanceStatusModel.fromJson(String source) =>
+      StudentClearanceStatusModel.fromMap(json.decode(source) as Map);
 }

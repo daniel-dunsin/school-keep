@@ -41,7 +41,7 @@ class ContainedButton extends StatelessWidget {
       child: ElevatedButton.icon(
         onPressed: loading || disabled ? null : onPressed ?? () {},
         label: loading ? AppLoader() : child ?? SizedBox.shrink(),
-        icon: icon,
+        icon: loading ? null : icon,
         iconAlignment: iconAlignment ?? IconAlignment.end,
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ?? getColorScheme(context).surface,
@@ -53,7 +53,10 @@ class ContainedButton extends StatelessWidget {
           minimumSize: Size(double.maxFinite, height ?? 60),
           iconColor: AppColors.white,
           disabledIconColor: Colors.black54,
-          disabledBackgroundColor: getColorScheme(context).brightness == Brightness.dark ? Colors.grey[700] : Colors.grey[500],
+          disabledBackgroundColor:
+              getColorScheme(context).brightness == Brightness.dark
+                  ? Colors.grey[700]
+                  : Colors.grey[500],
           disabledForegroundColor: Colors.grey[300],
           textStyle: getTextTheme(context).bodyMedium?.copyWith(
                 fontWeight: fontWeight,

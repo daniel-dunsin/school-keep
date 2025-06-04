@@ -7,6 +7,7 @@ import { StudentModule } from './student/student.module';
 import { DocumentModule } from './documents/documents.module';
 import { ClearanceModule } from './clearance/clearance.module';
 import { AnnouncementModule } from './announcement/announcement.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AnnouncementModule } from './announcement/announcement.module';
     DocumentModule,
     ClearanceModule,
     AnnouncementModule,
+    PaymentModule,
   ],
 })
 export class ApiModule {}

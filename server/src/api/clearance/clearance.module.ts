@@ -20,6 +20,7 @@ import {
 } from './schemas/clearance-activity.schema';
 import { UserModule } from '../user/user.module';
 import { SharedModule } from 'src/shared/shared.module';
+import { PaymentModule } from '../payment/payment.module';
 
 @Module({
   imports: [
@@ -46,9 +47,10 @@ import { SharedModule } from 'src/shared/shared.module';
     DocumentModule,
     forwardRef(() => UserModule),
     forwardRef(() => SharedModule),
+    PaymentModule,
   ],
   controllers: [ClearanceController],
   providers: [ClearanceService],
-  exports: [MongooseModule],
+  exports: [MongooseModule, ClearanceService],
 })
 export class ClearanceModule {}

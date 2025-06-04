@@ -32,11 +32,10 @@ dependencies:
   intl: ^0.18.1
   url_launcher: ^6.3.1
   hugeicons: ^0.0.7
-  camera: ^0.11.0+2
   path: ^1.9.0
   video_player: ^2.9.2
   open_url: ^2.0.1
-  open_filex: ^4.6.0
+  webview_flutter_plus: ^0.4.7
 
 dev_dependencies:
   flutter_test:

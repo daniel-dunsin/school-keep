@@ -49,7 +49,8 @@ const AddClearanceModal = () => {
   const submit = async (e: Inputs) => {
     addClearance({
       ...e,
-      required_documents: e.required_documents?.split(',') ?? [],
+      required_documents:
+        e.required_documents?.split(',')?.filter((doc) => doc.trim()) ?? [],
     });
   };
 

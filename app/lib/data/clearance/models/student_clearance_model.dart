@@ -14,7 +14,8 @@ class StudentSubClearanceModel {
   final String? rejectionReason;
   final DateTime? rejectionDate;
   final DateTime? lastRequestDate;
-  final List<DocumentModel>? documents;
+  final List? documents;
+
   StudentSubClearanceModel({
     required this.id,
     this.clearance,
@@ -45,18 +46,39 @@ class StudentSubClearanceModel {
   factory StudentSubClearanceModel.fromMap(Map map) {
     return StudentSubClearanceModel(
       id: map['id'] as String,
-      clearance: map['clearance'] != null && map['clearance'].runtimeType.toString() != "String" ? SchoolClearanceModel.fromMap(map['clearance']) : null,
-      schoolClearanceId: map['clearance'] != null && map["clearance"].runtimeType.toString() == "String" ? map['schoolClearanceId'] as String : null,
-      status: map['status'] != null ? StudentClearanceStatus.values.firstWhere((v) => v.name == (map['status'] as String)) : null,
-      approvalDate: map['approvalDate'] != null ? DateTime.parse(map["approvalDate"] as String) : null,
-      approvalSignature: map['approvalSignature'] != null ? map['approvalSignature'] as String : null,
-      rejectionReason: map['rejectionReason'] != null ? map['rejectionReason'] as String : null,
-      rejectionDate: map['rejectionDate'] != null ? DateTime.parse(map["rejectionDate"] as String) : null,
-      lastRequestDate: map['lastRequestDate'] != null ? DateTime.parse(map["lastRequestDate"] as String) : null,
+      clearance: map['clearance'] != null &&
+              map['clearance'].runtimeType.toString() != "String"
+          ? SchoolClearanceModel.fromMap(map['clearance'])
+          : null,
+      schoolClearanceId: map['clearance'] != null &&
+              map["clearance"].runtimeType.toString() == "String"
+          ? map['schoolClearanceId'] as String
+          : null,
+      status: map['status'] != null
+          ? StudentClearanceStatus.values
+              .firstWhere((v) => v.name == (map['status'] as String))
+          : null,
+      approvalDate: map['approvalDate'] != null
+          ? DateTime.parse(map["approvalDate"] as String)
+          : null,
+      approvalSignature: map['approvalSignature'] != null
+          ? map['approvalSignature'] as String
+          : null,
+      rejectionReason: map['rejectionReason'] != null
+          ? map['rejectionReason'] as String
+          : null,
+      rejectionDate: map['rejectionDate'] != null
+          ? DateTime.parse(map["rejectionDate"] as String)
+          : null,
+      lastRequestDate: map['lastRequestDate'] != null
+          ? DateTime.parse(map["lastRequestDate"] as String)
+          : null,
       documents: map['documents'] != null
-          ? List<DocumentModel>.from(
-              (map['documents'] as List<int>).map<DocumentModel?>(
-                (x) => DocumentModel.fromMap(x as Map<String, dynamic>),
+          ? List.from(
+              (map['documents']).map(
+                (x) => x.runtimeType.toString() != "String"
+                    ? DocumentModel.fromMap(x as Map<String, dynamic>)
+                    : x,
               ),
             )
           : null,

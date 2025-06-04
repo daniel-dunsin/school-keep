@@ -40,6 +40,7 @@ export class RejectClearanceDto {
   @IsString(true)
   rejectionReason: string;
 
+  studentId: string;
   clearanceId: string;
   userId: string;
 }
@@ -51,6 +52,7 @@ export class ApproveStudentClearanceDto {
   @IsBoolean(true)
   setDefaultSignature: boolean;
 
+  studentId: string;
   clearanceId: string;
   userId: string;
 }

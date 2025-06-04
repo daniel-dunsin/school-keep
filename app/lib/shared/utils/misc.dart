@@ -1,6 +1,7 @@
 import 'package:app/shared/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 ColorScheme getColorScheme(BuildContext context) {
   return Theme.of(context).colorScheme;
@@ -28,4 +29,16 @@ void setStatusBarTheme(BuildContext context, AppTheme appTheme) {
       ),
     );
   }
+}
+
+String formatNaira(double amount) {
+  final formatter = NumberFormat.currency(
+    locale: 'en_NG',
+    symbol: '₦',
+  );
+  return formatter.format(amount);
+}
+
+String formatDate(DateTime date) {
+  return DateFormat.yMMMd().format(date);
 }

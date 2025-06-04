@@ -7,21 +7,21 @@ import 'package:flutter/widgets.dart';
 part 'clearance_status_events.dart';
 part 'clearance_status_state.dart';
 
-class ClearanceStatusBloc extends Bloc<ClearanceStatusEvents, ClearanceStatusState> {
+class ClearanceStatusBloc
+    extends Bloc<ClearanceStatusEvents, ClearanceStatusState> {
   final ClearanceRepository clearanceRepository;
 
-  ClearanceStatusBloc({required this.clearanceRepository}) : super(ClearanceInitialState()) {
+  ClearanceStatusBloc({required this.clearanceRepository})
+      : super(ClearanceInitialState()) {
     on<GetClearanceStatusRequested>(
       (event, emit) async {
         emit(GetClearanceStatusLoading());
 
         try {
-          final response = await clearanceRepository.getStudentClearanceStatus();
+          final response =
+              await clearanceRepository.getStudentClearanceStatus();
 
           final data = response?["data"] as Map;
-
-          print(data);
-          print(StudentClearanceStatusModel.fromMap(data));
 
           emit(
             GetClearanceStatusSuccess(

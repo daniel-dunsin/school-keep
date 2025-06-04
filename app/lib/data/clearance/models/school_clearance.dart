@@ -8,7 +8,7 @@ class SchoolClearanceModel {
   final String clearanceName;
   final bool paymentRequired;
   final double fee;
-  final List<DocumentModel>? requiredDocuments;
+  final List<String>? requiredDocuments;
 
   SchoolClearanceModel({
     required this.id,
@@ -22,7 +22,7 @@ class SchoolClearanceModel {
     String? clearanceName,
     bool? paymentRequired,
     double? fee,
-    List<DocumentModel>? requiredDocuments,
+    List<String>? requiredDocuments,
   }) {
     return SchoolClearanceModel(
       id: id,
@@ -38,7 +38,7 @@ class SchoolClearanceModel {
       'clearanceName': clearanceName,
       'paymentRequired': paymentRequired,
       'fee': fee,
-      'requiredDocuments': requiredDocuments?.map((x) => x.toMap()).toList(),
+      'requiredDocuments': requiredDocuments,
     };
   }
 
@@ -47,18 +47,17 @@ class SchoolClearanceModel {
       id: map['_id'] as String,
       clearanceName: map['clearance_name'] as String,
       paymentRequired: map['payment_required'] as bool,
-      fee: map['fee'] as double,
-      requiredDocuments: map['required_documents'] != null
-          ? List<DocumentModel>.from(
-              (map['required_documents'] as List<int>).map<DocumentModel?>(
-                (x) => DocumentModel.fromMap(x as Map<String, dynamic>),
-              ),
-            )
+      fee: double.parse((map['fee'] ?? "0").toString()),
+      requiredDocuments: map["required_documents"] != null
+          ? (map["required_documents"] as List)
+              .map((s) => s.toString())
+              .toList()
           : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory SchoolClearanceModel.fromJson(String source) => SchoolClearanceModel.fromMap(json.decode(source));
+  factory SchoolClearanceModel.fromJson(String source) =>
+      SchoolClearanceModel.fromMap(json.decode(source));
 }

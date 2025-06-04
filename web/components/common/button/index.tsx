@@ -53,11 +53,11 @@ const Button: FC<Props> = (props) => {
       break;
     case 'destructive':
       mainClass +=
-        'bg-transparent border border-red-500/50 hover:border-red-500 hover:bg-red-500 disabled:hover:bg-transparent hover:text-black disabled:hover:text-red-500 text-red-500 disabled:border-red-500/50 ';
+        'bg-transparent border border-red-500/50 hover:border-red-500 hover:bg-red-500 disabled:hover:bg-transparent hover:text-white disabled:hover:text-red-500 text-red-500 disabled:border-red-500/50 ';
       break;
     case 'success':
       mainClass +=
-        'bg-transparent border border-success/50 hover:border-success hover:bg-success disabled:hover:bg-transparent hover:text-black disabled:hover:text-success text-success disabled:border-success/50 ';
+        'bg-transparent border border-success/50 hover:border-success hover:bg-success disabled:hover:bg-transparent hover:text-white disabled:hover:text-success text-success disabled:border-success/50 ';
       break;
     case 'black':
       mainClass += 'hover:bg-mainLight/80 bg-mainLight text-mainLight ';

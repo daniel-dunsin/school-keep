@@ -18,13 +18,18 @@ class NetworkInterceptors extends Interceptor {
   });
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+  void onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
     if (hasAuth) {
-      final accessToken = await AppStorage.getString(AppStorageKeys.accessToken);
+      final accessToken =
+          await AppStorage.getString(AppStorageKeys.accessToken);
       if (accessToken == null || accessToken.isNotEmpty) {
         options.headers["Authorization"] = "Bearer $accessToken";
       }
-      options.headers["Content-Type"] = contentType == httpEnums.contentType.formType ? "multipart/form-data" : "application/json";
+      options.headers["Content-Type"] =
+          contentType == httpEnums.contentType.formType
+              ? "multipart/form-data"
+              : "application/json";
     }
 
     super.onRequest(options, handler);
@@ -32,11 +37,17 @@ class NetworkInterceptors extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    final accessToken = await AppStorage.getString(AppStorageKeys.accessToken);
-    if (accessToken != null) {
-      final isExpired = JwtDecoder.isExpired(accessToken);
-      if (isExpired) {
-        _redirectToLogin();
+    if (err.response?.statusCode == 403) {
+      _redirectToLogin();
+      super.onError(err, handler);
+    } else {
+      final accessToken =
+          await AppStorage.getString(AppStorageKeys.accessToken);
+      if (accessToken != null) {
+        final isExpired = JwtDecoder.isExpired(accessToken);
+        if (isExpired) {
+          _redirectToLogin();
+        }
       }
     }
 
@@ -46,7 +57,6 @@ class NetworkInterceptors extends Interceptor {
   void _redirectToLogin() {
     if (appNavKey.currentContext != null) {
       appNavKey.currentContext?.goNamed(AuthRoutes.signIn);
-      NetworkToast.handleError("Session Expired, sign in to continue");
     }
   }
 }

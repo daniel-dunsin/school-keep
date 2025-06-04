@@ -135,6 +135,7 @@ export type SchoolClearance = {
   status: SchoolClearanceStatus;
   required_documents: string[];
   _id: string;
+  is_default: boolean;
   createdAt: Date;
 };
 

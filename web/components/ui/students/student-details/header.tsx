@@ -9,14 +9,20 @@ import { Student } from '@/lib/schemas/types';
 import studentService from '@/lib/services/student.service';
 import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { toast } from 'sonner';
 
 interface Props {
   student: Student;
+  hideStatusUpdate?: boolean;
+  statusUpdateAlternative?: ReactNode;
 }
 
-const StudentDetailsHeader: FC<Props> = ({ student }) => {
+const StudentDetailsHeader: FC<Props> = ({
+  student,
+  hideStatusUpdate = false,
+  statusUpdateAlternative,
+}) => {
   const { showModal, hideModal } = useModal();
 
   const { mutateAsync: updateStudentStatus, isPending: updatingStudentStatus } =
@@ -67,22 +73,26 @@ const StudentDetailsHeader: FC<Props> = ({ student }) => {
       </div>
 
       <div>
-        <SelectStudentStatus
-          onSelect={(status) => {
-            if (status) {
-              showModal(
-                <ConfirmationModal
-                  title="Update Student Status"
-                  subtitle={`Are you sure you want to update this student status to ${status}`}
-                  loading={updatingStudentStatus}
-                  onYes={() => updateStudentStatus(status!)}
-                  onNo={hideModal}
-                />
-              );
-            }
-          }}
-          selected={student.status}
-        />
+        {!hideStatusUpdate && (
+          <SelectStudentStatus
+            onSelect={(status) => {
+              if (status) {
+                showModal(
+                  <ConfirmationModal
+                    title="Update Student Status"
+                    subtitle={`Are you sure you want to update this student status to ${status}?`}
+                    loading={updatingStudentStatus}
+                    onYes={() => updateStudentStatus(status!)}
+                    onNo={hideModal}
+                  />
+                );
+              }
+            }}
+            selected={student.status}
+          />
+        )}
+
+        {statusUpdateAlternative}
       </div>
     </header>
   );

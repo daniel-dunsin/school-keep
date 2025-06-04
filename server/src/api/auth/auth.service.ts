@@ -148,9 +148,12 @@ export class AuthService {
   async signJwtToken(user: UserDocument, remember_me: boolean = false) {
     const ONE_DAY = 24 * 60 * 60 * 1000;
 
-    const token = await this.jwtService.signAsync(user, {
-      expiresIn: remember_me ? 7 * ONE_DAY : ONE_DAY,
-    });
+    const token = await this.jwtService.signAsync(
+      { user_id: user?._id },
+      {
+        expiresIn: remember_me ? 7 * ONE_DAY : ONE_DAY,
+      },
+    );
 
     return token;
   }
