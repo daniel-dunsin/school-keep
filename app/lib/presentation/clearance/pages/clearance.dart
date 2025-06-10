@@ -72,10 +72,16 @@ class _ClearanceScreenState extends State<ClearanceScreen> {
               return CanRequestClearanceWidget(clearanceStatus: state.data);
             case RequestClearanceStatus.REQUESTED:
               return ClearanceRequestedWidget(clearanceStatus: state.data);
+
+            // not done
             case RequestClearanceStatus.REJECTED:
               return ClearanceRejectedWidget(clearanceStatus: state.data);
+
+            // doing now
             case RequestClearanceStatus.IN_PROGRESS:
               return ClearanceInProgressWidget(clearanceStatus: state.data);
+
+            // not done
             case RequestClearanceStatus.COMPLETED:
               return ClearanceCompletedWidget(clearanceStatus: state.data);
           }

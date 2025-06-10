@@ -12,21 +12,20 @@ class ActivitiesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          return _buildActivityItem(
-            context,
-            item: activities[index],
-            lastItem: index == activities.length - 1,
-          );
-        },
-        itemCount: activities.length,
-      ),
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        return _buildActivityItem(
+          context,
+          item: activities[index],
+          lastItem: index == activities.length - 1,
+        );
+      },
+      itemCount: activities.length,
     );
   }
 
-  _buildActivityItem(BuildContext context, {required ClearanceActivityModel item, required bool lastItem}) {
+  _buildActivityItem(BuildContext context,
+      {required ClearanceActivityModel item, required bool lastItem}) {
     final loggedInUser = getIt.get<User>();
     final isYou = loggedInUser.id == item.actor?.id;
     final user = isYou ? loggedInUser : item.actor!;
@@ -34,7 +33,7 @@ class ActivitiesList extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 0),
+          contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
           titleAlignment: ListTileTitleAlignment.top,
           isThreeLine: true,
           leading: AppCircleAvatar(image: user.profilePicture),

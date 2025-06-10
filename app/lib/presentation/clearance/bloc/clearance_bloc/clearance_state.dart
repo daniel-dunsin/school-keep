@@ -22,3 +22,13 @@ class RequestSubClearanceSuccess extends ClearanceState {
 }
 
 class RequestSubClearanceError extends ClearanceState {}
+
+class GetClearanceActivitiesLoading extends ClearanceState {}
+
+class GetClearanceActivitiesSuccess extends ClearanceState {
+  final List<ClearanceActivityModel> clearanceActivities;
+
+  GetClearanceActivitiesSuccess(this.clearanceActivities);
+}
+
+class GetClearanceActivitiesError extends ClearanceState {}

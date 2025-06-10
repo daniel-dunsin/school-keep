@@ -1,3 +1,4 @@
+import 'package:app/data/clearance/models/student_clearance_model.dart';
 import 'package:app/presentation/account/pages/account.dart';
 import 'package:app/presentation/account/pages/profile.dart';
 import 'package:app/presentation/account/routes/routes.dart';
@@ -9,6 +10,7 @@ import 'package:app/presentation/auth/pages/reset_password.dart';
 import 'package:app/presentation/auth/pages/sign_in.dart';
 import 'package:app/presentation/auth/pages/sign_up.dart';
 import 'package:app/presentation/auth/routes/routes.dart';
+import 'package:app/presentation/clearance/pages/activities.dart';
 import 'package:app/presentation/clearance/pages/clearance.dart';
 import 'package:app/presentation/clearance/routes/routes.dart';
 import 'package:app/presentation/documents/pages/document_details.dart';
@@ -91,7 +93,8 @@ final goRouter = GoRouter(
       },
     ),
     StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) => DashboardLayout(shell: navigationShell),
+      builder: (context, state, navigationShell) =>
+          DashboardLayout(shell: navigationShell),
       branches: [
         StatefulShellBranch(
           routes: [
@@ -130,6 +133,19 @@ final goRouter = GoRouter(
                 );
               },
             ),
+            GoRoute(
+                path: ClearanceRoutes.activities,
+                name: ClearanceRoutes.activities,
+                pageBuilder: (context, state) {
+                  final Map? extra = state.extra as Map?;
+                  final StudentSubClearanceModel? studentClearance =
+                      extra?["studentClearance"];
+                  return MaterialPage(
+                    child: ClearanceActivitiesScreen(
+                      studentSubClearance: studentClearance,
+                    ),
+                  );
+                })
           ],
         ),
         StatefulShellBranch(

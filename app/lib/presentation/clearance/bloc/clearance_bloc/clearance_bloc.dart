@@ -1,4 +1,6 @@
 import 'package:app/configs/app_config.dart';
+import 'package:app/data/clearance/models/clearance_activity_model.dart';
+import 'package:app/data/student/models/user_model.dart';
 import 'package:app/domain/clearance/clearance_repository.dart';
 import 'package:app/presentation/clearance/bloc/submit_clearance_documents_cubit/submit_clearance_cubit.dart';
 import 'package:app/presentation/clearance/bloc/submit_clearance_documents_cubit/submit_clearance_cubit_state.dart';
@@ -46,6 +48,42 @@ class ClearanceBloc extends Bloc<ClearanceEvent, ClearanceState> {
         );
       } catch (e) {
         emit(RequestSubClearanceError());
+        NetworkToast.handleError(e);
+      }
+    });
+
+    on<GetClearanceActivitiesRequested>((event, emit) async {
+      emit(GetClearanceActivitiesLoading());
+
+      try {
+        final response = await clearanceRepository
+            .getClearanceActivities(getIt.get<User>().student?.id as String);
+
+        final List<ClearanceActivityModel> data = (response["data"] as List)
+            .map((clearance) => ClearanceActivityModel.fromMap(clearance))
+            .toList();
+
+        emit(GetClearanceActivitiesSuccess(data));
+      } catch (e) {
+        emit(GetClearanceActivitiesError());
+        NetworkToast.handleError(e);
+      }
+    });
+
+    on<GetSubClearanceActivitiesRequested>((event, emit) async {
+      emit(GetClearanceActivitiesLoading());
+
+      try {
+        final response = await clearanceRepository
+            .getSubClearanceActivities(event.studentClearanceId);
+
+        final List<ClearanceActivityModel> data = (response["data"] as List)
+            .map((clearance) => ClearanceActivityModel.fromMap(clearance))
+            .toList();
+
+        emit(GetClearanceActivitiesSuccess(data));
+      } catch (e) {
+        emit(GetClearanceActivitiesError());
         NetworkToast.handleError(e);
       }
     });

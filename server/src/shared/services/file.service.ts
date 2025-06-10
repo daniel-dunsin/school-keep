@@ -16,7 +16,6 @@ export class FileService {
     options: UploadApiOptions = {},
   ): Promise<Pick<UploadApiResponse, 'url' | 'public_id'>> {
     try {
-      console.log(file);
       let resource_type: UploadApiOptions['resource_type'] = 'auto';
 
       if (isFilePath) {

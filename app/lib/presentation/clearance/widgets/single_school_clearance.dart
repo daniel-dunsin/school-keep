@@ -4,6 +4,7 @@ import 'package:app/data/clearance/models/school_clearance.dart';
 import 'package:app/data/clearance/models/student_clearance_model.dart';
 import 'package:app/presentation/clearance/bloc/submit_clearance_documents_cubit/submit_clearance_cubit.dart';
 import 'package:app/presentation/clearance/pages/submit_clearance_documents.dart';
+import 'package:app/presentation/clearance/routes/routes.dart';
 import 'package:app/shared/constants/constants.dart';
 import 'package:app/shared/utils/misc.dart';
 import 'package:app/shared/widgets/bottom_sheet.dart';
@@ -203,6 +204,14 @@ class _SingleSchoolClearanceState extends State<SingleSchoolClearance> {
                 : [Spacer()]),
             Expanded(
               child: ContainedButton(
+                onPressed: () {
+                  GoRouter.of(context).pushNamed(
+                    ClearanceRoutes.activities,
+                    extra: {
+                      "studentClearance": studentClearance,
+                    },
+                  );
+                },
                 width: 200,
                 height: 20,
                 padding: EdgeInsets.all(10),

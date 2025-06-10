@@ -45,7 +45,7 @@ export class PaymentService {
         student: transaction.student?._id,
       });
 
-      await this.studentClearanceModel.create({
+      const studentClearance = await this.studentClearanceModel.create({
         student: transaction.student,
         clearance: transaction.meta.school_clearance_id,
         status: StudentClearanceStatus.Requested,
@@ -55,6 +55,7 @@ export class PaymentService {
 
       await this.clearanceService.trackActivity({
         clearance: clearance?._id,
+        subClearance: studentClearance?._id,
         content: `Paid for ${schoolClearance?.clearance_name}`,
         user: String(transaction?.student?.user),
       });

@@ -27,4 +27,18 @@ class ClearanceRepository {
 
     return response?.data;
   }
+
+  Future getClearanceActivities(String studentId) async {
+    final response = await networkService
+        .get("/clearance/student-clearance/student/$studentId/activities");
+
+    return response?.data;
+  }
+
+  Future getSubClearanceActivities(String studentClearanceId) async {
+    final response = await networkService
+        .get("/clearance/student-clearance/$studentClearanceId/activities");
+
+    return response?.data;
+  }
 }

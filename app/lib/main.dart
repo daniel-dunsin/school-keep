@@ -13,7 +13,8 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:toastification/toastification.dart';
 
 void main() {
-  final WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  final WidgetsBinding widgetsBinding =
+      WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   setupApp();
 
@@ -47,7 +48,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       splitScreenMode: true,
       builder: (context, _) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1)),
+          data:
+              MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1)),
           child: ToastificationWrapper(
             child: BlocConsumer<AppCubit, AppState>(
                 bloc: getIt.get<AppCubit>(),
@@ -55,9 +57,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   if (state.appTheme != null) {
                     setStatusBarTheme(context, state.appTheme!);
                   } else {
-                    final platformBrightness = MediaQuery.of(context).platformBrightness;
+                    final platformBrightness =
+                        MediaQuery.of(context).platformBrightness;
 
-                    platformBrightness == Brightness.light ? setStatusBarTheme(context, AppTheme.light) : setStatusBarTheme(context, AppTheme.dark);
+                    platformBrightness == Brightness.light
+                        ? setStatusBarTheme(context, AppTheme.light)
+                        : setStatusBarTheme(context, AppTheme.dark);
                   }
                 },
                 builder: (context, state) {
@@ -73,7 +78,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     title: "School Keep",
                     routerConfig: goRouter,
                     theme: lightTheme,
-                    darkTheme: darkTheme,
+                    darkTheme: lightTheme,
                     themeMode: themeMode,
                   );
                 }),

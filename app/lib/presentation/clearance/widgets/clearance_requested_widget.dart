@@ -24,7 +24,10 @@ class ClearanceRequestedWidget extends StatelessWidget {
             ClearanceStatusHeader(
               clearanceStatus: clearanceStatus,
             ),
-            ActivitiesList(activities: clearanceStatus.activities ?? []),
+            Expanded(
+              child:
+                  ActivitiesList(activities: clearanceStatus.activities ?? []),
+            )
           ],
         ),
       ),

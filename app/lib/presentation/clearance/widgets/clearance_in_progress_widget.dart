@@ -1,10 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:app/data/clearance/models/student_clearance_status_model.dart';
+import 'package:app/presentation/clearance/routes/routes.dart';
 import 'package:app/presentation/clearance/widgets/clearance_status_header.dart';
 import 'package:app/presentation/clearance/widgets/single_school_clearance.dart';
 import 'package:app/shared/constants/constants.dart';
 import 'package:app/shared/utils/misc.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ClearanceInProgressWidget extends StatefulWidget {
   final StudentClearanceStatusModel clearanceStatus;
@@ -29,8 +31,29 @@ class _ClearanceInProgressWidgetState extends State<ClearanceInProgressWidget> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             ClearanceStatusHeader(clearanceStatus: widget.clearanceStatus),
+            _buildViewActivities(),
+            SizedBox(
+              height: 20,
+            ),
             _buildSchoolClearanceList(),
           ],
+        ),
+      ),
+    );
+  }
+
+  _buildViewActivities() {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: GestureDetector(
+        onTap: () {
+          GoRouter.of(context).push(ClearanceRoutes.activities);
+        },
+        child: Text(
+          "View Activities",
+          style: getTextTheme(context).bodyLarge?.copyWith(
+                color: getColorScheme(context).surface,
+              ),
         ),
       ),
     );
