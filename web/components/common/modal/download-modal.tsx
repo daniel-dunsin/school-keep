@@ -72,7 +72,7 @@ const DownloadModal: FC<Props> = ({ url, fileName, studentName }) => {
       const blob = new Blob([response.data], { type: response?.data?.type });
 
       const downloadUrl = window.URL.createObjectURL(blob);
-      const linkTag = document.createElement('a');
+      const linkTag = window.document.createElement('a');
       linkTag.href = url;
       linkTag.target = '_blank';
       linkTag.setAttribute('download', name);
