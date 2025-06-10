@@ -20,11 +20,11 @@ const SingleDocumentPage = () => {
     return <SingleDocumentPageSkeleton />;
   }
 
-  const document = data.data;
+  const doc = data?.data;
 
   return (
     <section className="my-5">
-      <SingleDocumentHeader document={document} />
+      <SingleDocumentHeader document={doc} />
       <OtherDocumentVersion otherVersions={data?.meta?.otherVersions ?? []} />
     </section>
   );
