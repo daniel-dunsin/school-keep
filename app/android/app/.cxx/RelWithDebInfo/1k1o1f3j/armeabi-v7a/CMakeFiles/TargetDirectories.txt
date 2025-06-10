@@ -1,0 +1,2 @@
+/Users/user/Desktop/projects/random/school_keep/app/android/app/.cxx/RelWithDebInfo/1k1o1f3j/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/user/Desktop/projects/random/school_keep/app/android/app/.cxx/RelWithDebInfo/1k1o1f3j/armeabi-v7a/CMakeFiles/rebuild_cache.dir

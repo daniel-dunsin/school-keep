@@ -46,7 +46,7 @@ class AppMatchers {
 }
 
 class AppUrls {
-  static String serverBaseUrl = "http://localhost:3001/api/v1";
+  static String serverBaseUrl = "https://school-keep-be.onrender.com/api/v1";
 }
 
 enum AppTheme {
