@@ -18,7 +18,7 @@ async function bootstrap() {
   app.use(helmet());
   app.enableCors({
     credentials: true,
-    origin: ['http://localhost:3000'],
+    origin: ['http://localhost:3000', 'https://appschoolkeep.vercel.app/'],
   });
   app.use(cookieParser());
   app.use(express.json({ limit: '50mb' }));
